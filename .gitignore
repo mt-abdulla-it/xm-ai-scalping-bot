@@ -1,0 +1,14 @@
+# Private Keys & Secrets
+groq_key.txt
+.env
+
+# Data Files & Logs
+*.csv
+*.json
+*.log
+
+# Virtual Environment
+venv/
+.venv/
+__pycache__/
+*.pyc
