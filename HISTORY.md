@@ -8,3 +8,4 @@
 - **2026-09-21 18:42:37**: perf: optimize chart dashboard comment redraw rate
 - **2026-09-21 19:55:17**: refactor: optimize EMA crossover lookback periods
 - **2026-09-21 21:12:24**: chore: update .gitignore and package configurations
+- **2026-09-21 22:54:29**: feat: expand portfolio to Top 20 premier global assets
