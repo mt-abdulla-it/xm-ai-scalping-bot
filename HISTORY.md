@@ -10,3 +10,4 @@
 - **2026-09-21 21:12:24**: chore: update .gitignore and package configurations
 - **2026-09-21 22:54:29**: feat: expand portfolio to Top 20 premier global assets
 - **2026-09-22 17:28:14**: refactor: calibrate RSI momentum divergence calculations
+- **2026-09-22 18:51:56**: feat: add duplicate chart tab detection and standby state
