@@ -15,3 +15,4 @@
 - **2026-09-22 20:21:27**: feat: add shadow trade telemetry logger for ML training
 - **2026-09-23 13:29:18**: feat: add high impact news calendar blackout filter
 - **2026-09-23 20:04:04**: refactor: calibrate RSI momentum divergence calculations
+- **2026-09-23 21:20:36**: feat: implement multi-symbol portfolio scanner for Forex majors
