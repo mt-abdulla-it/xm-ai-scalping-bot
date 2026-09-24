@@ -19,3 +19,4 @@
 - **2026-09-23 22:45:43**: refactor: update Kelly criterion equations and safety caps
 - **2026-09-24 14:09:08**: refactor: improve JPY exposure guard basket management
 - **2026-09-24 16:24:29**: docs: add comprehensive English README with architecture diagrams
+- **2026-09-24 18:31:23**: feat: enhance loss cooldown timer after adverse stopout
