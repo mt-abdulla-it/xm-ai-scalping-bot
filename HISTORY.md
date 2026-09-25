@@ -20,3 +20,4 @@
 - **2026-09-24 14:09:08**: refactor: improve JPY exposure guard basket management
 - **2026-09-24 16:24:29**: docs: add comprehensive English README with architecture diagrams
 - **2026-09-24 18:31:23**: feat: enhance loss cooldown timer after adverse stopout
+- **2026-09-25 10:38:48**: feat: initialize core trading framework and telemetry
