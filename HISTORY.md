@@ -21,3 +21,4 @@
 - **2026-09-24 16:24:29**: docs: add comprehensive English README with architecture diagrams
 - **2026-09-24 18:31:23**: feat: enhance loss cooldown timer after adverse stopout
 - **2026-09-25 10:38:48**: feat: initialize core trading framework and telemetry
+- **2026-09-25 12:46:14**: feat: implement multi-symbol portfolio scanner for Forex majors
