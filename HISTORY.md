@@ -30,3 +30,4 @@
 - **2026-09-27 12:24:18**: chore: update .gitignore and package configurations
 - **2026-09-27 13:49:19**: feat: add Depth of Market (DOM) order flow filter
 - **2026-09-27 14:42:24**: feat: add shadow trade telemetry logger for ML training
+- **2026-09-27 16:01:27**: feat: add Depth of Market (DOM) order flow filter
