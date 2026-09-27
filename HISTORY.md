@@ -27,3 +27,4 @@
 - **2026-09-26 13:24:12**: feat: implement dynamic ATR-based trailing stop
 - **2026-09-26 15:05:02**: feat: add Elder Triple Screen MTF trend filter
 - **2026-09-27 11:13:14**: fix: prevent race condition with global order lock buffer
+- **2026-09-27 12:24:18**: chore: update .gitignore and package configurations
