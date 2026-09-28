@@ -34,3 +34,4 @@
 - **2026-09-28 12:09:45**: feat: add 24/7 Bitcoin and Ethereum crypto session support
 - **2026-09-28 15:29:33**: feat: add Pin Bar counter-trend reversal detector
 - **2026-09-28 18:29:14**: feat: add duplicate chart tab detection and standby state
+- **2026-09-28 22:19:58**: feat: add Universal Dollar Loss Shield for multi-currency positions
