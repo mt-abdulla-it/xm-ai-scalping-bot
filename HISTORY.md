@@ -33,3 +33,4 @@
 - **2026-09-27 16:01:27**: feat: add Depth of Market (DOM) order flow filter
 - **2026-09-28 12:09:45**: feat: add 24/7 Bitcoin and Ethereum crypto session support
 - **2026-09-28 15:29:33**: feat: add Pin Bar counter-trend reversal detector
+- **2026-09-28 18:29:14**: feat: add duplicate chart tab detection and standby state
