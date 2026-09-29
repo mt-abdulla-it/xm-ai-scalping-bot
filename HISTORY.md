@@ -36,3 +36,4 @@
 - **2026-09-28 18:29:14**: feat: add duplicate chart tab detection and standby state
 - **2026-09-28 22:19:58**: feat: add Universal Dollar Loss Shield for multi-currency positions
 - **2026-09-29 10:33:20**: feat: implement dynamic ATR-based trailing stop
+- **2026-09-29 12:15:01**: test: verify backtest data extraction on historical M1 ticks
