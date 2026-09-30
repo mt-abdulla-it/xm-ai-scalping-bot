@@ -41,3 +41,4 @@
 - **2026-09-29 18:41:05**: feat: implement dynamic ATR-based trailing stop
 - **2026-09-30 11:15:57**: test: verify backtest data extraction on historical M1 ticks
 - **2026-09-30 13:54:40**: feat: add auto-compounding lot calculation logic
+- **2026-09-30 15:54:23**: feat: add Universal Dollar Loss Shield for multi-currency positions
