@@ -45,3 +45,4 @@
 - **2026-09-30 17:19:27**: feat: add Pin Bar counter-trend reversal detector
 - **2026-09-30 21:13:07**: perf: optimize order execution latency and tick processing
 - **2026-10-01 11:43:12**: docs: add MIT open-source license
+- **2026-10-01 13:36:12**: fix: handle ECN broker zero StopsLevel spread calculation
