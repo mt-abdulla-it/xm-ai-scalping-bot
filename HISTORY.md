@@ -48,3 +48,4 @@
 - **2026-10-01 13:36:12**: fix: handle ECN broker zero StopsLevel spread calculation
 - **2026-10-01 14:46:24**: feat: add shadow trade telemetry logger for ML training
 - **2026-10-01 18:08:51**: chore: clean up legacy scripts and optimize profile layouts
+- **2026-10-01 20:00:13**: feat: add Elder Triple Screen MTF trend filter
