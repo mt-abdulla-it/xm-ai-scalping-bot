@@ -51,3 +51,4 @@
 - **2026-10-01 20:00:13**: feat: add Elder Triple Screen MTF trend filter
 - **2026-10-02 12:39:56**: perf: optimize order execution latency and tick processing
 - **2026-10-02 14:06:05**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
+- **2026-10-02 16:03:18**: feat: add Depth of Market (DOM) order flow filter
