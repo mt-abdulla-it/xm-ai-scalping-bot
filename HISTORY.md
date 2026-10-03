@@ -52,3 +52,4 @@
 - **2026-10-02 12:39:56**: perf: optimize order execution latency and tick processing
 - **2026-10-02 14:06:05**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
 - **2026-10-02 16:03:18**: feat: add Depth of Market (DOM) order flow filter
+- **2026-10-03 10:44:34**: feat: add US30, US100, and US500 cash index spread auto-detection
