@@ -54,3 +54,4 @@
 - **2026-10-02 16:03:18**: feat: add Depth of Market (DOM) order flow filter
 - **2026-10-03 10:44:34**: feat: add US30, US100, and US500 cash index spread auto-detection
 - **2026-10-03 19:07:02**: feat: expand portfolio to Top 20 premier global assets
+- **2026-10-03 21:10:56**: feat: implement dynamic ATR-based trailing stop
