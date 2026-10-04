@@ -58,3 +58,4 @@
 - **2026-10-04 11:29:35**: test: verify backtest data extraction on historical M1 ticks
 - **2026-10-04 14:02:53**: docs: add comprehensive English README with architecture diagrams
 - **2026-10-04 15:34:29**: chore: update .gitignore and package configurations
+- **2026-10-04 21:02:29**: feat: add shadow trade telemetry logger for ML training
