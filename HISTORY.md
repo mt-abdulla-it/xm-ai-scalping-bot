@@ -57,3 +57,4 @@
 - **2026-10-03 21:10:56**: feat: implement dynamic ATR-based trailing stop
 - **2026-10-04 11:29:35**: test: verify backtest data extraction on historical M1 ticks
 - **2026-10-04 14:02:53**: docs: add comprehensive English README with architecture diagrams
+- **2026-10-04 15:34:29**: chore: update .gitignore and package configurations
