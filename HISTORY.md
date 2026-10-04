@@ -59,3 +59,4 @@
 - **2026-10-04 14:02:53**: docs: add comprehensive English README with architecture diagrams
 - **2026-10-04 15:34:29**: chore: update .gitignore and package configurations
 - **2026-10-04 21:02:29**: feat: add shadow trade telemetry logger for ML training
+- **2026-10-04 22:34:20**: perf: upgrade engine to v16.20 Turbo-50 with 50 concurrent trades
