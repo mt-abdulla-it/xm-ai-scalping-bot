@@ -62,3 +62,4 @@
 - **2026-10-04 22:34:20**: perf: upgrade engine to v16.20 Turbo-50 with 50 concurrent trades
 - **2026-10-05 12:23:18**: refactor: streamline trade state synchronization
 - **2026-10-05 15:00:36**: perf: optimize chart dashboard comment redraw rate
+- **2026-10-05 19:41:25**: feat: implement Kaufman Efficiency Ratio noise filter
