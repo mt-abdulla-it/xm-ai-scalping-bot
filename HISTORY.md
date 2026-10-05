@@ -61,3 +61,4 @@
 - **2026-10-04 21:02:29**: feat: add shadow trade telemetry logger for ML training
 - **2026-10-04 22:34:20**: perf: upgrade engine to v16.20 Turbo-50 with 50 concurrent trades
 - **2026-10-05 12:23:18**: refactor: streamline trade state synchronization
+- **2026-10-05 15:00:36**: perf: optimize chart dashboard comment redraw rate
