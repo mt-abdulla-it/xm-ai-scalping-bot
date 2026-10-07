@@ -67,3 +67,4 @@
 - **2026-10-06 13:50:59**: feat: expand portfolio to Top 20 premier global assets
 - **2026-10-06 18:17:13**: chore: clean up legacy scripts and optimize profile layouts
 - **2026-10-06 20:21:07**: feat: add shadow trade telemetry logger for ML training
+- **2026-10-07 10:09:41**: docs: add MIT open-source license
