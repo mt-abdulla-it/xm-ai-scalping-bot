@@ -70,3 +70,4 @@
 - **2026-10-07 10:09:41**: docs: add MIT open-source license
 - **2026-10-07 13:31:04**: feat: add Total Drawdown Circuit Breaker with GlobalVariable sync
 - **2026-10-07 18:28:09**: chore: update .gitignore and package configurations
+- **2026-10-08 13:02:33**: feat: add Total Drawdown Circuit Breaker with GlobalVariable sync
