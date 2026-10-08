@@ -72,3 +72,4 @@
 - **2026-10-07 18:28:09**: chore: update .gitignore and package configurations
 - **2026-10-08 13:02:33**: feat: add Total Drawdown Circuit Breaker with GlobalVariable sync
 - **2026-10-08 15:13:26**: feat: implement dynamic ATR-based trailing stop
+- **2026-10-08 17:51:37**: feat: expand portfolio to Top 20 premier global assets
