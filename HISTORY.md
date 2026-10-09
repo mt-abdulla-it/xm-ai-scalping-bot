@@ -77,3 +77,4 @@
 - **2026-10-09 13:56:43**: docs: add MIT open-source license
 - **2026-10-09 14:27:31**: feat: initialize core trading framework and telemetry
 - **2026-10-09 16:52:02**: feat: implement automated system daemon for Linux boot
+- **2026-10-09 22:11:49**: refactor: update Kelly criterion equations and safety caps
