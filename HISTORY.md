@@ -79,3 +79,4 @@
 - **2026-10-09 16:52:02**: feat: implement automated system daemon for Linux boot
 - **2026-10-09 22:11:49**: refactor: update Kelly criterion equations and safety caps
 - **2026-10-10 09:54:40**: feat: enhance loss cooldown timer after adverse stopout
+- **2026-10-10 10:34:49**: test: verify backtest data extraction on historical M1 ticks
