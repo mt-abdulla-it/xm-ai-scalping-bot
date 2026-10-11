@@ -86,3 +86,4 @@
 - **2026-10-10 21:10:03**: feat: add high impact news calendar blackout filter
 - **2026-10-11 11:10:42**: feat: add shadow trade telemetry logger for ML training
 - **2026-10-11 12:16:07**: docs: add comprehensive English README with architecture diagrams
+- **2026-10-11 13:24:27**: feat: add Pin Bar counter-trend reversal detector
