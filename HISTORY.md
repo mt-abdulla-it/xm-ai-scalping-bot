@@ -84,3 +84,4 @@
 - **2026-10-10 12:26:04**: feat: add duplicate chart tab detection and standby state
 - **2026-10-10 18:51:54**: perf: optimize order execution latency and tick processing
 - **2026-10-10 21:10:03**: feat: add high impact news calendar blackout filter
+- **2026-10-11 11:10:42**: feat: add shadow trade telemetry logger for ML training
