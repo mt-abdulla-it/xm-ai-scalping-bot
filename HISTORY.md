@@ -88,3 +88,4 @@
 - **2026-10-11 12:16:07**: docs: add comprehensive English README with architecture diagrams
 - **2026-10-11 13:24:27**: feat: add Pin Bar counter-trend reversal detector
 - **2026-10-11 14:24:01**: perf: optimize order execution latency and tick processing
+- **2026-10-11 18:43:21**: fix: prevent race condition with global order lock buffer
