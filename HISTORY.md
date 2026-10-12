@@ -92,3 +92,4 @@
 - **2026-10-11 20:20:33**: perf: switch charts to M1 timeframe for high-frequency execution
 - **2026-10-12 15:37:20**: feat: implement multi-symbol portfolio scanner for Forex majors
 - **2026-10-12 17:38:14**: feat: add Depth of Market (DOM) order flow filter
+- **2026-10-12 19:58:37**: feat: implement Kaufman Efficiency Ratio noise filter
