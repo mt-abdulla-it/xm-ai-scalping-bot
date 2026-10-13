@@ -94,3 +94,4 @@
 - **2026-10-12 17:38:14**: feat: add Depth of Market (DOM) order flow filter
 - **2026-10-12 19:58:37**: feat: implement Kaufman Efficiency Ratio noise filter
 - **2026-10-13 17:14:10**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
+- **2026-10-13 18:54:28**: feat: add US30, US100, and US500 cash index spread auto-detection
