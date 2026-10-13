@@ -97,3 +97,4 @@
 - **2026-10-13 18:54:28**: feat: add US30, US100, and US500 cash index spread auto-detection
 - **2026-10-13 19:54:39**: feat: add US30, US100, and US500 cash index spread auto-detection
 - **2026-10-13 20:44:19**: feat: add US30, US100, and US500 cash index spread auto-detection
+- **2026-10-13 21:07:17**: feat: expand portfolio to Top 20 premier global assets
