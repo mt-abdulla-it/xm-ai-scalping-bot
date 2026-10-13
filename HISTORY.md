@@ -93,3 +93,4 @@
 - **2026-10-12 15:37:20**: feat: implement multi-symbol portfolio scanner for Forex majors
 - **2026-10-12 17:38:14**: feat: add Depth of Market (DOM) order flow filter
 - **2026-10-12 19:58:37**: feat: implement Kaufman Efficiency Ratio noise filter
+- **2026-10-13 17:14:10**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
