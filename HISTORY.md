@@ -96,3 +96,4 @@
 - **2026-10-13 17:14:10**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
 - **2026-10-13 18:54:28**: feat: add US30, US100, and US500 cash index spread auto-detection
 - **2026-10-13 19:54:39**: feat: add US30, US100, and US500 cash index spread auto-detection
+- **2026-10-13 20:44:19**: feat: add US30, US100, and US500 cash index spread auto-detection
