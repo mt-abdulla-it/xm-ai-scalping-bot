@@ -101,3 +101,4 @@
 - **2026-10-14 14:30:00**: feat: add Elder Triple Screen MTF trend filter
 - **2026-10-14 17:04:26**: docs: add comprehensive English README with architecture diagrams
 - **2026-10-14 18:17:39**: feat: add auto-compounding lot calculation logic
+- **2026-10-14 19:17:04**: refactor: improve JPY exposure guard basket management
