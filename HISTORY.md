@@ -99,3 +99,4 @@
 - **2026-10-13 20:44:19**: feat: add US30, US100, and US500 cash index spread auto-detection
 - **2026-10-13 21:07:17**: feat: expand portfolio to Top 20 premier global assets
 - **2026-10-14 14:30:00**: feat: add Elder Triple Screen MTF trend filter
+- **2026-10-14 17:04:26**: docs: add comprehensive English README with architecture diagrams
