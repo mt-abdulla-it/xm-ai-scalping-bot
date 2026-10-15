@@ -103,3 +103,4 @@
 - **2026-10-14 18:17:39**: feat: add auto-compounding lot calculation logic
 - **2026-10-14 19:17:04**: refactor: improve JPY exposure guard basket management
 - **2026-10-15 09:32:03**: feat: add Total Drawdown Circuit Breaker with GlobalVariable sync
+- **2026-10-15 10:56:42**: chore: update .gitignore and package configurations
