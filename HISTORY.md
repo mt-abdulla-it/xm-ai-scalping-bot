@@ -105,3 +105,4 @@
 - **2026-10-15 09:32:03**: feat: add Total Drawdown Circuit Breaker with GlobalVariable sync
 - **2026-10-15 10:56:42**: chore: update .gitignore and package configurations
 - **2026-10-15 12:56:37**: feat: implement train_onnx.py machine learning pipeline
+- **2026-10-15 17:02:44**: feat: add Depth of Market (DOM) order flow filter
