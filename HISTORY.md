@@ -108,3 +108,4 @@
 - **2026-10-15 17:02:44**: feat: add Depth of Market (DOM) order flow filter
 - **2026-10-15 18:54:38**: feat: implement train_onnx.py machine learning pipeline
 - **2026-10-16 09:17:41**: feat: add 24/7 Bitcoin and Ethereum crypto session support
+- **2026-10-16 10:40:04**: feat: add 24/7 Bitcoin and Ethereum crypto session support
