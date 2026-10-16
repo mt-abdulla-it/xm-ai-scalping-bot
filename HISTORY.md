@@ -110,3 +110,4 @@
 - **2026-10-16 09:17:41**: feat: add 24/7 Bitcoin and Ethereum crypto session support
 - **2026-10-16 10:40:04**: feat: add 24/7 Bitcoin and Ethereum crypto session support
 - **2026-10-16 11:17:10**: feat: initialize core trading framework and telemetry
+- **2026-10-16 16:50:57**: feat: implement dynamic ATR-based trailing stop
