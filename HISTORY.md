@@ -113,3 +113,4 @@
 - **2026-10-16 16:50:57**: feat: implement dynamic ATR-based trailing stop
 - **2026-10-16 21:06:00**: feat: add auto-compounding lot calculation logic
 - **2026-10-17 10:33:48**: feat: add 24/7 Bitcoin and Ethereum crypto session support
+- **2026-10-17 17:45:57**: feat: expand portfolio to Top 20 premier global assets
