@@ -114,3 +114,4 @@
 - **2026-10-16 21:06:00**: feat: add auto-compounding lot calculation logic
 - **2026-10-17 10:33:48**: feat: add 24/7 Bitcoin and Ethereum crypto session support
 - **2026-10-17 17:45:57**: feat: expand portfolio to Top 20 premier global assets
+- **2026-10-17 20:20:55**: feat: enhance loss cooldown timer after adverse stopout
