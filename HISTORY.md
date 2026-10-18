@@ -119,3 +119,4 @@
 - **2026-10-18 15:12:19**: chore: clean up legacy scripts and optimize profile layouts
 - **2026-10-18 16:09:13**: feat: add 24/7 Bitcoin and Ethereum crypto session support
 - **2026-10-18 17:37:55**: refactor: improve JPY exposure guard basket management
+- **2026-10-18 18:00:59**: feat: initialize core trading framework and telemetry
