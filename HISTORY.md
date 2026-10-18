@@ -117,3 +117,4 @@
 - **2026-10-17 20:20:55**: feat: enhance loss cooldown timer after adverse stopout
 - **2026-10-18 09:57:53**: refactor: update Kelly criterion equations and safety caps
 - **2026-10-18 15:12:19**: chore: clean up legacy scripts and optimize profile layouts
+- **2026-10-18 16:09:13**: feat: add 24/7 Bitcoin and Ethereum crypto session support
