@@ -123,3 +123,4 @@
 - **2026-10-18 20:10:52**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
 - **2026-10-19 09:54:33**: feat: implement Kaufman Efficiency Ratio noise filter
 - **2026-10-19 10:46:30**: chore: clean up legacy scripts and optimize profile layouts
+- **2026-10-19 11:35:18**: fix: prevent race condition with global order lock buffer
