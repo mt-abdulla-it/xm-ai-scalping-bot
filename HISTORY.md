@@ -121,3 +121,4 @@
 - **2026-10-18 17:37:55**: refactor: improve JPY exposure guard basket management
 - **2026-10-18 18:00:59**: feat: initialize core trading framework and telemetry
 - **2026-10-18 20:10:52**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
+- **2026-10-19 09:54:33**: feat: implement Kaufman Efficiency Ratio noise filter
