@@ -124,3 +124,4 @@
 - **2026-10-19 09:54:33**: feat: implement Kaufman Efficiency Ratio noise filter
 - **2026-10-19 10:46:30**: chore: clean up legacy scripts and optimize profile layouts
 - **2026-10-19 11:35:18**: fix: prevent race condition with global order lock buffer
+- **2026-10-19 13:39:17**: feat: add Elder Triple Screen MTF trend filter
