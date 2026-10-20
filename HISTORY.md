@@ -130,3 +130,4 @@
 - **2026-10-20 10:53:58**: feat: implement dynamic ATR-based trailing stop
 - **2026-10-20 14:16:04**: feat: add Pin Bar counter-trend reversal detector
 - **2026-10-20 17:38:54**: refactor: calibrate RSI momentum divergence calculations
+- **2026-10-20 18:05:13**: feat: implement Kaufman Efficiency Ratio noise filter
