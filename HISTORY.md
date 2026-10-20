@@ -127,3 +127,4 @@
 - **2026-10-19 13:39:17**: feat: add Elder Triple Screen MTF trend filter
 - **2026-10-19 16:02:52**: refactor: improve JPY exposure guard basket management
 - **2026-10-19 21:06:21**: docs: add MIT open-source license
+- **2026-10-20 10:53:58**: feat: implement dynamic ATR-based trailing stop
