@@ -132,3 +132,4 @@
 - **2026-10-20 17:38:54**: refactor: calibrate RSI momentum divergence calculations
 - **2026-10-20 18:05:13**: feat: implement Kaufman Efficiency Ratio noise filter
 - **2026-10-20 21:39:55**: refactor: calibrate RSI momentum divergence calculations
+- **2026-10-20 22:59:26**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
