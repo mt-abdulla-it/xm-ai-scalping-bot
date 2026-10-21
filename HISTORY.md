@@ -133,3 +133,4 @@
 - **2026-10-20 18:05:13**: feat: implement Kaufman Efficiency Ratio noise filter
 - **2026-10-20 21:39:55**: refactor: calibrate RSI momentum divergence calculations
 - **2026-10-20 22:59:26**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
+- **2026-10-21 09:13:14**: refactor: improve JPY exposure guard basket management
