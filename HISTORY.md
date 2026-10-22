@@ -139,3 +139,4 @@
 - **2026-10-22 11:14:39**: docs: add MIT open-source license
 - **2026-10-22 13:18:27**: chore: update .gitignore and package configurations
 - **2026-10-22 15:15:49**: feat: add shadow trade telemetry logger for ML training
+- **2026-10-22 16:28:41**: feat: add Elder Triple Screen MTF trend filter
