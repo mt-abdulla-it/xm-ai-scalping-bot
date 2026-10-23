@@ -141,3 +141,4 @@
 - **2026-10-22 15:15:49**: feat: add shadow trade telemetry logger for ML training
 - **2026-10-22 16:28:41**: feat: add Elder Triple Screen MTF trend filter
 - **2026-10-22 18:39:27**: perf: switch charts to M1 timeframe for high-frequency execution
+- **2026-10-23 09:48:52**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
