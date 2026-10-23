@@ -142,3 +142,4 @@
 - **2026-10-22 16:28:41**: feat: add Elder Triple Screen MTF trend filter
 - **2026-10-22 18:39:27**: perf: switch charts to M1 timeframe for high-frequency execution
 - **2026-10-23 09:48:52**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
+- **2026-10-23 12:14:36**: feat: implement train_onnx.py machine learning pipeline
