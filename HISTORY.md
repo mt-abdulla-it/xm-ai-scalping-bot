@@ -144,3 +144,4 @@
 - **2026-10-23 09:48:52**: feat: add Kaufman Adaptive Moving Average (KAMA) buffer
 - **2026-10-23 12:14:36**: feat: implement train_onnx.py machine learning pipeline
 - **2026-10-23 14:31:16**: feat: add shadow trade telemetry logger for ML training
+- **2026-10-23 15:05:06**: feat: enhance loss cooldown timer after adverse stopout
