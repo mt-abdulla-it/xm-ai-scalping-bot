@@ -150,3 +150,4 @@
 - **2026-10-24 09:13:23**: perf: optimize order execution latency and tick processing
 - **2026-10-24 18:39:09**: feat: add auto-compounding lot calculation logic
 - **2026-10-24 19:40:15**: feat: implement train_onnx.py machine learning pipeline
+- **2026-10-24 20:46:14**: refactor: optimize EMA crossover lookback periods
