@@ -148,3 +148,4 @@
 - **2026-10-23 17:15:37**: test: validate Strategy Tester multi-currency performance
 - **2026-10-23 22:47:55**: perf: optimize order execution latency and tick processing
 - **2026-10-24 09:13:23**: perf: optimize order execution latency and tick processing
+- **2026-10-24 18:39:09**: feat: add auto-compounding lot calculation logic
