@@ -154,3 +154,4 @@
 - **2026-10-25 09:51:16**: perf: upgrade engine to v16.20 Turbo-50 with 50 concurrent trades
 - **2026-10-25 15:52:40**: fix: handle ECN broker zero StopsLevel spread calculation
 - **2026-10-25 16:24:27**: feat: add Total Drawdown Circuit Breaker with GlobalVariable sync
+- **2026-10-25 17:06:43**: feat: add Total Drawdown Circuit Breaker with GlobalVariable sync
