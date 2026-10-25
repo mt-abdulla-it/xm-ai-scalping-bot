@@ -151,3 +151,4 @@
 - **2026-10-24 18:39:09**: feat: add auto-compounding lot calculation logic
 - **2026-10-24 19:40:15**: feat: implement train_onnx.py machine learning pipeline
 - **2026-10-24 20:46:14**: refactor: optimize EMA crossover lookback periods
+- **2026-10-25 09:51:16**: perf: upgrade engine to v16.20 Turbo-50 with 50 concurrent trades
