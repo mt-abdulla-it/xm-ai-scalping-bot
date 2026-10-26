@@ -160,3 +160,4 @@
 - **2026-10-26 13:33:16**: feat: add Elder Triple Screen MTF trend filter
 - **2026-10-26 14:02:34**: feat: enhance loss cooldown timer after adverse stopout
 - **2026-10-26 16:59:11**: feat: implement automated system daemon for Linux boot
+- **2026-10-26 20:51:18**: perf: switch charts to M1 timeframe for high-frequency execution
