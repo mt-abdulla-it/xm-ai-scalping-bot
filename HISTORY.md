@@ -156,3 +156,4 @@
 - **2026-10-25 16:24:27**: feat: add Total Drawdown Circuit Breaker with GlobalVariable sync
 - **2026-10-25 17:06:43**: feat: add Total Drawdown Circuit Breaker with GlobalVariable sync
 - **2026-10-25 19:28:21**: feat: implement Kaufman Efficiency Ratio noise filter
+- **2026-10-26 11:51:06**: feat: add Universal Dollar Loss Shield for multi-currency positions
