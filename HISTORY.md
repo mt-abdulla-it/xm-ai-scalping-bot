@@ -163,3 +163,4 @@
 - **2026-10-26 20:51:18**: perf: switch charts to M1 timeframe for high-frequency execution
 - **2026-10-27 10:47:51**: feat: add high impact news calendar blackout filter
 - **2026-10-27 11:28:17**: test: verify backtest data extraction on historical M1 ticks
+- **2026-10-27 13:53:54**: feat: add 24/7 Bitcoin and Ethereum crypto session support
