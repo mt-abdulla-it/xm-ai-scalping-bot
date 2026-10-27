@@ -162,3 +162,4 @@
 - **2026-10-26 16:59:11**: feat: implement automated system daemon for Linux boot
 - **2026-10-26 20:51:18**: perf: switch charts to M1 timeframe for high-frequency execution
 - **2026-10-27 10:47:51**: feat: add high impact news calendar blackout filter
+- **2026-10-27 11:28:17**: test: verify backtest data extraction on historical M1 ticks
