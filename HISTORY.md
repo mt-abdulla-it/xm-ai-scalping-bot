@@ -165,3 +165,4 @@
 - **2026-10-27 11:28:17**: test: verify backtest data extraction on historical M1 ticks
 - **2026-10-27 13:53:54**: feat: add 24/7 Bitcoin and Ethereum crypto session support
 - **2026-10-27 15:36:26**: perf: optimize chart dashboard comment redraw rate
+- **2026-10-27 18:05:53**: refactor: calibrate RSI momentum divergence calculations
