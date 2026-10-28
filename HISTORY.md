@@ -167,3 +167,4 @@
 - **2026-10-27 15:36:26**: perf: optimize chart dashboard comment redraw rate
 - **2026-10-27 18:05:53**: refactor: calibrate RSI momentum divergence calculations
 - **2026-10-27 20:58:00**: feat: implement dynamic ATR-based trailing stop
+- **2026-10-28 10:13:22**: refactor: update Kelly criterion equations and safety caps
