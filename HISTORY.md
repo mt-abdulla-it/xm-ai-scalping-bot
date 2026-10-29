@@ -177,3 +177,4 @@
 - **2026-10-29 13:37:50**: perf: optimize order execution latency and tick processing
 - **2026-10-29 18:23:26**: feat: add high impact news calendar blackout filter
 - **2026-10-29 19:37:32**: docs: add comprehensive English README with architecture diagrams
+- **2026-10-29 21:32:33**: feat: add Total Drawdown Circuit Breaker with GlobalVariable sync
