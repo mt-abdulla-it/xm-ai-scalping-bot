@@ -175,3 +175,4 @@
 - **2026-10-28 20:03:51**: refactor: optimize EMA crossover lookback periods
 - **2026-10-29 09:53:34**: chore: update .gitignore and package configurations
 - **2026-10-29 13:37:50**: perf: optimize order execution latency and tick processing
+- **2026-10-29 18:23:26**: feat: add high impact news calendar blackout filter
