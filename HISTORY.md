@@ -179,3 +179,4 @@
 - **2026-10-29 19:37:32**: docs: add comprehensive English README with architecture diagrams
 - **2026-10-29 21:32:33**: feat: add Total Drawdown Circuit Breaker with GlobalVariable sync
 - **2026-10-30 14:38:07**: refactor: streamline trade state synchronization
+- **2026-10-30 15:49:49**: feat: add Universal Dollar Loss Shield for multi-currency positions
