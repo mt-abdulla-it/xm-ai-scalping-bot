@@ -181,3 +181,4 @@
 - **2026-10-30 14:38:07**: refactor: streamline trade state synchronization
 - **2026-10-30 15:49:49**: feat: add Universal Dollar Loss Shield for multi-currency positions
 - **2026-10-30 20:59:03**: perf: optimize chart dashboard comment redraw rate
+- **2026-10-30 21:22:11**: docs: add comprehensive English README with architecture diagrams
