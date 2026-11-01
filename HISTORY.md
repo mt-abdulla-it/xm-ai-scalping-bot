@@ -190,3 +190,4 @@
 - **2026-11-01 14:45:29**: feat: add auto-compounding lot calculation logic
 - **2026-11-01 18:45:53**: feat: implement train_onnx.py machine learning pipeline
 - **2026-11-01 21:32:03**: chore: clean up legacy scripts and optimize profile layouts
+- **2026-11-01 22:20:29**: test: validate Strategy Tester multi-currency performance
