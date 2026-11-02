@@ -191,3 +191,4 @@
 - **2026-11-01 18:45:53**: feat: implement train_onnx.py machine learning pipeline
 - **2026-11-01 21:32:03**: chore: clean up legacy scripts and optimize profile layouts
 - **2026-11-01 22:20:29**: test: validate Strategy Tester multi-currency performance
+- **2026-11-02 11:00:44**: feat: add Depth of Market (DOM) order flow filter
