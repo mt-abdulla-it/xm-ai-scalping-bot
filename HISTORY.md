@@ -193,3 +193,4 @@
 - **2026-11-01 22:20:29**: test: validate Strategy Tester multi-currency performance
 - **2026-11-02 11:00:44**: feat: add Depth of Market (DOM) order flow filter
 - **2026-11-02 15:33:48**: test: validate Strategy Tester multi-currency performance
+- **2026-11-02 20:40:54**: chore: clean up legacy scripts and optimize profile layouts
