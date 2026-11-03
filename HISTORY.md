@@ -198,3 +198,4 @@
 - **2026-11-03 16:31:02**: feat: add auto-compounding lot calculation logic
 - **2026-11-03 17:06:29**: feat: implement train_onnx.py machine learning pipeline
 - **2026-11-03 19:53:59**: feat: add Elder Triple Screen MTF trend filter
+- **2026-11-03 21:04:51**: feat: add Universal Dollar Loss Shield for multi-currency positions
