@@ -195,3 +195,4 @@
 - **2026-11-02 15:33:48**: test: validate Strategy Tester multi-currency performance
 - **2026-11-02 20:40:54**: chore: clean up legacy scripts and optimize profile layouts
 - **2026-11-03 09:27:11**: feat: add shadow trade telemetry logger for ML training
+- **2026-11-03 16:31:02**: feat: add auto-compounding lot calculation logic
