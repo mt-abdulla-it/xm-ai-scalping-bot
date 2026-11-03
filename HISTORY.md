@@ -197,3 +197,4 @@
 - **2026-11-03 09:27:11**: feat: add shadow trade telemetry logger for ML training
 - **2026-11-03 16:31:02**: feat: add auto-compounding lot calculation logic
 - **2026-11-03 17:06:29**: feat: implement train_onnx.py machine learning pipeline
+- **2026-11-03 19:53:59**: feat: add Elder Triple Screen MTF trend filter
