@@ -200,3 +200,4 @@
 - **2026-11-03 19:53:59**: feat: add Elder Triple Screen MTF trend filter
 - **2026-11-03 21:04:51**: feat: add Universal Dollar Loss Shield for multi-currency positions
 - **2026-11-03 22:34:57**: test: validate Strategy Tester multi-currency performance
+- **2026-11-04 10:55:48**: perf: upgrade engine to v16.20 Turbo-50 with 50 concurrent trades
