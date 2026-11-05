@@ -211,3 +211,4 @@
 - **2026-11-05 13:31:46**: feat: add US30, US100, and US500 cash index spread auto-detection
 - **2026-11-05 16:36:35**: fix: handle ECN broker zero StopsLevel spread calculation
 - **2026-11-05 20:45:42**: feat: add US30, US100, and US500 cash index spread auto-detection
+- **2026-11-05 22:51:16**: fix: handle ECN broker zero StopsLevel spread calculation
