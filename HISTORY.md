@@ -210,3 +210,4 @@
 - **2026-11-05 11:39:02**: chore: update .gitignore and package configurations
 - **2026-11-05 13:31:46**: feat: add US30, US100, and US500 cash index spread auto-detection
 - **2026-11-05 16:36:35**: fix: handle ECN broker zero StopsLevel spread calculation
+- **2026-11-05 20:45:42**: feat: add US30, US100, and US500 cash index spread auto-detection
