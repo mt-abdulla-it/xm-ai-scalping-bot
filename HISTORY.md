@@ -208,3 +208,4 @@
 - **2026-11-04 22:21:47**: feat: implement multi-symbol portfolio scanner for Forex majors
 - **2026-11-05 09:44:34**: feat: add Depth of Market (DOM) order flow filter
 - **2026-11-05 11:39:02**: chore: update .gitignore and package configurations
+- **2026-11-05 13:31:46**: feat: add US30, US100, and US500 cash index spread auto-detection
