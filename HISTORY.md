@@ -216,3 +216,4 @@
 - **2026-11-06 13:06:56**: feat: add high impact news calendar blackout filter
 - **2026-11-06 14:24:10**: feat: implement multi-symbol portfolio scanner for Forex majors
 - **2026-11-06 15:48:53**: docs: add MIT open-source license
+- **2026-11-06 16:36:44**: perf: upgrade engine to v16.20 Turbo-50 with 50 concurrent trades
