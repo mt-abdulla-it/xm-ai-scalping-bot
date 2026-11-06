@@ -213,3 +213,4 @@
 - **2026-11-05 20:45:42**: feat: add US30, US100, and US500 cash index spread auto-detection
 - **2026-11-05 22:51:16**: fix: handle ECN broker zero StopsLevel spread calculation
 - **2026-11-06 12:35:02**: perf: upgrade engine to v16.20 Turbo-50 with 50 concurrent trades
+- **2026-11-06 13:06:56**: feat: add high impact news calendar blackout filter
