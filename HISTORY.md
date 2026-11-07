@@ -219,3 +219,4 @@
 - **2026-11-06 16:36:44**: perf: upgrade engine to v16.20 Turbo-50 with 50 concurrent trades
 - **2026-11-07 10:51:47**: feat: initialize core trading framework and telemetry
 - **2026-11-07 12:02:47**: perf: optimize order execution latency and tick processing
+- **2026-11-07 13:09:23**: feat: add auto-compounding lot calculation logic
