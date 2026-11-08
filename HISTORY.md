@@ -221,3 +221,4 @@
 - **2026-11-07 12:02:47**: perf: optimize order execution latency and tick processing
 - **2026-11-07 13:09:23**: feat: add auto-compounding lot calculation logic
 - **2026-11-07 18:49:52**: refactor: update Kelly criterion equations and safety caps
+- **2026-11-08 10:10:50**: feat: add Elder Triple Screen MTF trend filter
