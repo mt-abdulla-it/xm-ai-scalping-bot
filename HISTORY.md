@@ -224,3 +224,4 @@
 - **2026-11-08 10:10:50**: feat: add Elder Triple Screen MTF trend filter
 - **2026-11-08 12:34:40**: feat: implement multi-symbol portfolio scanner for Forex majors
 - **2026-11-08 17:00:52**: feat: add Depth of Market (DOM) order flow filter
+- **2026-11-08 18:10:45**: refactor: improve JPY exposure guard basket management
