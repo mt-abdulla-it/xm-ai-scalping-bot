@@ -227,3 +227,4 @@
 - **2026-11-08 18:10:45**: refactor: improve JPY exposure guard basket management
 - **2026-11-09 13:29:31**: feat: add US30, US100, and US500 cash index spread auto-detection
 - **2026-11-09 14:59:54**: refactor: update Kelly criterion equations and safety caps
+- **2026-11-09 16:15:19**: feat: implement Kaufman Efficiency Ratio noise filter
