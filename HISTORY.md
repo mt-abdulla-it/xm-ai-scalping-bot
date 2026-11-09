@@ -229,3 +229,4 @@
 - **2026-11-09 14:59:54**: refactor: update Kelly criterion equations and safety caps
 - **2026-11-09 16:15:19**: feat: implement Kaufman Efficiency Ratio noise filter
 - **2026-11-09 17:50:08**: test: verify backtest data extraction on historical M1 ticks
+- **2026-11-09 22:54:27**: perf: switch charts to M1 timeframe for high-frequency execution
