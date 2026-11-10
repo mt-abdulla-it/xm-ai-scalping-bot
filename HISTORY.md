@@ -232,3 +232,4 @@
 - **2026-11-09 22:54:27**: perf: switch charts to M1 timeframe for high-frequency execution
 - **2026-11-10 09:59:55**: feat: expand portfolio to Top 20 premier global assets
 - **2026-11-10 12:59:47**: feat: add auto-compounding lot calculation logic
+- **2026-11-10 14:51:25**: feat: initialize core trading framework and telemetry
