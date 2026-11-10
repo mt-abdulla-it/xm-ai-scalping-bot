@@ -230,3 +230,4 @@
 - **2026-11-09 16:15:19**: feat: implement Kaufman Efficiency Ratio noise filter
 - **2026-11-09 17:50:08**: test: verify backtest data extraction on historical M1 ticks
 - **2026-11-09 22:54:27**: perf: switch charts to M1 timeframe for high-frequency execution
+- **2026-11-10 09:59:55**: feat: expand portfolio to Top 20 premier global assets
