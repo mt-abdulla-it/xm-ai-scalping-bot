@@ -234,3 +234,4 @@
 - **2026-11-10 12:59:47**: feat: add auto-compounding lot calculation logic
 - **2026-11-10 14:51:25**: feat: initialize core trading framework and telemetry
 - **2026-11-10 16:01:33**: perf: optimize order execution latency and tick processing
+- **2026-11-11 09:43:01**: feat: implement train_onnx.py machine learning pipeline
