@@ -236,3 +236,4 @@
 - **2026-11-10 16:01:33**: perf: optimize order execution latency and tick processing
 - **2026-11-11 09:43:01**: feat: implement train_onnx.py machine learning pipeline
 - **2026-11-11 11:32:18**: feat: implement train_onnx.py machine learning pipeline
+- **2026-11-11 13:23:36**: feat: implement Kaufman Efficiency Ratio noise filter
