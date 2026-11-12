@@ -16,3 +16,4 @@ updates:
     labels:
       - "dependencies"
       - "ci/cd"
+

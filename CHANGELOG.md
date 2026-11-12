@@ -54,3 +54,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exponential Moving Average (EMA 9 / 21) momentum crossover core engine.
 - Average True Range (ATR) dynamic trailing stop module.
 - Headless automated compilation script (`compile_bot.sh`).
+
