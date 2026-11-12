@@ -68,3 +68,4 @@ This occurs when Stop Loss or Take Profit is too close to the current price. The
 
 ### Circuit Breaker activated
 The Circuit Breaker halts all trading when equity drops below 50% of the initial recorded balance. To reset, press **F3** in MT5, locate `XMBOT_InitialDeposit_<MagicNumber>`, and delete or update the value.
+

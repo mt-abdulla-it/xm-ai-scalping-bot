@@ -61,3 +61,4 @@ The **XM AI Scalping Bot** development roadmap outlines planned features, resear
 - [ ] Sentiment analysis integration from financial news APIs
 - [ ] Cross-exchange arbitrage detection (MT5 vs. cTrader price feeds)
 - [ ] Tick-level microstructure analysis using Level 2 order book data
+
