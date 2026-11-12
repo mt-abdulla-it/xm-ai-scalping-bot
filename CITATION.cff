@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this software in quantitative trading, financial research, or algorithmic modeling, please cite it as below."
+title: "XM AI Scalping Bot: Institutional Multi-Asset Algorithmic Trading Engine with Embedded ONNX Machine Learning Inference"
+version: 16.2.0
+date-released: 2026-11-12
+authors:
+  - family-names: "Abdullah"
+    given-names: "M. T."
+    email: "mt.abdulla.it@gmail.com"
+    affiliation: "Independent Quantitative Developer"
+repository-code: "https://github.com/mt-abdulla-it/xm-ai-scalping-bot"
+license: "MIT"
+keywords:
+  - "algorithmic-trading"
+  - "metatrader-5"
+  - "mql5"
+  - "machine-learning"
+  - "onnx"
+  - "kaufman-efficiency-ratio"
+  - "quantitative-finance"
+  - "high-frequency-trading"
+  - "market-microstructure"
+abstract: >
+  An institutional-grade, multi-asset algorithmic trading system designed for MetaTrader 5.
+  It integrates Perry Kaufman's Trading Systems & Methods (Efficiency Ratio and KAMA dynamic
+  smoothing), Elder's Triple Screen framework, Depth of Market (DOM) order flow detection,
+  and real-time ONNX Neural Network inference across a 30-asset premier global portfolio.

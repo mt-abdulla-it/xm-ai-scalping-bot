@@ -1,0 +1,49 @@
+<svg width="850" height="420" viewBox="0 0 850 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="term-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117" />
+      <stop offset="100%" stop-color="#161b22" />
+    </linearGradient>
+    <filter id="term-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <rect width="850" height="420" rx="12" fill="url(#term-bg)" stroke="#30363d" stroke-width="1.5" filter="url(#term-shadow)" />
+
+  <!-- Terminal Header Bar -->
+  <rect width="850" height="38" rx="12" fill="#161b22" />
+  <rect y="26" width="850" height="12" fill="#161b22" />
+  <line x1="0" y1="38" x2="850" y2="38" stroke="#30363d" stroke-width="1" />
+
+  <!-- Window Control Dots -->
+  <circle cx="24" cy="19" r="6" fill="#ff5f56" />
+  <circle cx="44" cy="19" r="6" fill="#ffbd2e" />
+  <circle cx="64" cy="19" r="6" fill="#27c93f" />
+
+  <!-- Window Title -->
+  <text x="425" y="24" fill="#8b949e" font-family="-apple-system, monospace" font-size="12" font-weight="600" text-anchor="middle">abdullah@ubuntu: ~/Desktop/AI Bot — bash</text>
+
+  <!-- Terminal Content Lines -->
+  <g font-family="'Fira Code', 'JetBrains Mono', Consolas, monospace" font-size="13" xml:space="preserve">
+    <!-- Line 1: Command -->
+    <text x="28" y="75" fill="#58a6ff">$ <tspan fill="#f0883e">make</tspan> <tspan fill="#79c0ff">status</tspan></text>
+
+    <!-- Line 2: Output Header -->
+    <text x="28" y="105" fill="#8b949e">📊 Status &amp; Telemetry Check:</text>
+    <text x="28" y="130" fill="#3fb950">✅ MT5 Process: ACTIVE (PID: 188084 • Wine 64-bit)</text>
+    <text x="28" y="155" fill="#58a6ff">📈 ML Dataset Recorded Trades: <tspan fill="#f0883e" font-weight="700">921 / 1000</tspan> (92.1% Complete)</text>
+    <text x="28" y="180" fill="#a5d6ff">🌐 Portfolio Assets: 30 Premier Symbols Active on M1 Timeframe</text>
+
+    <!-- Line 6: Command 2 -->
+    <text x="28" y="225" fill="#58a6ff">$ <tspan fill="#f0883e">make</tspan> <tspan fill="#79c0ff">test</tspan></text>
+    <text x="28" y="255" fill="#8b949e">🧪 Running unit tests on ML feature pipelines...</text>
+    <text x="28" y="280" fill="#3fb950">test_feature_matrix_generation ... ok</text>
+    <text x="28" y="300" fill="#3fb950">test_kaufman_efficiency_ratio ... ok</text>
+    <text x="28" y="320" fill="#3fb950">test_target_classification_binary ... ok</text>
+    <text x="28" y="345" fill="#2ea043" font-weight="700">Ran 3 tests in 0.003s — OK ✅</text>
+
+    <!-- Prompt with blinking cursor -->
+    <text x="28" y="385" fill="#58a6ff">$ <tspan fill="#f0883e">make</tspan> <tspan fill="#79c0ff">run</tspan> <tspan fill="#58a6ff">_</tspan></text>
+  </g>
+</svg>

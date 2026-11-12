@@ -12,6 +12,7 @@
 [![Version](https://img.shields.io/badge/Version-v16.20%20TURBO--50-orange)](#)
 [![CI Verification](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/actions/workflows/verify.yml/badge.svg)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DOI](https://img.shields.io/badge/Cite%20Repository-CITATION.cff-blue.svg)](CITATION.cff)
 [![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](#-cloud-vps-deployment)
 [![GitHub last commit](https://img.shields.io/github/last-commit/mt-abdulla-it/xm-ai-scalping-bot)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/commits/main)
 [![GitHub repo size](https://img.shields.io/github/repo-size/mt-abdulla-it/xm-ai-scalping-bot)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot)
@@ -66,6 +67,25 @@ It integrates the mathematical principles of **Perry Kaufman's Trading Systems a
    └───────────────────────────┘    └───────────────────────────┘    └───────────────────────────┘
 ```
 
+### 🔄 Multi-Stage Execution Architecture
+
+```mermaid
+flowchart TD
+    Tick["Incoming Market Tick (M1)"] --> NoiseFilter{"Kaufman ER Filter (ER >= 0.20?)"}
+    NoiseFilter -- "No (Chop / Noise)" --> Skip["Discard Tick / Maintain Trailing Stop"]
+    NoiseFilter -- "Yes (Momentum Breakout)" --> SignalCheck{"KAMA & EMA 24-Bar Cross"}
+    SignalCheck -- "Bullish Setup" --> DOMCheckBuy{"DOM Order Flow (Buy Wall?)"}
+    SignalCheck -- "Bearish Setup" --> DOMCheckSell{"DOM Order Flow (Sell Wall?)"}
+    DOMCheckBuy -- "Clear Liquidity" --> ONNXFilter{"ONNX AI Brain (Win Prob >= 50%)"}
+    DOMCheckSell -- "Clear Liquidity" --> ONNXFilter
+    DOMCheckBuy -- "Institutional Wall" --> Skip
+    DOMCheckSell -- "Institutional Wall" --> Skip
+    ONNXFilter -- "Vetoed" --> LogCSV["Log Telemetry to XMBot_ML_Data.csv"]
+    ONNXFilter -- "Approved" --> RiskCheck{"Capital Shield & Anti-Martingale"}
+    RiskCheck -- "Verified" --> StealthExec["Execute Stealth Micro-Order (0.10 Lot)"]
+    StealthExec --> TrailMgmt["Dynamic ATR Trailing Stop (Breakeven + Hard -$30 Shield)"]
+```
+
 ---
 
 ## ✨ Key Features
@@ -99,7 +119,22 @@ It integrates the mathematical principles of **Perry Kaufman's Trading Systems a
 
 ---
 
+## 📈 Performance & Cumulative Equity Curve
+
+<p align="center">
+  <img src="assets/equity_curve.svg" alt="Cumulative Equity Curve" width="100%">
+</p>
+
+> Real-time forward paper testing and historical tick telemetry across 30 premier instruments. Sized at 0.10 standard lot with an uncompromising server-side -$30.00 Hard Loss Shield.
+
+
 ## 🚀 Quick Start & Automated Installation
+
+
+<p align="center">
+  <img src="assets/demo.svg" alt="Terminal Command Center Demo" width="90%">
+</p>
+
 
 ### Ubuntu Linux (1-Command Auto Setup)
 
