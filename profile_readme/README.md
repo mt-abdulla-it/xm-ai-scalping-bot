@@ -53,3 +53,4 @@
 - **Email**: [mt.abdulla.it@gmail.com](mailto:mt.abdulla.it@gmail.com)
 - **GitHub**: [@mt-abdulla-it](https://github.com/mt-abdulla-it)
 - **Primary Repository**: [xm-ai-scalping-bot](https://github.com/mt-abdulla-it/xm-ai-scalping-bot)
+
