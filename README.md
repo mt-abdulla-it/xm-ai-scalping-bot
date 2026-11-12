@@ -17,6 +17,8 @@
 
 - [Overview](#-overview)
 - [Key Features](#-key-features)
+- [Quantitative Strategy & Mathematics](docs/STRATEGY.md)
+- [Backtesting & Optimization Guide](docs/BACKTESTING.md)
 - [System Architecture](#-system-architecture)
 - [Supported Asset Classes (Top 30 Premier Portfolio)](#-supported-asset-classes-top-30-premier-portfolio)
 - [Quick Start & Automated Installation](#-quick-start--automated-installation)
@@ -221,7 +223,11 @@ The script trains an ensemble classifier, exports the graph to `ai_brain.onnx`, 
 │   ├── workflows/verify.yml   # Automated CI syntax & integrity validation workflow
 │   ├── ISSUE_TEMPLATE/        # Structured templates for bug reports & feature requests
 │   └── PULL_REQUEST_TEMPLATE  # Standardized community PR submission template
+├── docs/
+│   ├── STRATEGY.md            # Quantitative mathematical specification (Kaufman ER, KAMA)
+│   └── BACKTESTING.md         # 99.9% real tick backtest & XML optimization guide
 ├── XM_AI_ScalpingBot.mq5      # Core MetaTrader 5 Expert Advisor source code
+├── Makefile                   # 1-command developer automation (install, build, train, run)
 ├── compile_bot.sh             # MetaEditor compilation & automated deployment script
 ├── auto_start_mt5.sh          # System daemon startup script for Linux boot
 ├── install_mt5.sh             # Turnkey Wine & MT5 Ubuntu installer
@@ -230,6 +236,8 @@ The script trains an ensemble classifier, exports the graph to `ai_brain.onnx`, 
 ├── train_ml_model.py          # Offline feature engineering & model validation
 ├── requirements.txt           # Python dependencies for ML trainer
 ├── .env.example               # Secure environment variables configuration template
+├── .gitattributes             # Cross-platform CRLF/LF line ending standardization
+├── .editorconfig              # Uniform code formatting standards across IDEs
 ├── CONTRIBUTING.md            # Community contribution guidelines & workflow
 ├── CODE_OF_CONDUCT.md         # Contributor Covenant Code of Conduct
 ├── SECURITY.md                # Vulnerability disclosure & capital safety policy

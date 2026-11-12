@@ -37,3 +37,4 @@ If applicable, paste the relevant lines from the MT5 `Experts` or `Journal` tab,
 
 **Additional Context**
 Add any other context about the problem here (e.g. market session, spread spikes, high impact news events).
+

@@ -42,3 +42,4 @@ jobs:
       run: |
         test -f XM_AI_ScalpingBot.mq5
         echo "✅ XM_AI_ScalpingBot.mq5 verified present and structurally intact."
+

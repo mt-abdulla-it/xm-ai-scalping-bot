@@ -20,3 +20,4 @@ Explain how this feature improves win rate, reduces maximum drawdown, or enhance
 
 **Additional Context**
 Add any other context, indicator formulas, research papers (e.g., Kaufman, Elder, De Prado), or screenshots about the feature request here.
+

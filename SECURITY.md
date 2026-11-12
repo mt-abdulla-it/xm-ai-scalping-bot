@@ -40,3 +40,4 @@ This software executes trades autonomously via MetaTrader 5. Users are strictly 
 - Test extensively on a **Demo Account** before considering live execution.
 - Maintain adequate account margin and enforce strict Risk Guards (`InpMaxDollarLossPerTrade`, `InpInitialBalanceCap`).
 - Keep all private broker passwords, API keys, and server credentials secret.
+

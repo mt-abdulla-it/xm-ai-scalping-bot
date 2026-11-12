@@ -1,0 +1,25 @@
+# Set default behavior to automatically handle line endings
+* text=auto
+
+# MQL5 source and header files require Windows CRLF line endings for MetaEditor
+*.mq5 text eol=crlf
+*.mqh text eol=crlf
+
+# Shell scripts and Python files require Unix LF line endings
+*.sh text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.editorconfig text eol=lf
+Makefile text eol=lf
+
+# Binary files - preserve exact byte stream
+*.ex5 binary
+*.onnx binary
+*.png binary
+*.jpg binary
+*.ico binary

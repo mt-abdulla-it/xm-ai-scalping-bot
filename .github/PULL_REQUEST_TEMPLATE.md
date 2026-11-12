@@ -35,3 +35,4 @@ Please describe the tests that you ran to verify your changes:
 - [ ] I have commented my code, particularly in hard-to-understand quantitative areas.
 - [ ] My changes do not weaken or bypass capital preservation safety caps (`InpMaxDollarLossPerTrade`, `InpInitialBalanceCap`).
 - [ ] All new and existing tests passed.
+

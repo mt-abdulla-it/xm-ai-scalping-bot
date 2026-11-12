@@ -50,3 +50,4 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 
 ### 5. Submit a Pull Request
 Push your branch to your fork and submit a Pull Request against the `main` branch. Ensure the description explains your changes and includes backtest or paper-trading results where applicable.
+
