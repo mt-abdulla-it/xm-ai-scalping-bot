@@ -2,7 +2,7 @@
 # XM AI Scalping Bot - Developer & Automation Makefile
 # ==============================================================================
 
-.PHONY: all help install compile build train test run stop restart status clean
+.PHONY: all help install compile build train test dashboard docker-build docker-up docker-down run stop restart status clean
 
 SHELL := /bin/bash
 PYTHON ?= python3
@@ -12,15 +12,19 @@ help:
 	@echo "🤖 XM AI Scalping Bot — Developer Command Center"
 	@echo "======================================================================"
 	@echo "Available commands:"
-	@echo "  make install   - Install Wine, MetaTrader 5, and Python dependencies"
-	@echo "  make build     - Compile XM_AI_ScalpingBot.mq5 via headless MetaEditor"
-	@echo "  make test      - Execute Python unit tests on ML feature pipelines"
-	@echo "  make train     - Train ONNX Machine Learning model on collected trades"
-	@echo "  make run       - Launch MetaTrader 5 in Turbo scalping mode"
-	@echo "  make stop      - Gracefully terminate running MetaTrader 5 process"
-	@echo "  make restart   - Restart MetaTrader 5 instance"
-	@echo "  make status    - Display live trade count and process health"
-	@echo "  make clean     - Clean temporary log and build artifacts"
+	@echo "  make install      - Install Wine, MetaTrader 5, and Python dependencies"
+	@echo "  make build        - Compile XM_AI_ScalpingBot.mq5 via headless MetaEditor"
+	@echo "  make test         - Execute Python unit tests on ML feature pipelines"
+	@echo "  make train        - Train ONNX Machine Learning model on collected trades"
+	@echo "  make dashboard    - Generate visual HTML analytics report from trade logs"
+	@echo "  make docker-build - Build headless Docker container image"
+	@echo "  make docker-up    - Run containerized scalper stack with docker-compose"
+	@echo "  make docker-down  - Stop containerized scalper stack"
+	@echo "  make run          - Launch MetaTrader 5 in Turbo scalping mode"
+	@echo "  make stop         - Gracefully terminate running MetaTrader 5 process"
+	@echo "  make restart      - Restart MetaTrader 5 instance"
+	@echo "  make status       - Display live trade count and process health"
+	@echo "  make clean        - Clean temporary log and build artifacts"
 	@echo "======================================================================"
 
 install:
@@ -37,6 +41,22 @@ build:
 test:
 	@echo "🧪 Running unit tests on ML pipelines..."
 	@$(PYTHON) -m unittest discover tests
+
+dashboard:
+	@echo "📊 Generating HTML Performance Dashboard..."
+	@$(PYTHON) export_dashboard.py
+
+docker-build:
+	@echo "🐳 Building Docker image..."
+	@docker build -t xm-ai-scalping-bot .
+
+docker-up:
+	@echo "🐳 Starting containerized bot..."
+	@docker compose up -d
+
+docker-down:
+	@echo "🐳 Stopping containerized bot..."
+	@docker compose down
 
 train:
 	@echo "🧠 Training ONNX Machine Learning decision model..."

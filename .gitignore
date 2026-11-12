@@ -5,7 +5,9 @@ groq_key.txt
 # Data Files & Logs
 *.csv
 *.json
+!**/.vscode/*.json
 *.log
+dashboard.html
 
 # Virtual Environment & Agents
 venv/

@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "ms-python.flake8",
+    "timonwong.shellcheck",
+    "mql.mql5",
+    "tamasfe.even-better-toml",
+    "eamodio.gitlens",
+    "redhat.vscode-yaml"
+  ]
+}

@@ -226,12 +226,21 @@ The script trains an ensemble classifier, exports the graph to `ai_brain.onnx`, 
 ├── .github/
 │   ├── workflows/verify.yml   # Automated CI syntax & integrity validation workflow
 │   ├── ISSUE_TEMPLATE/        # Structured templates for bug reports & feature requests
-│   └── PULL_REQUEST_TEMPLATE  # Standardized community PR submission template
+│   ├── PULL_REQUEST_TEMPLATE  # Standardized community PR submission template
+│   └── dependabot.yml         # Automated dependency vulnerability scanning
+├── .vscode/                   # Recommended editor extensions & uniform settings
+├── assets/
+│   └── banner.svg             # High-resolution vector architecture banner
 ├── docs/
 │   ├── STRATEGY.md            # Quantitative mathematical specification (Kaufman ER, KAMA)
 │   └── BACKTESTING.md         # 99.9% real tick backtest & XML optimization guide
+├── tests/
+│   └── test_onnx_pipeline.py  # Unit test suite for feature engineering & inference
 ├── XM_AI_ScalpingBot.mq5      # Core MetaTrader 5 Expert Advisor source code
-├── Makefile                   # 1-command developer automation (install, build, train, run)
+├── Dockerfile                 # Containerized Ubuntu 22.04 + Wine 64 + MT5 headless image
+├── docker-compose.yml         # 1-command microservice orchestration stack
+├── Makefile                   # Developer command center (install, build, train, dashboard)
+├── export_dashboard.py        # Visual analytics HTML performance report generator
 ├── compile_bot.sh             # MetaEditor compilation & automated deployment script
 ├── auto_start_mt5.sh          # System daemon startup script for Linux boot
 ├── install_mt5.sh             # Turnkey Wine & MT5 Ubuntu installer
@@ -242,6 +251,8 @@ The script trains an ensemble classifier, exports the graph to `ai_brain.onnx`, 
 ├── .env.example               # Secure environment variables configuration template
 ├── .gitattributes             # Cross-platform CRLF/LF line ending standardization
 ├── .editorconfig              # Uniform code formatting standards across IDEs
+├── .pre-commit-config.yaml    # Automated secret & code quality git pre-commit hooks
+├── CHANGELOG.md               # Keep-a-Changelog semver milestone record
 ├── CONTRIBUTING.md            # Community contribution guidelines & workflow
 ├── CODE_OF_CONDUCT.md         # Contributor Covenant Code of Conduct
 ├── SECURITY.md                # Vulnerability disclosure & capital safety policy

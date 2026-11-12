@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  xm-scalper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: xm-ai-scalping-bot
+    restart: unless-stopped
+    environment:
+      - DISPLAY=:99
+      - WINEDEBUG=-all
+    volumes:
+      - mt5_wine_data:/root/.wine
+      - ./data:/app/data
+    ports:
+      - "5900:5900" # VNC Remote Monitor
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4096M
+
+volumes:
+  mt5_wine_data:
