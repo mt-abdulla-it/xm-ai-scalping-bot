@@ -8,6 +8,7 @@ groq_key.txt
 !**/.vscode/*.json
 *.log
 dashboard.html
+dist/
 
 # Virtual Environment & Agents
 venv/

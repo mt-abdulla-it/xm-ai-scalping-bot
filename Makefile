@@ -2,7 +2,7 @@
 # XM AI Scalping Bot - Developer & Automation Makefile
 # ==============================================================================
 
-.PHONY: all help install compile build train test dashboard docker-build docker-up docker-down run stop restart status clean
+.PHONY: all help install compile build train test dashboard docker-build docker-up docker-down package run stop restart status clean
 
 SHELL := /bin/bash
 PYTHON ?= python3
@@ -17,6 +17,7 @@ help:
 	@echo "  make test         - Execute Python unit tests on ML feature pipelines"
 	@echo "  make train        - Train ONNX Machine Learning model on collected trades"
 	@echo "  make dashboard    - Generate visual HTML analytics report from trade logs"
+	@echo "  make package      - Build release zip bundle and SHA256 checksums"
 	@echo "  make docker-build - Build headless Docker container image"
 	@echo "  make docker-up    - Run containerized scalper stack with docker-compose"
 	@echo "  make docker-down  - Stop containerized scalper stack"
@@ -37,6 +38,10 @@ compile: build
 build:
 	@echo "⚙️ Compiling XM_AI_ScalpingBot.mq5..."
 	@bash ./compile_bot.sh
+
+package:
+	@echo "📦 Generating release distribution package..."
+	@bash ./package_release.sh
 
 test:
 	@echo "🧪 Running unit tests on ML pipelines..."
