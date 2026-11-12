@@ -52,7 +52,7 @@ restart: stop run
 
 status:
 	@echo "📊 Status & Telemetry Check:"
-	@pgrep -a "terminal64.exe" && echo "✅ MT5 Process: ACTIVE" || echo "⚠️ MT5 Process: INACTIVE"
+	@pgrep -f "terminal64.exe" > /dev/null && echo "✅ MT5 Process: ACTIVE (PID: $$(pgrep -f 'terminal64.exe' | head -n 1))" || echo "⚠️ MT5 Process: INACTIVE"
 	@CSV_FILE="$$HOME/.wine/drive_c/Program Files/XM Global MT5/MQL5/Files/XMBot_ML_Data.csv"; \
 	if [ -f "$$CSV_FILE" ]; then \
 		COUNT=$$(wc -l < "$$CSV_FILE"); \
