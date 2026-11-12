@@ -71,3 +71,4 @@ Once backtest criteria are satisfied:
 1. Deploy to a 24/7 Linux VPS or dedicated desktop instance.
 2. Run on live XM Demo for a minimum of **2 weeks (1000+ executed trades)**.
 3. Validate that real-time slippage and spread logs match Strategy Tester telemetry before live capital deployment.
+

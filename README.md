@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.svg" alt="XM AI Scalping Bot Banner" width="100%">
+</p>
+
 # 🤖 XM AI Scalping Bot — Multi-Asset Algorithmic Trading Engine
 
 [![MetaTrader 5](https://img.shields.io/badge/Platform-MetaTrader%205-0078D7?logo=metatrader&logoColor=white)](https://www.metatrader5.com)

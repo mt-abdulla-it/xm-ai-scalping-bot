@@ -2,7 +2,7 @@
 # XM AI Scalping Bot - Developer & Automation Makefile
 # ==============================================================================
 
-.PHONY: all help install compile build train run stop restart status clean
+.PHONY: all help install compile build train test run stop restart status clean
 
 SHELL := /bin/bash
 PYTHON ?= python3
@@ -14,6 +14,7 @@ help:
 	@echo "Available commands:"
 	@echo "  make install   - Install Wine, MetaTrader 5, and Python dependencies"
 	@echo "  make build     - Compile XM_AI_ScalpingBot.mq5 via headless MetaEditor"
+	@echo "  make test      - Execute Python unit tests on ML feature pipelines"
 	@echo "  make train     - Train ONNX Machine Learning model on collected trades"
 	@echo "  make run       - Launch MetaTrader 5 in Turbo scalping mode"
 	@echo "  make stop      - Gracefully terminate running MetaTrader 5 process"
@@ -32,6 +33,10 @@ compile: build
 build:
 	@echo "⚙️ Compiling XM_AI_ScalpingBot.mq5..."
 	@bash ./compile_bot.sh
+
+test:
+	@echo "🧪 Running unit tests on ML pipelines..."
+	@$(PYTHON) -m unittest discover tests
 
 train:
 	@echo "🧠 Training ONNX Machine Learning decision model..."

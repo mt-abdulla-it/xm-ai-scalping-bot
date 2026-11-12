@@ -91,3 +91,4 @@ When `InpUseONNX_AI = true`, every potential technical setup must be validated b
 ```
 
 If predicted win probability is below `InpONNX_MinProb`, the signal is rejected, logging telemetry to `XMBot_ML_Data.csv` for continuous retraining.
+
