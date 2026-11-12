@@ -56,3 +56,4 @@ EXPOSE 5900
 
 # Entrypoint script: Launch virtual display and MT5
 CMD ["bash", "-c", "Xvfb :99 -screen 0 1920x1080x24 & sleep 2 && make run && tail -f /dev/null"]
+
