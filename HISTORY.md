@@ -239,3 +239,4 @@
 - **2026-11-11 13:23:36**: feat: implement Kaufman Efficiency Ratio noise filter
 - **2026-11-11 14:19:23**: test: verify backtest data extraction on historical M1 ticks
 - **2026-11-11 17:08:12**: feat: implement dynamic ATR-based trailing stop
+- **2026-11-12 17:22:20**: chore: clean up legacy scripts and optimize profile layouts
