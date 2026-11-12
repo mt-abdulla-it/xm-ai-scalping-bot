@@ -25,3 +25,4 @@ abstract: >
   It integrates Perry Kaufman's Trading Systems & Methods (Efficiency Ratio and KAMA dynamic
   smoothing), Elder's Triple Screen framework, Depth of Market (DOM) order flow detection,
   and real-time ONNX Neural Network inference across a 30-asset premier global portfolio.
+
