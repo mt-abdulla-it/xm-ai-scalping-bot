@@ -7,6 +7,6 @@ skl2onnx>=1.15.0
 onnxruntime>=1.16.0
 
 # Optional Visualization & Utilities
-matplotlib>=3.7.0
+matplotlib>=3.11.2
 python-dotenv>=1.0.0
 
