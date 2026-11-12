@@ -12,6 +12,9 @@
 [![Version](https://img.shields.io/badge/Version-v16.20%20TURBO--50-orange)](#)
 [![CI Verification](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/actions/workflows/verify.yml/badge.svg)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](#-cloud-vps-deployment)
+[![GitHub last commit](https://img.shields.io/github/last-commit/mt-abdulla-it/xm-ai-scalping-bot)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/commits/main)
+[![GitHub repo size](https://img.shields.io/github/repo-size/mt-abdulla-it/xm-ai-scalping-bot)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot)
 
 > An enterprise-grade, high-frequency scalping Expert Advisor (EA) combining quantitative technical analysis with machine learning inference. Built for **MetaTrader 5** with automated deployment on **Ubuntu Linux (Wine)** and **Windows**.
 
@@ -23,6 +26,8 @@
 - [Key Features](#-key-features)
 - [Quantitative Strategy & Mathematics](docs/STRATEGY.md)
 - [Backtesting & Optimization Guide](docs/BACKTESTING.md)
+- [Cloud VPS Deployment Guide](docs/DEPLOYMENT.md)
+- [Frequently Asked Questions (FAQ)](docs/FAQ.md)
 - [System Architecture](#-system-architecture)
 - [Supported Asset Classes (Top 30 Premier Portfolio)](#-supported-asset-classes-top-30-premier-portfolio)
 - [Quick Start & Automated Installation](#-quick-start--automated-installation)
@@ -282,3 +287,26 @@ The script trains an ensemble classifier, exports the graph to `ai_brain.onnx`, 
 **Risk Warning:** Financial trading involves substantial risk of loss and is not suitable for every investor. Leveraged derivatives can result in losses exceeding your initial deposit. The software provided herein is for educational and research purposes.
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<p align="center">
+  <b>📖 Documentation</b><br>
+  <a href="docs/STRATEGY.md">Strategy & Math</a> •
+  <a href="docs/BACKTESTING.md">Backtesting Guide</a> •
+  <a href="docs/DEPLOYMENT.md">VPS Deployment</a> •
+  <a href="docs/FAQ.md">FAQ</a> •
+  <a href="CHANGELOG.md">Changelog</a> •
+  <a href="ROADMAP.md">Roadmap</a>
+</p>
+
+<p align="center">
+  <b>🤝 Community</b><br>
+  <a href="CONTRIBUTING.md">Contributing</a> •
+  <a href="CODE_OF_CONDUCT.md">Code of Conduct</a> •
+  <a href="SECURITY.md">Security Policy</a>
+</p>
+
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/mt-abdulla-it">Abdullah</a>
+</p>
