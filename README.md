@@ -6,6 +6,7 @@
 [![ONNX Runtime](https://img.shields.io/badge/Inference-ONNX%20Runtime-005CED?logo=onnx&logoColor=white)](https://onnxruntime.ai)
 [![Architecture](https://img.shields.io/badge/Architecture-Ubuntu%20Linux%20%7C%20Wine-E95420?logo=ubuntu&logoColor=white)](https://www.winehq.org)
 [![Version](https://img.shields.io/badge/Version-v16.20%20TURBO--50-orange)](#)
+[![CI Verification](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/actions/workflows/verify.yml/badge.svg)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > An enterprise-grade, high-frequency scalping Expert Advisor (EA) combining quantitative technical analysis with machine learning inference. Built for **MetaTrader 5** with automated deployment on **Ubuntu Linux (Wine)** and **Windows**.
@@ -216,6 +217,10 @@ The script trains an ensemble classifier, exports the graph to `ai_brain.onnx`, 
 ## 📁 Project Structure
 
 ```
+├── .github/
+│   ├── workflows/verify.yml   # Automated CI syntax & integrity validation workflow
+│   ├── ISSUE_TEMPLATE/        # Structured templates for bug reports & feature requests
+│   └── PULL_REQUEST_TEMPLATE  # Standardized community PR submission template
 ├── XM_AI_ScalpingBot.mq5      # Core MetaTrader 5 Expert Advisor source code
 ├── compile_bot.sh             # MetaEditor compilation & automated deployment script
 ├── auto_start_mt5.sh          # System daemon startup script for Linux boot
@@ -223,6 +228,12 @@ The script trains an ensemble classifier, exports the graph to `ai_brain.onnx`, 
 ├── fix_xm_server.sh           # Broker access point & server network utility
 ├── train_onnx.py              # Machine learning training pipeline & ONNX exporter
 ├── train_ml_model.py          # Offline feature engineering & model validation
+├── requirements.txt           # Python dependencies for ML trainer
+├── .env.example               # Secure environment variables configuration template
+├── CONTRIBUTING.md            # Community contribution guidelines & workflow
+├── CODE_OF_CONDUCT.md         # Contributor Covenant Code of Conduct
+├── SECURITY.md                # Vulnerability disclosure & capital safety policy
+├── LICENSE                    # Open-source MIT License
 ├── README.md                  # System documentation & operating guide
 └── .gitignore                 # Exclusion rules for credentials, data, and cache
 ```
