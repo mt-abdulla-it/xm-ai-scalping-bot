@@ -7,8 +7,10 @@ groq_key.txt
 *.json
 *.log
 
-# Virtual Environment
+# Virtual Environment & Agents
 venv/
 .venv/
 __pycache__/
 *.pyc
+.agents/
+

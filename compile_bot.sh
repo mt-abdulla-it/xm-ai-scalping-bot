@@ -2,7 +2,7 @@
 
 echo "⚙️ Compiling XM AI Scalping Bot..."
 
-XM_DIR="/home/abdullah/.wine/drive_c/Program Files/XM Global MT5"
+XM_DIR="$HOME/.wine/drive_c/Program Files/XM Global MT5"
 XM_MQ5="$XM_DIR/MQL5/Experts/XM_AI_ScalpingBot.mq5"
 XM_EX5="$XM_DIR/MQL5/Experts/XM_AI_ScalpingBot.ex5"
 
@@ -14,7 +14,8 @@ fi
 export DISPLAY=:0
 
 # 1. Copy desktop source file to XM Global MT5 Experts folder
-cp -f "/home/abdullah/Desktop/AI Bot/XM_AI_ScalpingBot.mq5" "$XM_MQ5"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cp -f "$SCRIPT_DIR/XM_AI_ScalpingBot.mq5" "$XM_MQ5"
 
 # 2. Remove old EX5 to guarantee fresh build
 rm -f "$XM_EX5"
@@ -31,7 +32,7 @@ if [ -f "$XM_EX5" ]; then
     find ~/.wine/drive_c -type d -iname "Experts" 2>/dev/null | grep -i "mql5" | while read -r EXP_DIR; do
         if [ "$EXP_DIR" != "$XM_DIR/MQL5/Experts" ]; then
             cp -f "$XM_EX5" "$EXP_DIR/XM_AI_ScalpingBot.ex5"
-            cp -f "/home/abdullah/Desktop/AI Bot/XM_AI_ScalpingBot.mq5" "$EXP_DIR/XM_AI_ScalpingBot.mq5"
+            cp -f "$SCRIPT_DIR/XM_AI_ScalpingBot.mq5" "$EXP_DIR/XM_AI_ScalpingBot.mq5"
             echo "➡️ Copied v16.20 EX5 to: $EXP_DIR/XM_AI_ScalpingBot.ex5"
         fi
     done
