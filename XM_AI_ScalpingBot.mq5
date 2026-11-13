@@ -88,7 +88,7 @@ input double   InpRSI_SellMin      = 20.0;    // 📉 (Relaxed) RSI minimum for 
 //--- ONNX AI Machine Learning
 input group "=== 🧠 ONNX AI Machine Learning ==="
 input bool     InpUseONNX_AI       = true;    // 🧠 ONNX AI Win-Probability Filter (ACTIVATED!)
-input double   InpONNX_MinProb     = 0.50;    // Minimum Win Probability (50%)
+input double   InpONNX_MinProb     = 0.60;    // 🛡️ High-Confidence Filter: 60%+ Win Probability Required (Eliminates low-edge losses)
 
 //--- SMC (Smart Money Concepts) Settings
 input group "=== 🏛️ Smart Money Concepts (SMC) ==="
@@ -1367,7 +1367,21 @@ double CalculateLotSize(double slDistancePrice, ENUM_ORDER_TYPE orderType = ORDE
    //--- Clamp to limits
    lotSize = MathMax(lotSize, minLot);
    lotSize = MathMin(lotSize, maxLot);
-      //--- TIERED HARD SAFETY CAP FOR SMALL ACCOUNTS (Rule 6)
+
+   //--- 🛡️ VOLATILITY-SPECIFIC HARD LOT CAP (Zero Huge Losses on Gold/Crypto)
+   string currentSym = _Symbol;
+   StringToUpper(currentSym);
+   if(StringFind(currentSym, "GOLD") >= 0 || StringFind(currentSym, "XAU") >= 0 ||
+      StringFind(currentSym, "BTC") >= 0  || StringFind(currentSym, "ETH") >= 0)
+   {
+      lotSize = MathMin(lotSize, 0.02); // Max 0.02 lot on Gold/Crypto prevents -$22 swings!
+   }
+   else if(StringFind(currentSym, "US100") >= 0 || StringFind(currentSym, "US500") >= 0 || StringFind(currentSym, "US30") >= 0)
+   {
+      lotSize = MathMin(lotSize, 0.05); // Max 0.05 lot on Stock Indices
+   }
+
+   //--- TIERED HARD SAFETY CAP FOR SMALL ACCOUNTS (Rule 6)
     if(balance < 200.0)
     {
        lotSize = MathMin(lotSize, 0.03); // 🛡️ Rule 6: max 0.03 lot on < $200
@@ -1487,9 +1501,8 @@ void ManageOpenPositions()
       {
          double profitDistance = currentPrice - openPrice;
          
-         // 1. Dynamic Breakeven (At 1.0 ATR distance) -> Zero Risk Lock
-         // Removed '$1.00 choke' so trades have breathing room to reach full profit targets
-         if(profitDistance >= atr * 1.0 && currentSL < openPrice)
+         // 1. Dynamic Breakeven (Fast Zero-Risk Lock at 0.6 ATR or +$1.50 Profit)
+         if((profitDistance >= atr * 0.6 || netProfit >= 1.50) && currentSL < openPrice)
          {
             double beSL = NormalizeDouble(openPrice + m_symbol.Spread() * _Point, _Digits);
             if(InpUseStealthMode)
@@ -1544,9 +1557,8 @@ void ManageOpenPositions()
       {
          double profitDistance = openPrice - currentPrice;
          
-         // 1. Dynamic Breakeven (At 1.0 ATR distance) -> Zero Risk Lock
-         // Removed '$1.00 choke' so trades have breathing room to reach full profit targets
-         if(profitDistance >= atr * 1.0 && (currentSL > openPrice || currentSL == 0))
+         // 1. Dynamic Breakeven (Fast Zero-Risk Lock at 0.6 ATR or +$1.50 Profit)
+         if((profitDistance >= atr * 0.6 || netProfit >= 1.50) && (currentSL > openPrice || currentSL == 0))
          {
             double beSL = NormalizeDouble(openPrice - m_symbol.Spread() * _Point, _Digits);
             if(InpUseStealthMode)
