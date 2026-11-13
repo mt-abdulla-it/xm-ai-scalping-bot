@@ -2,7 +2,7 @@
 # XM AI Scalping Bot - Developer & Automation Makefile
 # ==============================================================================
 
-.PHONY: all help install compile build train test dashboard docker-build docker-up docker-down package run stop restart status clean
+.PHONY: all help install compile build train train-boost auto-retrain retrain-status test dashboard docker-build docker-up docker-down package run stop restart status clean
 
 SHELL := /bin/bash
 PYTHON ?= python3
@@ -66,6 +66,16 @@ docker-down:
 train:
 	@echo "🧠 Training ONNX Machine Learning decision model..."
 	@$(PYTHON) train_onnx.py
+
+train-boost: train
+
+auto-retrain:
+	@echo "🔄 Starting Auto-Retraining Daemon (Monitors every 50 new trades)..."
+	@$(PYTHON) auto_retrain.py --daemon
+
+retrain-status:
+	@echo "📊 Auto-Retraining Telemetry Status:"
+	@$(PYTHON) auto_retrain.py --status
 
 run:
 	@echo "🚀 Launching XM Global MT5 in background..."

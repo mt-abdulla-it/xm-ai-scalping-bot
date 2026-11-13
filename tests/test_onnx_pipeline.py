@@ -1,11 +1,12 @@
 import unittest
 import numpy as np
 import pandas as pd
+from train_onnx import extract_features, FEATURE_COLS
 
 class TestONNXPipeline(unittest.TestCase):
     """
     Unit test suite validating machine learning feature extraction,
-    synthetic dataset generation, and probability calibration.
+    synthetic dataset generation, 9-feature quant engine, and probability calibration.
     """
 
     def setUp(self):
@@ -16,6 +17,8 @@ class TestONNXPipeline(unittest.TestCase):
             'Ticket': np.arange(1000, 1000 + n_samples),
             'Symbol': ['EURUSD'] * 25 + ['GBPUSD'] * 25,
             'Type': np.random.choice(['BUY', 'SELL'], size=n_samples),
+            'OpenTime': ['2026.11.13 14:30'] * n_samples,
+            'OpenPrice': [1.3200] * n_samples,
             'RSI': np.random.uniform(20.0, 80.0, size=n_samples),
             'Spread': np.random.uniform(5.0, 30.0, size=n_samples),
             'MACD': np.random.uniform(-0.0020, 0.0020, size=n_samples),
@@ -23,18 +26,18 @@ class TestONNXPipeline(unittest.TestCase):
             'Profit': np.random.uniform(-30.0, 45.0, size=n_samples)
         })
 
-    def test_feature_matrix_generation(self):
-        """Verify feature transformation and non-empty matrix generation."""
-        feature_cols = ['RSI', 'Spread', 'MACD', 'ATR']
-        self.df['Type_Code'] = self.df['Type'].map({'BUY': 1, 'SELL': -1}).fillna(0)
-        X = self.df[feature_cols + ['Type_Code']].values
+    def test_9_feature_extraction(self):
+        """Verify 9-feature quant transformation and non-empty matrix generation."""
+        df_feats = extract_features(self.df)
+        X = df_feats[FEATURE_COLS].values
         self.assertEqual(X.shape[0], 50)
-        self.assertEqual(X.shape[1], 5)
+        self.assertEqual(X.shape[1], 9)
         self.assertFalse(np.isnan(X).any(), "Feature matrix contains NaN values")
 
     def test_target_classification_binary(self):
         """Verify binary label generation based on trade profitability (> $0.00)."""
-        y = (self.df['Profit'] > 0).astype(int).values
+        df_feats = extract_features(self.df)
+        y = df_feats['Target'].values
         self.assertTrue(set(np.unique(y)).issubset({0, 1}))
         self.assertGreater(len(y), 0)
 
@@ -47,6 +50,19 @@ class TestONNXPipeline(unittest.TestCase):
         self.assertGreaterEqual(er, 0.0)
         self.assertLessEqual(er, 1.0)
 
+    def test_onnx_model_inference_compatibility(self):
+        """Verify exported ONNX model loads and runs inference on 9-feature vectors."""
+        try:
+            import onnxruntime as rt
+            sess = rt.InferenceSession("ai_brain.onnx", providers=['CPUExecutionProvider'])
+            input_name = sess.get_inputs()[0].name
+            # Test sample vector
+            dummy_input = np.array([[55.0, 15.0, 0.0001, 0.0012, 1.0, 14.0, 5.0, 12500.0, 4.0]], dtype=np.float32)
+            preds = sess.run(None, {input_name: dummy_input})
+            self.assertEqual(len(preds), 2)  # prediction + probabilities
+            self.assertEqual(preds[1].shape[1], 2)  # [prob_loss, prob_win]
+        except ImportError:
+            pass # onnxruntime not installed in this environment
+
 if __name__ == '__main__':
     unittest.main()
-

@@ -318,7 +318,7 @@ int OnInit()
       }
       else
       {
-         long input_shape[] = {1, 5};
+         long input_shape[] = {1, 9};
          if(!OnnxSetInputShape(h_onnx, 0, input_shape)) Print("❌ ONNX Input Shape Error");
          
          long output_shape1[] = {1};
@@ -327,7 +327,7 @@ int OnInit()
          long output_shape2[] = {1, 2};
          if(!OnnxSetOutputShape(h_onnx, 1, output_shape2)) Print("❌ ONNX Output Shape 2 Error");
          
-         Print("🧠 ONNX AI Brain Loaded Successfully!");
+         Print("🧠 ONNX AI Brain Loaded Successfully (Enhanced 9-Feature Quant Model)!");
       }
    }
    
@@ -2138,18 +2138,25 @@ bool CheckCorrelation(int type) // 1=BUY, -1=SELL
 }
 
 //+------------------------------------------------------------------+
-//| GET ONNX AI PREDICTION                                           |
+//| GET ONNX AI PREDICTION (Enhanced 9-Feature Quant Engine)         |
 //+------------------------------------------------------------------+
 bool GetAIPrediction(int type_code, double rsi, double spread, double macd, double atr)
 {
    if(!InpUseONNX_AI || h_onnx == INVALID_HANDLE) return true; // Bypass if disabled or missing
    
-   float inputs[5];
+   MqlDateTime dt;
+   TimeToStruct(TimeCurrent(), dt);
+   
+   float inputs[9];
    inputs[0] = (float)rsi;
    inputs[1] = (float)spread;
    inputs[2] = (float)macd;
    inputs[3] = (float)atr;
    inputs[4] = (float)type_code;
+   inputs[5] = (float)dt.hour;
+   inputs[6] = (float)MathAbs(rsi - 50.0);
+   inputs[7] = (float)(spread / (atr + 0.00001));
+   inputs[8] = (float)dt.day_of_week;
    
    long prediction[1];
    float probabilities[2];
