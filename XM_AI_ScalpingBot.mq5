@@ -3,12 +3,12 @@
 //|                        AI-Powered Scalping Expert Advisor         |
 //|                            For XM MetaTrader 5                    |
 //+------------------------------------------------------------------+
-#property copyright   "AI Trading Bot"
-#property link        "https://www.xm.com"
-#property version     "16.10"
+#property copyright   "mt-abdulla-it"
+#property link        "https://github.com/mt-abdulla-it/xm-ai-scalping-bot"
+#property version     "16.20"
 #property description "AI-Powered Institutional Scalping Bot"
-#property description "🛡️ v16.10 0.10-LOT PRO ACCELERATOR"
-#property description "Top 20 Portfolio | Safe 0.10 Lot ($15-$25 Win) | $30 Loss Shield"
+#property description "🧠 v16.20 ONNX MACHINE LEARNING BRAIN ACTIVATED"
+#property description "30-Pair Portfolio | Standalone ONNX AI | Kaufman ER + KAMA | Hard Loss Shield"
 
 //--- Include the trade library
 #include <Trade\Trade.mqh>
