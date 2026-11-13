@@ -35,16 +35,16 @@ input double   InpDailyProfitTrailingLockPercent    = 1.5;  // 🛡️ Lock at l
 input double   InpDailyLossLimitPercent = 3.0;  // ⛔ Daily Loss Limit 3.0% (Max -$3.00 on $100 balance)
 input double   InpMaxDrawdownPercent   = 3.0;   // Maximum Equity Drawdown Shield (3.0%)
 input double   InpMaxDollarLossPerTrade = 30.00; // 🛡️ Hard Dollar Loss Shield ($30.00 max loss cap per trade for 0.10 lot)
-input int      InpMaxOpenTrades    = 60;        // Max 60 total open trades across all pairs (Turbo-60 Portfolio)
-input int      InpMaxTradesPerSymbol = 3;       // Max 3 open trades per symbol for fast scaling
-input double   InpMaxSpreadPoints  = 35.0;    // Max spread 35 pts (allows major & cross pairs to trade)
+input int      InpMaxOpenTrades    = 30;        // Max 30 total open trades across all pairs (Quality Portfolio)
+input int      InpMaxTradesPerSymbol = 2;       // Max 2 open trades per symbol (Reduced exposure)
+input double   InpMaxSpreadPoints  = 30.0;    // Max spread 30 pts (Quality execution only)
 
 //--- Anti-Whipsaw & Multi-Chart Guard
 input group "=== ⏳ Anti-Whipsaw & Multi-Chart Protection ==="
-input int      InpLossCooldownMinutes   = 1;      // ⏳ Loss Cooldown: Pause symbol for 1m after hitting Stop Loss (Hyper-Turbo)
-input int      InpGlobalOrderBufferSeconds = 1;   // 🛡️ Global Order Lock: Min 1s between trades across charts (prevents race conditions)
+input int      InpLossCooldownMinutes   = 3;      // ⏳ Loss Cooldown: Pause symbol for 3m after hitting Stop Loss (Anti-Revenge)
+input int      InpGlobalOrderBufferSeconds = 2;   // 🛡️ Global Order Lock: Min 2s between trades across charts (prevents race conditions)
 input bool     InpAutoFilterLowWinSymbols  = false; // Auto-block disabled: all Top 20 pairs active with safe lot
-input int      InpMaxConcurrentYenTrades   = 4;    // 🛡️ Max concurrent JPY trades (Allows up to 4 Yen pairs)
+input int      InpMaxConcurrentYenTrades   = 3;    // 🛡️ Max concurrent JPY trades (Reduced Yen exposure)
 
 //--- Market Sentiment (Order Flow)
 input group "=== 📊 Order Flow (DOM) ==="
@@ -53,7 +53,7 @@ input double   InpDOM_WallRatio    = 3.0;     // Ratio to consider as Wall (e.g.
 
 //--- News Filter Settings
 input group "=== 📰 News Filter ==="
-input bool     InpAvoidHighImpactNews = false; // ⚡ Disabled for dataset gathering to allow continuous rapid-fire trades
+input bool     InpAvoidHighImpactNews = true;  // 🛡️ Active News Protection: Pause trading during high-impact news
 input int      InpNewsPauseBefore     = 5;    // Pause trading 5 mins BEFORE news
 input int      InpNewsPauseAfter      = 5;    // Pause trading 5 mins AFTER news
 
@@ -112,12 +112,12 @@ input group "=== 📏 ATR & SL/TP Settings ==="
 input bool     InpUseStealthMode   = true;    // 👻 Stealth Mode (Hide SL/TP from Broker)
 input int      InpATR_Period       = 14;      // ATR Period
 input double   InpSL_ATR_Multi     = 2.0;     // 🛡️ Stop Loss = ATR × 2.0
-input double   InpTP_ATR_Multi     = 1.8;     // ⚡ Take Profit = ATR × 1.8 (Fast Micro-Scalp Profit Hits)
+input double   InpTP_ATR_Multi     = 2.4;     // 🎯 Take Profit = ATR × 2.4 (Quality Scalp Target: 1.2:1 Reward-Risk)
 
 //--- Trailing Stop Settings
 input group "=== 🔄 Trailing Stop Settings ==="
 input bool     InpUseTrailingStop  = true;    // Enable dynamic ATR trailing stop
-input double   InpTrailATR_Multi   = 0.8;     // ⚡ Trailing start: ATR × 0.8 (Locks profit sooner)
+input double   InpTrailATR_Multi   = 1.0;     // 🛡️ Trailing start: ATR × 1.0 (Gives room for full momentum moves)
 input double   InpTrailStepATR     = 0.5;     // ⚡ Trail step buffer: ATR × 0.5
 
 //--- Session Filter Settings
@@ -741,8 +741,8 @@ int GetTradeSignal()
    bool isBuyKAMA = false;
    if(ArraySize(bufKama) >= 3)
    {
-      // Kaufman Rule 5: ER >= 0.20 filter ensures sufficient trend momentum (Hyper-Turbo Trade Frequency)
-      bool kamaTrend = (bufKama[0] > bufKama[2]) && (price > bufKama[0]) && (er >= 0.20);
+      // Kaufman Rule 5: ER >= 0.25 filter ensures clean trend momentum (Quality Regime Selection)
+      bool kamaTrend = (bufKama[0] > bufKama[2]) && (price > bufKama[0]) && (er >= 0.25);
       isBuyKAMA = kamaTrend;
    }
    
@@ -813,8 +813,8 @@ int GetTradeSignal()
    bool isSellKAMA = false;
    if(ArraySize(bufKama) >= 3)
    {
-      // Kaufman Rule 5: ER >= 0.20 filter ensures sufficient trend momentum (Hyper-Turbo Trade Frequency)
-      bool kamaTrend = (bufKama[0] < bufKama[2]) && (priceBid < bufKama[0]) && (er >= 0.20);
+      // Kaufman Rule 5: ER >= 0.25 filter ensures clean trend momentum (Quality Regime Selection)
+      bool kamaTrend = (bufKama[0] < bufKama[2]) && (priceBid < bufKama[0]) && (er >= 0.25);
       isSellKAMA = kamaTrend;
    }
    
