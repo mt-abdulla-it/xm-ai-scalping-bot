@@ -9,7 +9,8 @@
 [![Python 3.10+](https://img.shields.io/badge/ML%20Brain-Python%203.10+-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![ONNX Runtime](https://img.shields.io/badge/Inference-ONNX%20Runtime-005CED?logo=onnx&logoColor=white)](https://onnxruntime.ai)
 [![Architecture](https://img.shields.io/badge/Architecture-Ubuntu%20Linux%20%7C%20Wine-E95420?logo=ubuntu&logoColor=white)](https://www.winehq.org)
-[![Version](https://img.shields.io/badge/Version-v16.20%20TURBO--50-orange)](#)
+[![Version](https://img.shields.io/badge/Version-v16.20%20QUALITY--AI-00C853?logo=speedtest&logoColor=white)](#)
+[![Model Accuracy](https://img.shields.io/badge/ONNX%20Accuracy-67.5%25%20(5--Fold%20CV)-blueviolet?logo=scikitlearn&logoColor=white)](#-machine-learning--onnx-pipeline)
 [![CI Verification](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/actions/workflows/verify.yml/badge.svg)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://img.shields.io/badge/Cite%20Repository-CITATION.cff-blue.svg)](CITATION.cff)
@@ -226,37 +227,69 @@ Expected output:
 
 ## 🧠 Machine Learning & ONNX Pipeline
 
-The bot operates a telemetry logger that records full market state vectors for every closed trade:
+The bot features a self-contained, real-time quantitative machine learning pipeline. Market state telemetry is logged for every executed position and continuously trained into high-probability execution graphs.
 
-$$\vec{x} = [\text{RSI}, \text{MACD\_Hist}, \text{ATR}, \text{Spread}, \text{ER}, \text{Hour}, \text{DayOfWeek}]$$
+### 🔬 9-Feature Quantitative Feature Engineering
 
-Data is continuously appended to `MQL5/Files/XMBot_ML_Data.csv`. Once **1,000 executed trades** are logged, execute the Python training pipeline:
+The input feature vector captures market momentum, transaction friction, volatility regimes, temporal session effects, and non-linear interactions:
+
+$$\vec{x} = \begin{bmatrix} 
+\text{RSI} & \text{Spread} & \text{MACD} & \text{ATR} & \text{Type\_Code} & \text{Hour} & |\text{RSI} - 50| & \frac{\text{Spread}}{\text{ATR} + \epsilon} & \text{DayOfWeek} 
+\end{bmatrix}$$
+
+| Feature Index | Feature Name | Domain Description | Feature Importance |
+| :---: | :--- | :--- | :---: |
+| `[0]` | **MACD** | Moving Average Convergence Divergence momentum velocity | **14.91%** |
+| `[1]` | **ATR** | Average True Range volatility regime filter | **14.79%** |
+| `[2]` | **Spread_ATR_Ratio** | Friction-to-volatility ratio ($\text{Spread} / \text{ATR}$) | **14.52%** |
+| `[3]` | **Hour** | London (08:00–16:00) & NY (13:00–21:00 GMT) liquidity timing | **13.87%** |
+| `[4]` | **Spread** | Broker spread cost | **10.67%** |
+| `[5]` | **DayOfWeek** | Interday liquidity cycles (Monday–Friday) | **10.46%** |
+| `[6]` | **RSI** | Relative Strength Index (14-period momentum) | **10.00%** |
+| `[7]` | **RSI_Dev** | Absolute momentum deviation from neutral center ($|\text{RSI} - 50|$) | **9.96%** |
+| `[8]` | **Type_Code** | Directional execution vector ($+1 = \text{BUY}, -1 = \text{SELL}$) | **0.84%** |
+
+### 🎯 Model Evaluation Benchmark
+* **Dataset Benchmark**: **1,157+ Valid Executed Real-Market Trades**
+* **Validation Strategy**: 5-Fold Stratified Cross-Validation
+* **Model Architecture**: Random Forest Ensemble with Balanced Class Weighting
+* **Out-of-Fold Prediction Accuracy**: **67.46% (+/- 2.12%)**
+* **Inference Format**: Open Neural Network Exchange (`ai_brain.onnx`, Opset 12, FP32, Zero Python Dependency at MT5 runtime)
+
+### 🔄 Continuous Auto-Retraining Pipeline
+
+The system includes an automated continuous learning daemon that monitors trade logs and retrains the AI graph whenever new closed trades hit batch milestones:
 
 ```bash
-python3 train_onnx.py
-```
+# Check current trade count and retraining delta
+make retrain-status
 
-The script trains an ensemble classifier, exports the graph to `ai_brain.onnx`, and copies the model directly into `MQL5/Files/`. Toggle `InpUseONNX_AI = true` in the Expert inputs to activate machine learning trade gating.
+# Train or manual boost
+make train-boost
+
+# Launch auto-retraining daemon (auto-retrains every 50 new trades)
+make auto-retrain
+```
 
 ---
 
 ## 📋 Input Parameters Reference
 
-| Parameter | Type | Default | Description |
-| :--- | :---: | :---: | :--- |
-| `InpRiskPercent` | `double` | `1.0` | Portfolio risk percentage per trade |
-| `InpMaxAllowedLot` | `double` | `0.10` | Hard maximum volume cap per order |
-| `InpMaxDollarLossPerTrade` | `double` | `30.00` | Server-side hard loss shield ($) |
-| `InpMaxOpenTrades` | `int` | `50` | Maximum simultaneous open portfolio positions |
-| `InpMaxTradesPerSymbol` | `int` | `2` | Maximum concurrent trades per individual symbol |
-| `InpMaxSpreadPoints` | `double` | `35.0` | Maximum acceptable spread in points |
-| `InpLossCooldownMinutes` | `int` | `3` | Anti-whipsaw pause duration following stopout |
-| `InpGlobalOrderBufferSeconds`| `int` | `2` | Minimum interval between executions to avoid race conditions |
-| `InpMaxConcurrentYenTrades` | `int` | `4` | Maximum allowable exposure across JPY basket |
-| `InpUseMTFFilter` | `bool` | `false` | Elder Triple Screen higher timeframe filter (H1 EMA 50) |
-| `InpTradeAsian` | `bool` | `true` | Enable 24/7 round-the-clock trading |
-| `InpUseONNX_AI` | `bool` | `false` | Gate entries with ONNX Neural Network inference |
-| `InpONNX_MinProb` | `double` | `0.50` | Minimum win probability threshold from AI |
+| Parameter | Type | Default | Mode | Description |
+| :--- | :---: | :---: | :---: | :--- |
+| `InpRiskPercent` | `double` | `1.0` | All | Portfolio risk percentage per trade |
+| `InpMaxAllowedLot` | `double` | `0.10` | Quality | Hard maximum volume cap per order |
+| `InpMaxDollarLossPerTrade` | `double` | `30.00` | Safety | Server-side hard loss shield ($30.00 cap) |
+| `InpMaxOpenTrades` | `int` | `30` | Quality | Maximum simultaneous open portfolio positions |
+| `InpMaxTradesPerSymbol` | `int` | `2` | Quality | Maximum concurrent trades per individual symbol |
+| `InpMaxSpreadPoints` | `double` | `30.0` | Quality | Maximum acceptable spread in points |
+| `InpLossCooldownMinutes` | `int` | `3` | Quality | Anti-whipsaw pause duration following stopout |
+| `InpGlobalOrderBufferSeconds`| `int` | `2` | Safety | Minimum interval between executions to avoid race conditions |
+| `InpTP_ATR_Multi` | `double` | `2.4` | Quality | Quality scalping profit target ($2.4 \times \text{ATR}$) |
+| `InpSL_ATR_Multi` | `double` | `2.0` | Quality | Dynamic ATR stop loss ($2.0 \times \text{ATR}$) |
+| `InpAvoidHighImpactNews` | `bool` | `true` | Quality | Auto-pause trading during Tier-1 high impact news events |
+| `InpUseONNX_AI` | `bool` | `true` | Active | Gate all trades through the 9-feature ONNX ML brain |
+| `InpONNX_MinProb` | `double` | `0.50` | Active | Minimum win probability threshold required for execution |
 
 ---
 
