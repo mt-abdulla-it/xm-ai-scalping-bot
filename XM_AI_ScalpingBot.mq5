@@ -184,6 +184,8 @@ bool           g_accountHalted;      // 🛡️ TRUE = Account equity dropped be
 
 //--- Dashboard Status
 string         g_signalStatus = "Scanning...";
+double         g_aiLastWinProb = 0.0;
+string         g_aiStatusStr   = "🧠 AI: Initializing...";
 
 //--- ML Data Collection
 struct TradeData
@@ -222,6 +224,7 @@ void     ExecuteBuy();
 void     ExecuteSell();
 double   GetCurrentSpreadPoints();
 void     UpdateDashboard(string status);
+void     UpdateLiveAIProb();
 double   CalculateLotSize(double slDistancePrice, ENUM_ORDER_TYPE orderType = ORDER_TYPE_BUY);
 bool     ValidateStopLevels(ENUM_ORDER_TYPE orderType, double price, double sl, double tp);
 void     LogTrade(string symbol, double entry, double exit, double spread, double profit);
@@ -1903,6 +1906,8 @@ void UpdateDashboard(string statusMessage)
    tickCounter++;
    if(tickCounter % 10 != 0 && !forceUpdate) return;
    
+   UpdateLiveAIProb();
+   
    //--- Colors
    color clrTitle   = clrGold;
    color clrText    = clrWhite;
@@ -1986,6 +1991,16 @@ void UpdateDashboard(string statusMessage)
       CreateLabel("XMBOT_ATR", x, y,
          StringFormat("║ ATR: %-10.5f                  ║", bufATR[0]),
          clrText, fontSize, fontName);
+      y += lineHeight;
+   }
+   
+   //--- AI Quant Win Probability Live Meter
+   if(InpUseONNX_AI)
+   {
+      color aiColor = (g_aiLastWinProb >= InpONNX_MinProb) ? clrProfit : clrLoss;
+      CreateLabel("XMBOT_AI", x, y,
+         StringFormat("║ %-35s║", g_aiStatusStr),
+         aiColor, fontSize, fontName);
       y += lineHeight;
    }
    
@@ -2150,6 +2165,50 @@ bool CheckCorrelation(int type) // 1=BUY, -1=SELL
 }
 
 //+------------------------------------------------------------------+
+//| UPDATE LIVE AI PROBABILITY (For Real-Time On-Chart Dashboard)    |
+//+------------------------------------------------------------------+
+void UpdateLiveAIProb()
+{
+   if(!InpUseONNX_AI || h_onnx == INVALID_HANDLE)
+   {
+      g_aiStatusStr = "🧠 AI: Disabled";
+      return;
+   }
+   if(ArraySize(bufRSI) == 0 || ArraySize(bufATR) == 0 || ArraySize(bufMACD_Main) == 0 || ArraySize(bufEmaFast) == 0)
+      return;
+      
+   MqlDateTime dt;
+   TimeToStruct(TimeCurrent(), dt);
+   
+   int dir = (bufEmaFast[0] >= bufEmaSlow[0]) ? 1 : -1;
+   double currentSpread = (double)m_symbol.Spread();
+   double macdHist = bufMACD_Main[0] - bufMACD_Signal[0];
+   
+   float inputs[9];
+   inputs[0] = (float)bufRSI[0];
+   inputs[1] = (float)currentSpread;
+   inputs[2] = (float)macdHist;
+   inputs[3] = (float)bufATR[0];
+   inputs[4] = (float)dir;
+   inputs[5] = (float)dt.hour;
+   inputs[6] = (float)MathAbs(bufRSI[0] - 50.0);
+   inputs[7] = (float)(currentSpread / (bufATR[0] + 0.00001));
+   inputs[8] = (float)dt.day_of_week;
+   
+   long prediction[1];
+   float probabilities[2];
+   if(OnnxRun(h_onnx, ONNX_NO_CONVERSION, inputs, prediction, probabilities))
+   {
+      double winProb = probabilities[1];
+      g_aiLastWinProb = winProb;
+      if(winProb >= InpONNX_MinProb)
+         g_aiStatusStr = StringFormat("🧠 AI: %.1f%% [PASS ≥ %.0f%%]", winProb * 100.0, InpONNX_MinProb * 100.0);
+      else
+         g_aiStatusStr = StringFormat("🚫 AI: %.1f%% [BLOCK < %.0f%%]", winProb * 100.0, InpONNX_MinProb * 100.0);
+   }
+}
+
+//+------------------------------------------------------------------+
 //| GET ONNX AI PREDICTION (Enhanced 9-Feature Quant Engine)         |
 //+------------------------------------------------------------------+
 bool GetAIPrediction(int type_code, double rsi, double spread, double macd, double atr)
@@ -2176,13 +2235,16 @@ bool GetAIPrediction(int type_code, double rsi, double spread, double macd, doub
    if(OnnxRun(h_onnx, ONNX_NO_CONVERSION, inputs, prediction, probabilities))
    {
       double winProb = probabilities[1];
+      g_aiLastWinProb = winProb;
       if(winProb >= InpONNX_MinProb)
       {
+         g_aiStatusStr = StringFormat("🧠 AI: %.1f%% [PASS ≥ %.0f%%]", winProb * 100.0, InpONNX_MinProb * 100.0);
          Print("🧠 AI Approved! Win Probability: ", DoubleToString(winProb * 100, 1), "%");
          return true;
       }
       else
       {
+         g_aiStatusStr = StringFormat("🚫 AI: %.1f%% [BLOCK < %.0f%%]", winProb * 100.0, InpONNX_MinProb * 100.0);
          Print("🚫 AI Rejected! Win Probability: ", DoubleToString(winProb * 100, 1), "% < Target");
          return false;
       }
