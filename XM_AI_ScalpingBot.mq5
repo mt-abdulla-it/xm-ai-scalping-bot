@@ -88,7 +88,7 @@ input double   InpRSI_SellMin      = 20.0;    // 📉 (Relaxed) RSI minimum for 
 //--- ONNX AI Machine Learning
 input group "=== 🧠 ONNX AI Machine Learning ==="
 input bool     InpUseONNX_AI       = true;    // 🧠 ONNX AI Win-Probability Filter (ACTIVATED!)
-input double   InpONNX_MinProb     = 0.60;    // 🛡️ High-Confidence Filter: 60%+ Win Probability Required (Eliminates low-edge losses)
+input double   InpONNX_MinProb     = 0.50;    // 🛡️ High-Edge Filter: 50%+ Win Probability Required (Allows positive edge trades, blocks <50% losers)
 
 //--- SMC (Smart Money Concepts) Settings
 input group "=== 🏛️ Smart Money Concepts (SMC) ==="
