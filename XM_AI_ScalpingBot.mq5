@@ -5,9 +5,9 @@
 //+------------------------------------------------------------------+
 #property copyright   "mt-abdulla-it"
 #property link        "https://github.com/mt-abdulla-it/xm-ai-scalping-bot"
-#property version     "16.20"
+#property version     "16.21"
 #property description "AI-Powered Institutional Scalping Bot"
-#property description "🧠 v16.20 ONNX MACHINE LEARNING BRAIN ACTIVATED"
+#property description "🧠 v16.21 ONNX MACHINE LEARNING BRAIN ACTIVATED - M5 TREND SURFING"
 #property description "30-Pair Portfolio | Standalone ONNX AI | Kaufman ER + KAMA | Hard Loss Shield"
 
 //--- Include the trade library
@@ -947,7 +947,7 @@ void ExecuteBuy()
    if(lotSize <= 0) return;
    
    //--- Execute trade
-   string comment = StringFormat("XMBOT_BUY_v15.80_AUTO|SL=%.5f", slDistance);
+   string comment = StringFormat("XMBOT_BUY_v16.21_AUTO|SL=%.5f", slDistance);
    
    double sendSL = sl;
    double sendTP = tp;
@@ -1064,7 +1064,7 @@ void ExecuteSell()
    if(lotSize <= 0) return;
    
    //--- Execute trade
-   string comment = StringFormat("XMBOT_SELL_v15.80_AUTO|SL=%.5f", slDistance);
+   string comment = StringFormat("XMBOT_SELL_v16.21_AUTO|SL=%.5f", slDistance);
    
    double sendSL = sl;
    double sendTP = tp;
@@ -1920,7 +1920,7 @@ void UpdateDashboard(string statusMessage)
    //--- Title
    CreateLabel("XMBOT_Title", x, y, "╔═══════════════════════════════════╗", clrTitle, fontSize, fontName);
    y += lineHeight;
-   CreateLabel("XMBOT_Name", x, y, "║ 🧠 XM SCALPER v16.20 TURBO-50 ║", clrTitle, fontSize, fontName);
+   CreateLabel("XMBOT_Name", x, y, "║ 🧠 XM SCALPER v16.21 TURBO-50 ║", clrTitle, fontSize, fontName);
    y += lineHeight;
    CreateLabel("XMBOT_Sep1", x, y, "╠═══════════════════════════════════╣", clrTitle, fontSize, fontName);
    y += lineHeight;
