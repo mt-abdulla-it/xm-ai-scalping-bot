@@ -117,8 +117,8 @@ input double   InpTP_ATR_Multi     = 2.5;     // 🎯 High-Reward Take Profit = 
 //--- Trailing Stop Settings
 input group "=== 🔄 Trailing Stop Settings ==="
 input bool     InpUseTrailingStop  = true;    // Enable dynamic ATR trailing stop
-input double   InpTrailATR_Multi   = 1.5;     // 🛡️ Trailing start: ATR × 1.5 (Gives trade room to breathe and reach full target)
-input double   InpTrailStepATR     = 0.5;     // ⚡ Trail step buffer: ATR × 0.5
+input double   InpTrailATR_Multi   = 2.0;     // 🛡️ Trailing start: ATR × 2.0 (Only trails after strong profit)
+input double   InpTrailStepATR     = 1.0;     // ⚡ Trail step buffer: ATR × 1.0 (Full 1.0 ATR breathing room so pullbacks don't choke trades)
 
 //--- Session Filter Settings
 input group "=== ⏰ Trading Session Filter ==="
