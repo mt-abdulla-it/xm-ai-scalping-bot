@@ -244,7 +244,7 @@ int OnInit()
       Print("❌ ERROR: Risk percent must be between 0.1 and 10!");
       return(INIT_PARAMETERS_INCORRECT);
    }
-   
+
    if(InpDailyProfitTargetPercent <= 0 || InpDailyLossLimitPercent < 0)
    {
       Print("❌ ERROR: Daily target must be greater than 0!");
@@ -253,7 +253,7 @@ int OnInit()
 
    //--- Setup dynamic variables
    g_maxSpreadPoints = InpMaxSpreadPoints;
-   
+
    //--- Auto-detect GOLD (XAU), BTC & US30
    string sym = _Symbol;
    StringToUpper(sym);
@@ -288,7 +288,7 @@ int OnInit()
    m_trade.SetMarginMode();
    m_trade.SetTypeFillingBySymbol(m_symbol.Name());
    m_trade.SetDeviationInPoints(10); // 1 pip slippage allowed
-   
+
    //--- Create indicator handles
    h_kama      = iAMA(_Symbol, InpTimeframe, InpKAMA_Period, InpKAMA_Fast, InpKAMA_Slow, 0, PRICE_CLOSE);
    h_emaFast   = iMA(_Symbol, InpTimeframe, InpEmaFast, 0, MODE_EMA, PRICE_CLOSE);
@@ -296,18 +296,18 @@ int OnInit()
    h_rsi       = iRSI(_Symbol, InpTimeframe, InpRSI_Period, PRICE_CLOSE);
    h_macd      = iMACD(_Symbol, InpTimeframe, InpMACD_Fast, InpMACD_Slow, InpMACD_Signal, PRICE_CLOSE);
    h_atr       = iATR(_Symbol, InpTimeframe, InpATR_Period);
-   
+
    if(InpUseMTFFilter)
    {
       h_emaTrend = iMA(_Symbol, InpTrendTimeframe, InpTrendEMA, 0, MODE_EMA, PRICE_CLOSE);
    }
-   
+
    if(InpUseCorrelation)
    {
       SymbolSelect(InpCorrSymbol, true);
       h_corrEma = iMA(InpCorrSymbol, InpTimeframe, InpCorrEmaPeriod, 0, MODE_EMA, PRICE_CLOSE);
    }
-   
+
    //--- Initialize ONNX Model
    if(InpUseONNX_AI)
    {
@@ -320,26 +320,26 @@ int OnInit()
       {
          long input_shape[] = {1, 9};
          if(!OnnxSetInputShape(h_onnx, 0, input_shape)) Print("❌ ONNX Input Shape Error");
-         
+
          long output_shape1[] = {1};
          if(!OnnxSetOutputShape(h_onnx, 0, output_shape1)) Print("❌ ONNX Output Shape 1 Error");
-         
+
          long output_shape2[] = {1, 2};
          if(!OnnxSetOutputShape(h_onnx, 1, output_shape2)) Print("❌ ONNX Output Shape 2 Error");
-         
+
          Print("🧠 ONNX AI Brain Loaded Successfully (Enhanced 9-Feature Quant Model)!");
       }
    }
-   
+
    //--- Validate all handles
    if(h_kama == INVALID_HANDLE || h_emaFast == INVALID_HANDLE || h_emaSlow == INVALID_HANDLE ||
-      h_rsi == INVALID_HANDLE || h_macd == INVALID_HANDLE || 
+      h_rsi == INVALID_HANDLE || h_macd == INVALID_HANDLE ||
       h_atr == INVALID_HANDLE || (InpUseMTFFilter && h_emaTrend == INVALID_HANDLE))
    {
       Print("❌ ERROR: Failed to create indicator handles!");
       return(INIT_FAILED);
    }
-   
+
    //--- Set buffer arrays as series (newest data first)
    ArraySetAsSeries(bufKama, true);
    ArraySetAsSeries(bufEmaFast, true);
@@ -349,7 +349,7 @@ int OnInit()
    ArraySetAsSeries(bufMACD_Signal, true);
    ArraySetAsSeries(bufATR, true);
    ArraySetAsSeries(bufEmaTrend, true);
-   
+
    //--- Initialize daily tracking
    g_dailyStartBalance = m_account.Balance();
    g_currentDay        = iTime(_Symbol, PERIOD_D1, 0);
@@ -362,7 +362,7 @@ int OnInit()
    g_maxDailyProfit    = 0.0;
    g_dailyProfitLock   = -999.0;
    g_accountHalted     = false;
-   
+
    //--- Total Drawdown Circuit Breaker: Track initial deposit (persists via GlobalVariable)
    string gvName = "XMBOT_InitialDeposit_" + IntegerToString(InpMagicNumber);
    if(GlobalVariableCheck(gvName))
@@ -385,7 +385,7 @@ int OnInit()
       GlobalVariableSet(gvName, g_initialDeposit);
       Print("🛡️ Circuit Breaker: Set initial deposit: $", DoubleToString(g_initialDeposit, 2));
    }
-   
+
    //--- Success message
    Print("✅ XM AI Scalping Bot initialized successfully!");
    Print("📊 Symbol: ", _Symbol, " | Timeframe: ", EnumToString(InpTimeframe));
@@ -397,7 +397,7 @@ int OnInit()
       else
          Print("📊 DOM Order Flow tracking enabled.");
    }
-   
+
    return(INIT_SUCCEEDED);
 }
 
@@ -416,21 +416,21 @@ void OnDeinit(const int reason)
    if(h_emaTrend  != INVALID_HANDLE) IndicatorRelease(h_emaTrend);
    if(h_corrEma   != INVALID_HANDLE) IndicatorRelease(h_corrEma);
    if(h_onnx      != INVALID_HANDLE) OnnxRelease(h_onnx);
-   
+
    if(InpUseDOM_Filter) MarketBookRelease(_Symbol);
-   
+
    //--- Remove chart objects
    ObjectsDeleteAll(0, "XMBOT_");
-   
+
    //--- Release Master Chart Ownership
    string gvOwner = "GV_MASTER_CHART_" + _Symbol;
    if(GlobalVariableCheck(gvOwner) && (long)GlobalVariableGet(gvOwner) == ChartID())
    {
       GlobalVariableDel(gvOwner);
    }
-   
+
    //--- Print session summary
-   Print("📋 Session Summary: Trades=", g_totalTradesToday, 
+   Print("📋 Session Summary: Trades=", g_totalTradesToday,
          " | Wins=", g_winTrades, " | Losses=", g_lossTrades,
          " | Profit=", DoubleToString(g_totalProfit, 2));
    Print("👋 XM AI Scalping Bot deinitialized. Reason: ", reason);
@@ -444,14 +444,14 @@ void OnTick()
    //--- Update symbol info
    if(!m_symbol.RefreshRates())
       return;
-      
+
    //--- LAYER -1: Auto-Duplicate Chart Tab Blocker (Only 1 Master Chart trades per symbol)
    if(!IsMasterChart())
    {
       if(InpShowDashboard) UpdateDashboard("💤 Standby: Duplicate Tab (Master Active)");
       return;
    }
-   
+
    //--- LAYER -2: Auto-Block Low Win Rate Pairs (USDCAD, NZDUSD)
    if(InpAutoFilterLowWinSymbols)
    {
@@ -463,17 +463,17 @@ void OnTick()
          return;
       }
    }
-   
+
    //--- Check for new day — reset daily counters
    CheckNewDay();
-   
+
    //--- LAYER 0: TOTAL ACCOUNT DRAWDOWN CIRCUIT BREAKER 🚨
    if(g_accountHalted)
    {
       if(InpShowDashboard) UpdateDashboard("🚨 ACCOUNT HALTED — Equity < 50% of Deposit. Remove bot & re-add to reset.");
       return;
    }
-   
+
    if(g_initialDeposit > 0)
    {
       double currentEquity = m_account.Equity();
@@ -493,55 +493,55 @@ void OnTick()
          return;
       }
    }
-   
+
    //--- LAYER 1: Daily limit & 5% Equity Shield check
    if(g_dailyLossHit)
    {
       return;
    }
-   
+
    if(CheckDailyLimits() || CheckEquityDrawdown())
    {
       g_dailyLossHit = true;
       Print("⏸️ Daily Target, Loss Limit, or 5% Equity Shield reached! Stopping trading.");
       return;
    }
-   
+
    //--- LAYER 3: Get indicator values BEFORE managing positions!
    if(!UpdateIndicators())
    {
       if(InpShowDashboard) UpdateDashboard("⚠️ Waiting for indicator data...");
       return;
    }
-   
+
     //--- (AI Telemetry Removed)
-   
+
    //--- Manage existing positions (trailing stop, breakeven)
    ManageOpenPositions();
-   
+
    //--- ML LOGGER: Shadow manual user trades and log closed trades
    ShadowManualTrades();
    CheckClosedTradesAndLog();
-   
+
    //--- LAYER 2: Market filter checks
    if(!IsSpreadAcceptable())
    {
       if(InpShowDashboard) UpdateDashboard("⏳ Waiting — Spread too wide: " + DoubleToString(GetCurrentSpreadPoints(), 1) + " pts");
       return;
    }
-   
+
    if(!IsTradingSession())
    {
       if(InpShowDashboard) UpdateDashboard("⏳ Waiting — Outside trading session");
       return;
    }
-   
+
    if(IsNewsTime())
    {
       if(InpShowDashboard) UpdateDashboard("⏳ Waiting — High Impact News 📰");
       return;
    }
-   
+
    //--- Check max open trades (TOTAL max portfolio cap)
    if(CountOpenPositions() >= InpMaxOpenTrades)
    {
@@ -555,7 +555,7 @@ void OnTick()
       if(InpShowDashboard) UpdateDashboard("⏳ Max trade reached on " + _Symbol + " (" + IntegerToString(InpMaxTradesPerSymbol) + ")");
       return;
    }
-   
+
    //--- Check Symbol Loss Cooldown (Prevents whipsaw repeat losses after stopout)
    if(IsSymbolInCooldown(_Symbol))
    {
@@ -564,28 +564,28 @@ void OnTick()
       if(InpShowDashboard) UpdateDashboard("⏳ Cooldown: " + _Symbol + " (" + IntegerToString(remainingMins) + "m left after loss)");
       return;
    }
-   
+
    //--- Check Global Order Lock (Prevents duplicate charts from firing orders simultaneously)
    if(IsGlobalOrderLockActive())
    {
       if(InpShowDashboard) UpdateDashboard("⏳ Global Order Lock: waiting between chart orders");
       return;
    }
-   
+
    //--- Check Anti-Martingale (Rule 15 - Strict Protection: Never add to losing position on SAME symbol)
    if(CountOpenPositionsForSymbol(_Symbol) > 0 && IsSymbolPositionInLoss(_Symbol))
    {
       if(InpShowDashboard) UpdateDashboard("⏳ Waiting — Anti-Martingale (" + _Symbol + " in Loss)");
       return;
    }
-   
+
    //--- Check minimum bars between trades
    if(!IsMinBarsPassed())
    {
       if(InpShowDashboard) UpdateDashboard("⏳ Waiting — Min bars cooldown");
       return;
    }
-   
+
    //--- Check Yen Exposure Guard (Rule: Max 1 concurrent JPY trade)
    if(InpMaxConcurrentYenTrades > 0)
    {
@@ -597,10 +597,10 @@ void OnTick()
          return;
       }
    }
-   
+
     //--- LAYER 5: Generate EA technical signal (Standalone Mode)
     int signal = GetTradeSignal();
-    
+
     //--- LAYER 6: Execute trade if EA signal found
     if(signal == 1) // BUY signal
     {
@@ -622,7 +622,7 @@ void OnTick()
 bool UpdateIndicators()
 {
    int barsNeeded = 26; // Need at least 26 bars for 24-bar EMA crossover lookback
-   
+
    //--- Copy indicator data
    if(CopyBuffer(h_kama,      0, 0, barsNeeded, bufKama)      < barsNeeded) return false;
    if(CopyBuffer(h_emaFast,   0, 0, barsNeeded, bufEmaFast)   < barsNeeded) return false;
@@ -631,12 +631,12 @@ bool UpdateIndicators()
    if(CopyBuffer(h_macd, 0, 0, 2, bufMACD_Main) < 2) return false;
    if(CopyBuffer(h_macd, 1, 0, 2, bufMACD_Signal) < 2) return false;
    if(CopyBuffer(h_atr, 0, 0, 2, bufATR) <= 0) return false;
-   
+
    if(InpUseMTFFilter)
    {
       if(CopyBuffer(h_emaTrend, 0, 0, 1, bufEmaTrend) <= 0) return false;
    }
-   
+
    return true;
 }
 
@@ -649,16 +649,16 @@ double g_pinBarSL = 0.0; // Store tight stop loss for Pin Bar strategy
 int GetTradeSignal()
 {
    g_pinBarSL = 0.0; // Reset
-   
+
    //--- PRICE SHOCK FILTER (Rule 5 - Crisis Management): Suspend all new entries during shock (> 5 * ATR)
    if(ArraySize(bufATR) > 0 && bufATR[0] > 0 && CheckPriceShock(bufATR[0])) return 0;
-   
+
    //--- PIN BAR REVERSAL STRATEGY (Counter-Trend) ---
    if(InpUsePinBarReversal)
    {
       double o[], h[], l[], c[];
       ArraySetAsSeries(o, true); ArraySetAsSeries(h, true); ArraySetAsSeries(l, true); ArraySetAsSeries(c, true);
-      
+
       if(CopyOpen(_Symbol, PERIOD_CURRENT, 0, 5, o) == 5 &&
          CopyHigh(_Symbol, PERIOD_CURRENT, 0, 5, h) == 5 &&
          CopyLow(_Symbol, PERIOD_CURRENT, 0, 5, l) == 5 &&
@@ -668,18 +668,18 @@ int GetTradeSignal()
          double body = MathAbs(o[1] - c[1]);
          double totalSize = h[1] - l[1];
          double minPinSize = (ArraySize(bufATR) > 0 && bufATR[0] > 0) ? (bufATR[0] * 0.5) : (m_symbol.Point() * 20);
-         
+
          if(totalSize >= minPinSize && body > 0) // Valid, dynamic ATR-sized candle (Rule 5)
          {
             double minBody = MathMin(o[1], c[1]);
             double maxBody = MathMax(o[1], c[1]);
-            
+
             double lowerWick = minBody - l[1];
             double upperWick = h[1] - maxBody;
-            
+
             bool is3Down = (c[2] < o[2] && c[3] < o[3] && c[4] < o[4]);
             bool is3Up = (c[2] > o[2] && c[3] > o[3] && c[4] > o[4]);
-            
+
             // Bullish Pin Bar
             if(lowerWick >= 2.0 * body && upperWick <= body && is3Down)
             {
@@ -691,7 +691,7 @@ int GetTradeSignal()
                   return 1;
                }
             }
-            
+
             // Bearish Pin Bar
             if(upperWick >= 2.0 * body && lowerWick <= body && is3Up)
             {
@@ -710,32 +710,32 @@ int GetTradeSignal()
    //--- Get current values
    double kama_curr      = bufKama[0];
    double kama_prev      = bufKama[1];
-   
+
    double rsi_curr       = bufRSI[0];
-   
+
    double macd_main      = bufMACD_Main[0];
    double macd_signal    = bufMACD_Signal[0];
    double macd_hist      = macd_main - macd_signal;
-   
+
    //--- MACD previous bar histogram (for momentum check)
    double macd_hist_prev = 0;
    if(ArraySize(bufMACD_Main) >= 2 && ArraySize(bufMACD_Signal) >= 2)
       macd_hist_prev = bufMACD_Main[1] - bufMACD_Signal[1];
-   
+
    double price          = m_symbol.Ask();
    double priceBid       = m_symbol.Bid();
-   
+
    //--- Calculate Efficiency Ratio (ER)
    double er = CalculateER(InpKAMA_Period);
-   
+
    //--- CANDLE CONFIRMATION: Last closed candle must agree with trade direction or be a micro-pullback/doji
    double lastOpen  = iOpen(_Symbol, PERIOD_CURRENT, 1);
    double lastClose = iClose(_Symbol, PERIOD_CURRENT, 1);
    bool isBullishCandle = (lastClose >= lastOpen || MathAbs(lastClose - lastOpen) <= (m_symbol.Point() * 5));
    bool isBearishCandle = (lastClose <= lastOpen || MathAbs(lastClose - lastOpen) <= (m_symbol.Point() * 5));
-   
+
    //=== BUY CONDITIONS ===
-   
+
    // Filter 1: KAMA 3-Bar Direction + Price Above KAMA + ER Noise Filter
    // OR 24-bar EMA Crossover Trend Surfing (Rule 4)
    bool isBuyKAMA = false;
@@ -745,7 +745,7 @@ int GetTradeSignal()
       bool kamaTrend = (bufKama[0] > bufKama[2]) && (price > bufKama[0]) && (er >= 0.25);
       isBuyKAMA = kamaTrend;
    }
-   
+
    // Check 24-bar EMA Crossover
    bool isBuyEMACross = false;
    if(ArraySize(bufEmaFast) >= 26 && ArraySize(bufEmaSlow) >= 26)
@@ -762,52 +762,52 @@ int GetTradeSignal()
          }
       }
    }
-   
+
    bool isBullishTrend = isBuyKAMA || isBuyEMACross;
-   
+
    // Filter 2: MACD Bullish Momentum (Relaxed)
    //   - Histogram must be positive (growing check removed for frequency)
    bool isMacdBullish = (macd_hist > 0);
-   
+
    // Filter 3: MTF Trend Alignment — H1 EMA50 (Rule 12 - Elder Triple Screen)
    bool isMtfBullish = true;
    if(InpUseMTFFilter) isMtfBullish = (price > bufEmaTrend[0]);
-   
+
    // Filter 4: RSI in BUY zone (35-60) — catch momentum, don't chase extremes
    bool isRsiBuyOk = (rsi_curr < InpRSI_BuyMax && rsi_curr > InpRSI_BuyMin);
-   
+
    // Filter 4.5: Smart RSI Momentum (Micro-Divergence)
    bool isRsiMomentumBuy = true;
    if(ArraySize(bufRSI) >= 3) isRsiMomentumBuy = (bufRSI[0] > bufRSI[1] || bufRSI[0] > bufRSI[2]);
-     
+
    // Filter 5: ATR Volatility Check (Avoid Dead Markets)
-   double minAtr = m_symbol.Point() * 5; 
+   double minAtr = m_symbol.Point() * 5;
    bool isMarketMoving = (bufATR[0] >= minAtr);
-    
+
    // Filter 5.5: Volume Confirmation (Rule 11)
    bool isVolumeConfirmed = true;
-    
+
    // Filter 6: SMC Fair Value Gap (FVG)
    bool isFvgBuy = CheckBullishFVG();
-   
+
    // Filter 7: Multi-Currency Correlation
    bool isCorrBuy = CheckCorrelation(1);
-     
+
    if(isBullishTrend && isMacdBullish && isRsiBuyOk && isRsiMomentumBuy && isMtfBullish && isMarketMoving && isVolumeConfirmed && isFvgBuy && isCorrBuy && isBullishCandle)
    {
       // Filter 8: ONNX AI Prediction
       double currentSpread = (double)m_symbol.Spread();
       if(!GetAIPrediction(1, rsi_curr, currentSpread, macd_hist, bufATR[0])) return 0;
-      
+
       // Filter 9: DOM Order Book Sell Wall check
       if(!CheckOrderBookDOM(1)) return 0;
-      
+
       Print("📈 BUY Signal! (KAMA or EMA24) + MACD↑ + RSI:", DoubleToString(rsi_curr,1), " + ER:", DoubleToString(er,2));
       return 1;
    }
-   
+
    //=== SELL CONDITIONS ===
-   
+
    // Filter 1: KAMA 3-Bar Direction + Price Below KAMA + ER Noise Filter
    // OR 24-bar EMA Crossover Trend Surfing (Rule 4)
    bool isSellKAMA = false;
@@ -817,7 +817,7 @@ int GetTradeSignal()
       bool kamaTrend = (bufKama[0] < bufKama[2]) && (priceBid < bufKama[0]) && (er >= 0.25);
       isSellKAMA = kamaTrend;
    }
-   
+
    // Check 24-bar EMA Crossover
    bool isSellEMACross = false;
    if(ArraySize(bufEmaFast) >= 26 && ArraySize(bufEmaSlow) >= 26)
@@ -834,42 +834,42 @@ int GetTradeSignal()
          }
       }
    }
-   
+
    bool isBearishTrend = isSellKAMA || isSellEMACross;
-   
+
    // Filter 2: MACD Bearish Momentum (Relaxed)
    bool isMacdBearish = (macd_hist < 0);
-   
+
    // Filter 3: MTF Trend Alignment (Rule 12)
    bool isMtfBearish = true;
    if(InpUseMTFFilter) isMtfBearish = (priceBid < bufEmaTrend[0]);
-   
+
    // Filter 4: RSI in SELL zone (40-65) — catch momentum, don't chase extremes
    bool isRsiSellOk = (rsi_curr > InpRSI_SellMin && rsi_curr < InpRSI_SellMax);
-   
+
    // Filter 4.5: Smart RSI Momentum (Micro-Divergence)
    bool isRsiMomentumSell = true;
    if(ArraySize(bufRSI) >= 3) isRsiMomentumSell = (bufRSI[0] < bufRSI[1] || bufRSI[0] < bufRSI[2]);
-   
+
    // Filter 6: SMC Fair Value Gap (FVG)
    bool isFvgSell = CheckBearishFVG();
-   
+
    // Filter 7: Multi-Currency Correlation
    bool isCorrSell = CheckCorrelation(-1);
-   
+
    if(isBearishTrend && isMacdBearish && isRsiSellOk && isRsiMomentumSell && isMtfBearish && isMarketMoving && isVolumeConfirmed && isFvgSell && isCorrSell && isBearishCandle)
    {
       // Filter 8: ONNX AI Prediction
       double currentSpread = (double)m_symbol.Spread();
       if(!GetAIPrediction(-1, rsi_curr, currentSpread, macd_hist, bufATR[0])) return 0;
-      
+
       // Filter 9: DOM Order Book Buy Wall check
       if(!CheckOrderBookDOM(-1)) return 0;
-      
+
       Print("📉 SELL Signal! (KAMA or EMA24) + MACD↓ + RSI:", DoubleToString(rsi_curr,1), " + ER:", DoubleToString(er,2));
       return -1;
    }
-   
+
    //--- Determine exact reason for NO SIGNAL to update Dashboard
    if(!isBullishTrend && !isBearishTrend) g_signalStatus = "Waiting for Trend (EMA Cross or KAMA)";
    else if(isBullishTrend && !isMacdBullish) g_signalStatus = "Trend UP, Waiting for MACD > 0";
@@ -879,7 +879,7 @@ int GetTradeSignal()
    else if(!isVolumeConfirmed) g_signalStatus = "Waiting for Volume Confirmation";
    else if(!isMtfBullish && !isMtfBearish) g_signalStatus = "Waiting for MTF Alignment";
    else g_signalStatus = "Scanning criteria...";
-   
+
    return 0; // No signal
 }
 
@@ -899,18 +899,18 @@ void ExecuteBuy()
       if(SymbolInfoTick(_Symbol, tick) && tick.ask > 0) ask = tick.ask;
    }
    if(ask <= 0) ask = iClose(_Symbol, PERIOD_CURRENT, 0);
-   
+
    if(ask <= 0)
    {
       Print("❌ Cannot execute BUY: Invalid Ask price (0.00000). Waiting for tick.");
       return;
    }
-   
+
    //--- HYPER SCALPER TP/SL (Tight Risk, Fast Profit)
    double atr = (ArraySize(bufATR) > 0) ? bufATR[0] : 0.0010;
    if(atr <= 0) atr = 0.0010;
    double slDistance = atr * InpSL_ATR_Multi;
-   
+
    // Clamp SL distance for Gold / high volatility pairs to prevent wide ATR losses
    string symUpper = _Symbol; StringToUpper(symUpper);
    if(StringFind(symUpper, "GOLD") >= 0 || StringFind(symUpper, "XAU") >= 0)
@@ -918,15 +918,15 @@ void ExecuteBuy()
       double maxGoldSLDistance = 2.0; // Max $2.00 Gold price distance
       slDistance = MathMin(slDistance, maxGoldSLDistance);
    }
-   
+
    // 🛡️ CRITICAL FIX: Ensure slDistance is at least 3x Spread and meets broker StopLevel BEFORE lot sizing!
    double minStop = m_symbol.StopsLevel() * _Point;
    if(minStop <= 0) minStop = m_symbol.Spread() * _Point * 2.0; // Rule 2
    double minSafeSL = MathMax(minStop + (10 * _Point), m_symbol.Spread() * _Point * 3.0);
    slDistance = MathMax(slDistance, minSafeSL);
-   
+
    double tpDistance = slDistance * (InpTP_ATR_Multi / MathMax(InpSL_ATR_Multi, 0.1));
-   
+
    double sl = 0.0;
    if(g_pinBarSL > 0)
    {
@@ -939,16 +939,16 @@ void ExecuteBuy()
    {
       sl = NormalizeDouble(ask - slDistance, _Digits);
    }
-   
+
    double tp = NormalizeDouble(ask + tpDistance, _Digits);
-   
+
    //--- Calculate lot size based on REAL validated risk distance
    double lotSize = CalculateLotSize(slDistance, ORDER_TYPE_BUY);
    if(lotSize <= 0) return;
-   
+
    //--- Execute trade
    string comment = StringFormat("XMBOT_BUY_v15.80_AUTO|SL=%.5f", slDistance);
-   
+
    double sendSL = sl;
    double sendTP = tp;
    if(InpUseStealthMode)
@@ -959,16 +959,16 @@ void ExecuteBuy()
       sendSL = NormalizeDouble(ask - disasterSLDist, _Digits); // Disaster SL
       sendTP = 0;
    }
-   
+
    // 🛡️ RACE CONDITION FIX: Acquire Global Lock BEFORE sending order across network
    SetGlobalOrderLock();
-   
+
    if(m_trade.Buy(lotSize, _Symbol, ask, sendSL, sendTP, comment))
    {
       ulong ticket = m_trade.ResultOrder();
       g_lastTradeTime = TimeCurrent();
       g_totalTradesToday++;
-      
+
       if(InpUseStealthMode)
       {
          GlobalVariableSet("SL_" + IntegerToString(ticket), sl);
@@ -981,9 +981,9 @@ void ExecuteBuy()
                " | SL: ", DoubleToString(sl, _Digits),
                " | TP: ", DoubleToString(tp, _Digits));
       }
-      
+
       if(InpShowDashboard) UpdateDashboard("✅ BUY OPENED @ " + DoubleToString(ask, _Digits));
-      
+
       //--- Log Trade for ML Data Collection
       int size = ArraySize(g_activeTrades);
       ArrayResize(g_activeTrades, size + 1);
@@ -1016,18 +1016,18 @@ void ExecuteSell()
       if(SymbolInfoTick(_Symbol, tick) && tick.bid > 0) bid = tick.bid;
    }
    if(bid <= 0) bid = iClose(_Symbol, PERIOD_CURRENT, 0);
-   
+
    if(bid <= 0)
    {
       Print("❌ Cannot execute SELL: Invalid Bid price (0.00000). Waiting for tick.");
       return;
    }
-   
+
    //--- HYPER SCALPER TP/SL (Tight Risk, Fast Profit)
    double atr = (ArraySize(bufATR) > 0) ? bufATR[0] : 0.0010;
    if(atr <= 0) atr = 0.0010;
    double slDistance = atr * InpSL_ATR_Multi;
-   
+
    // Clamp SL distance for Gold / high volatility pairs to prevent wide ATR losses
    string symUpper = _Symbol; StringToUpper(symUpper);
    if(StringFind(symUpper, "GOLD") >= 0 || StringFind(symUpper, "XAU") >= 0)
@@ -1035,15 +1035,15 @@ void ExecuteSell()
       double maxGoldSLDistance = 2.0; // Max $2.00 Gold price distance
       slDistance = MathMin(slDistance, maxGoldSLDistance);
    }
-   
+
    // 🛡️ CRITICAL FIX: Ensure slDistance is at least 3x Spread and meets broker StopLevel BEFORE lot sizing!
    double minStop = m_symbol.StopsLevel() * _Point;
    if(minStop <= 0) minStop = m_symbol.Spread() * _Point * 2.0; // Rule 2
    double minSafeSL = MathMax(minStop + (10 * _Point), m_symbol.Spread() * _Point * 3.0);
    slDistance = MathMax(slDistance, minSafeSL);
-   
+
    double tpDistance = slDistance * (InpTP_ATR_Multi / MathMax(InpSL_ATR_Multi, 0.1));
-   
+
    double sl = 0.0;
    if(g_pinBarSL > 0)
    {
@@ -1056,16 +1056,16 @@ void ExecuteSell()
    {
       sl = NormalizeDouble(bid + slDistance, _Digits);
    }
-   
+
    double tp = NormalizeDouble(bid - tpDistance, _Digits);
-   
+
    //--- Calculate lot size based on REAL validated risk distance
    double lotSize = CalculateLotSize(slDistance, ORDER_TYPE_SELL);
    if(lotSize <= 0) return;
-   
+
    //--- Execute trade
    string comment = StringFormat("XMBOT_SELL_v15.80_AUTO|SL=%.5f", slDistance);
-   
+
    double sendSL = sl;
    double sendTP = tp;
    if(InpUseStealthMode)
@@ -1076,16 +1076,16 @@ void ExecuteSell()
       sendSL = NormalizeDouble(bid + disasterSLDist, _Digits); // Disaster SL
       sendTP = 0;
    }
-   
+
    // 🛡️ RACE CONDITION FIX: Acquire Global Lock BEFORE sending order across network
    SetGlobalOrderLock();
-   
+
    if(m_trade.Sell(lotSize, _Symbol, bid, sendSL, sendTP, comment))
    {
       ulong ticket = m_trade.ResultOrder();
       g_lastTradeTime = TimeCurrent();
       g_totalTradesToday++;
-      
+
       if(InpUseStealthMode)
       {
          GlobalVariableSet("SL_" + IntegerToString(ticket), sl);
@@ -1098,9 +1098,9 @@ void ExecuteSell()
                " | SL: ", DoubleToString(sl, _Digits),
                " | TP: ", DoubleToString(tp, _Digits));
       }
-      
+
       if(InpShowDashboard) UpdateDashboard("✅ SELL OPENED @ " + DoubleToString(bid, _Digits));
-      
+
       //--- Log Trade for ML Data Collection
       int size = ArraySize(g_activeTrades);
       ArrayResize(g_activeTrades, size + 1);
@@ -1128,12 +1128,12 @@ void ShadowManualTrades()
    {
       string symbol = PositionGetSymbol(i);
       if(symbol != _Symbol) continue; // Only shadow current pair
-      
+
       long magic = PositionGetInteger(POSITION_MAGIC);
       if(magic != InpMagicNumber) // It's a manual trade (or another bot)
       {
          ulong ticket = PositionGetInteger(POSITION_TICKET);
-         
+
          // Check if we are already tracking this ticket
          bool tracking = false;
          int size = ArraySize(g_activeTrades);
@@ -1145,28 +1145,28 @@ void ShadowManualTrades()
                break;
             }
          }
-         
+
          // If not tracking, it's a newly opened manual trade!
          if(!tracking)
          {
             long type = PositionGetInteger(POSITION_TYPE);
             double price = PositionGetDouble(POSITION_PRICE_OPEN);
-            
+
             ArrayResize(g_activeTrades, size + 1);
             g_activeTrades[size].ticket = ticket;
             g_activeTrades[size].type = (type == POSITION_TYPE_BUY) ? 0 : 1;
-            
+
             // Read indicators right now
             if(CopyBuffer(h_rsi, 0, 0, 1, bufRSI) > 0) g_activeTrades[size].rsi = bufRSI[0]; else g_activeTrades[size].rsi = 0;
-            if(CopyBuffer(h_macd, 0, 0, 1, bufMACD_Main) > 0 && CopyBuffer(h_macd, 1, 0, 1, bufMACD_Signal) > 0) 
+            if(CopyBuffer(h_macd, 0, 0, 1, bufMACD_Main) > 0 && CopyBuffer(h_macd, 1, 0, 1, bufMACD_Signal) > 0)
                g_activeTrades[size].macd = bufMACD_Main[0] - bufMACD_Signal[0];
             else g_activeTrades[size].macd = 0;
             if(CopyBuffer(h_atr, 0, 0, 1, bufATR) > 0) g_activeTrades[size].atr = bufATR[0]; else g_activeTrades[size].atr = 0;
-            
+
             g_activeTrades[size].spread = m_symbol.Spread();
             g_activeTrades[size].openPrice = price;
             g_activeTrades[size].openTime = (datetime)PositionGetInteger(POSITION_TIME);
-            
+
             Print("👤 SHADOW MODE: Captured Manual Trade Ticket: ", ticket);
             if(InpShowDashboard) UpdateDashboard("👤 SHADOW MODE: Capturing your trade!");
          }
@@ -1181,11 +1181,11 @@ void CheckClosedTradesAndLog()
 {
    int size = ArraySize(g_activeTrades);
    if(size == 0) return;
-   
+
    for(int i = size - 1; i >= 0; i--)
    {
       ulong ticket = g_activeTrades[i].ticket;
-      
+
       // Check if position still exists
       if(!PositionSelectByTicket(ticket))
       {
@@ -1194,7 +1194,7 @@ void CheckClosedTradesAndLog()
          {
             int dealsTotal = HistoryDealsTotal();
             double profit = 0;
-            
+
             for(int d = 0; d < dealsTotal; d++)
             {
                ulong dealTicket = HistoryDealGetTicket(d);
@@ -1207,7 +1207,7 @@ void CheckClosedTradesAndLog()
                   }
                }
             }
-            
+
             // Log to CSV
             int handle = FileOpen("XMBot_ML_Data.csv", FILE_CSV | FILE_READ | FILE_WRITE | FILE_ANSI | FILE_SHARE_READ | FILE_SHARE_WRITE, ',');
             if(handle != INVALID_HANDLE)
@@ -1217,9 +1217,9 @@ void CheckClosedTradesAndLog()
                {
                   FileWrite(handle, "Ticket,Type,OpenTime,OpenPrice,Spread,RSI,MACD,ATR,Profit");
                }
-               
+
                FileSeek(handle, 0, SEEK_END);
-               
+
                string typeStr = (g_activeTrades[i].type == 0) ? "BUY" : "SELL";
                string row = StringFormat("%I64u,%s,%s,%.5f,%.1f,%.2f,%.6f,%.5f,%.2f",
                                          ticket, typeStr, TimeToString(g_activeTrades[i].openTime),
@@ -1230,27 +1230,27 @@ void CheckClosedTradesAndLog()
                FileClose(handle);
                Print("💾 ML Data Logged for Ticket: ", ticket, " | Profit: $", DoubleToString(profit, 2));
             }
-            
+
             // Also Log to trade_log.csv using LogTrade
             LogTrade(_Symbol, g_activeTrades[i].openPrice, m_symbol.Bid(), g_activeTrades[i].spread, profit);
-            
+
             // If closed in loss, activate Loss Cooldown to prevent revenge-trading
             if(profit < 0)
             {
                SetSymbolLossCooldown(_Symbol);
             }
          }
-         
+
          // Cleanup Stealth Mode Global Variables
          if(InpUseStealthMode)
          {
             GlobalVariableDel("SL_" + IntegerToString(ticket));
             GlobalVariableDel("TP_" + IntegerToString(ticket));
          }
-         
+
          // Cleanup Partial Profit Global Variable
          GlobalVariableDel("PARTIAL_" + IntegerToString(ticket));
-         
+
          // Remove from array by shifting elements down
          for(int j = i; j < size - 1; j++)
          {
@@ -1288,28 +1288,28 @@ void LogTrade(string symbol, double entry, double exit, double spread, double pr
 double CalculateLotSize(double slDistancePrice, ENUM_ORDER_TYPE orderType = ORDER_TYPE_BUY)
 {
    if(slDistancePrice <= 0) return 0;
-   
+
    double balance    = m_account.Balance();
    double riskAmount = balance * (InpRiskPercent / 100.0);
-   
+
    //--- Get tick value for 1 lot
    double tickValue = m_symbol.TickValue();
    double tickSize  = m_symbol.TickSize();
-   
+
    if(tickValue <= 0 || tickSize <= 0) return 0;
-   
+
    //--- Calculate lot size
    double slPoints  = slDistancePrice / tickSize;
    double lotSize   = riskAmount / (slPoints * tickValue);
-   
+
    //--- Apply min/max/step constraints
    double minLot  = m_symbol.LotsMin();
    double maxLot  = m_symbol.LotsMax();
    double lotStep = m_symbol.LotsStep();
-   
+
    //--- Round to lot step
    lotSize = MathFloor(lotSize / lotStep) * lotStep;
-   
+
    //--- AUTO-COMPOUNDING SIZING ENGINE (Safe Mode - No Forced Minimums)
    if(InpUseCompounding)
    {
@@ -1320,24 +1320,24 @@ double CalculateLotSize(double slDistancePrice, ENUM_ORDER_TYPE orderType = ORDE
       // Below $300: NO forced minimum — let risk-based sizing decide
       // This prevents forcing 0.02-0.03 lot on tiny $72-$150 accounts
    }
-   
+
    //--- KELLY CRITERION (Dynamic Lot Scaling)
    if(InpUseKellyCriterion && g_totalTradesToday >= 3) // Need at least 3 trades history today
    {
       double winRate = (double)g_winTrades / (double)g_totalTradesToday;
       double R = (InpSL_ATR_Multi > 0) ? (InpTP_ATR_Multi / InpSL_ATR_Multi) : 2.0; // Reward:Risk Ratio
-      
+
       // Basic Kelly Formula: Kelly % = W - ((1 - W) / R)
       double kellyPct = winRate - ((1.0 - winRate) / R);
-      
+
       if(kellyPct > 0)
       {
          // Scale lot size by Kelly fraction (Half-Kelly for safety)
          double kellyMultiplier = kellyPct * 0.5; // Max 50% boost
          double kellyScaledLot = lotSize * (1.0 + kellyMultiplier);
-         
+
          Print("⚖️ Kelly Sizing Active! WinRate: ", DoubleToString(winRate*100,1), "% | R:R = 1:", DoubleToString(R, 1), " | Scaling Lot from ", DoubleToString(lotSize, 2), " to ", DoubleToString(kellyScaledLot, 2));
-         
+
          lotSize = kellyScaledLot;
          lotSize = MathFloor(lotSize / lotStep) * lotStep; // Round again
       }
@@ -1349,7 +1349,7 @@ double CalculateLotSize(double slDistancePrice, ENUM_ORDER_TYPE orderType = ORDE
          Print("⚖️ Kelly Sizing Active! WinRate low (", DoubleToString(winRate*100,1), "%). Reducing Lot Size to protect capital: ", DoubleToString(lotSize, 2));
       }
    }
-   
+
    //--- STRICT RISK GUARD (Protect Small Accounts)
    if(lotSize < minLot)
    {
@@ -1363,7 +1363,7 @@ double CalculateLotSize(double slDistancePrice, ENUM_ORDER_TYPE orderType = ORDE
       }
       lotSize = minLot;
    }
-   
+
    //--- Clamp to limits
    lotSize = MathMax(lotSize, minLot);
    lotSize = MathMin(lotSize, maxLot);
@@ -1390,7 +1390,7 @@ double CalculateLotSize(double slDistancePrice, ENUM_ORDER_TYPE orderType = ORDE
     {
        lotSize = MathMin(lotSize, 0.05); // 🛡️ $200-$500 → max 0.05 lot
     }
-   
+
    //--- Upper balance tier hard caps
    if(balance >= 500.0 && balance < 1000.0)       lotSize = MathMin(lotSize, 0.08); // 🛡️ $500-$1000 → max 0.08 lot
    else if(balance >= 1000.0 && balance < 5000.0) lotSize = MathMin(lotSize, 0.15); // 🛡️ $1000-$5000 → max 0.15 lot (stops 1.73 lot disaster!)
@@ -1403,14 +1403,14 @@ double CalculateLotSize(double slDistancePrice, ENUM_ORDER_TYPE orderType = ORDE
       Print("⚠️ Cannot calculate margin requirement!");
       return minLot;
    }
-   
+
    if(marginRequired > m_account.FreeMargin() * 0.8) // Use max 80% of free margin
    {
       lotSize = lotSize * (m_account.FreeMargin() * 0.8) / marginRequired;
       lotSize = MathFloor(lotSize / lotStep) * lotStep;
       lotSize = MathMax(lotSize, minLot);
    }
-   
+
    //--- FINAL UNIVERSAL HARD SAFETY CAP (Protects win rate by preventing premature $10 stopouts)
    if(InpMaxAllowedLot > 0)
    {
@@ -1418,7 +1418,7 @@ double CalculateLotSize(double slDistancePrice, ENUM_ORDER_TYPE orderType = ORDE
    }
    lotSize = MathMax(lotSize, minLot);
    lotSize = MathFloor(lotSize / lotStep) * lotStep;
-   
+
    return NormalizeDouble(lotSize, 2);
 }
 
@@ -1431,11 +1431,11 @@ void ManageOpenPositions()
    {
       if(!m_position.SelectByIndex(i))
          continue;
-      
+
       //--- Only manage our positions (matching magic number)
       if(m_position.Magic() != InpMagicNumber)
          continue;
-      
+
       //--- Calculate position profit in price distance
       double openPrice    = m_position.PriceOpen();
       double currentPrice = m_position.PriceCurrent();
@@ -1443,11 +1443,11 @@ void ManageOpenPositions()
       double currentTP    = m_position.TakeProfit();
       double netProfit    = m_position.Profit() + m_position.Swap() + m_position.Commission();
       ulong ticket        = m_position.Ticket();
-      
+
       //--- HARD DOLLAR LOSS SHIELD (Rule 7: Strict Universal Loss Cap per trade)
       // Strictly enforce InpMaxDollarLossPerTrade as the ceiling so trades never exceed safe risk
       double dynamicMaxLoss = InpMaxDollarLossPerTrade;
-      
+
       // Allow trade at least 5 seconds to clear initial broker spread before hard loss shield checks
       if(TimeCurrent() - (datetime)m_position.Time() >= 5)
       {
@@ -1459,7 +1459,7 @@ void ManageOpenPositions()
             continue;
          }
       }
-      
+
       //--- STEALTH MODE (Virtual SL/TP Checks)
       // Coordinated: Primary symbol chart manages its own stealth exits cleanly; InpAutoMultiSymbol handles all
       if(InpUseStealthMode && (m_position.Symbol() == _Symbol || InpAutoMultiSymbol))
@@ -1468,7 +1468,7 @@ void ManageOpenPositions()
          string tpName = "TP_" + IntegerToString(ticket);
          if(GlobalVariableCheck(slName)) currentSL = GlobalVariableGet(slName);
          if(GlobalVariableCheck(tpName)) currentTP = GlobalVariableGet(tpName);
-         
+
          if(m_position.PositionType() == POSITION_TYPE_BUY)
          {
             if(currentSL > 0 && currentPrice <= currentSL) { SetSymbolLossCooldown(m_position.Symbol()); m_trade.PositionClose(ticket); Print("👻 Stealth SL Hit (BUY)!"); continue; }
@@ -1480,7 +1480,7 @@ void ManageOpenPositions()
             if(currentTP > 0 && currentPrice <= currentTP) { m_trade.PositionClose(ticket); Print("👻 Stealth TP Hit (SELL)!"); continue; }
          }
       }
-      
+
       //--- ONLY apply ATR-based logic (Trailing Stop, Breakeven, Price Shock) to CURRENT chart symbol
       if(m_position.Symbol() == _Symbol)
       {
@@ -1488,7 +1488,7 @@ void ManageOpenPositions()
          if(ArraySize(bufATR) < 1) continue;
          double atr = bufATR[0];
          if(atr <= 0) continue;
-         
+
          //--- WINDFALL PROFIT EXIT (Rule 10 - Price Shocks)
          if(netProfit > 0 && CheckPriceShock(atr))
          {
@@ -1496,11 +1496,11 @@ void ManageOpenPositions()
             m_trade.PositionClose(ticket);
             continue;
          }
-         
+
          if(m_position.PositionType() == POSITION_TYPE_BUY)
       {
          double profitDistance = currentPrice - openPrice;
-         
+
          // 1. Dynamic Breakeven (Fast Zero-Risk Lock at 0.6 ATR or +$1.50 Profit)
          if((profitDistance >= atr * 0.6 || netProfit >= 1.50) && currentSL < openPrice)
          {
@@ -1512,11 +1512,11 @@ void ManageOpenPositions()
             }
             else if(m_trade.PositionModify(ticket, beSL, m_position.TakeProfit()))
             {
-               Print("🔒 BUY moved to ZERO-RISK Breakeven! Net Profit: $", DoubleToString(netProfit, 2), 
+               Print("🔒 BUY moved to ZERO-RISK Breakeven! Net Profit: $", DoubleToString(netProfit, 2),
                      " | SL: ", DoubleToString(beSL, _Digits));
             }
          }
-         
+
          // 1.5. Partial Profit Taking (50% at 1.5x ATR distance)
          string partialGV = "PARTIAL_" + IntegerToString(ticket);
          if(!GlobalVariableCheck(partialGV) && profitDistance >= atr * 1.5)
@@ -1533,7 +1533,7 @@ void ManageOpenPositions()
                }
             }
          }
-         
+
          // 2. Dynamic Trailing Stop to lock increasing profits (At 1.2+ ATR with 0.8 ATR healthy buffer)
          if(InpUseTrailingStop && profitDistance >= atr * InpTrailATR_Multi)
          {
@@ -1547,7 +1547,7 @@ void ManageOpenPositions()
                }
                else if(m_trade.PositionModify(ticket, newSL, m_position.TakeProfit()))
                {
-                  Print("🔄 BUY Trailing SL locked profit: ", DoubleToString(currentSL, _Digits), 
+                  Print("🔄 BUY Trailing SL locked profit: ", DoubleToString(currentSL, _Digits),
                         " → ", DoubleToString(newSL, _Digits));
                }
             }
@@ -1556,7 +1556,7 @@ void ManageOpenPositions()
       else if(m_position.PositionType() == POSITION_TYPE_SELL)
       {
          double profitDistance = openPrice - currentPrice;
-         
+
          // 1. Dynamic Breakeven (Fast Zero-Risk Lock at 0.6 ATR or +$1.50 Profit)
          if((profitDistance >= atr * 0.6 || netProfit >= 1.50) && (currentSL > openPrice || currentSL == 0))
          {
@@ -1568,11 +1568,11 @@ void ManageOpenPositions()
             }
             else if(m_trade.PositionModify(ticket, beSL, m_position.TakeProfit()))
             {
-               Print("🔒 SELL moved to ZERO-RISK Breakeven! Net Profit: $", DoubleToString(netProfit, 2), 
+               Print("🔒 SELL moved to ZERO-RISK Breakeven! Net Profit: $", DoubleToString(netProfit, 2),
                      " | SL: ", DoubleToString(beSL, _Digits));
             }
          }
-         
+
          // 1.5. Partial Profit Taking (50% at 1.5x ATR distance)
          string partialGV = "PARTIAL_" + IntegerToString(ticket);
          if(!GlobalVariableCheck(partialGV) && profitDistance >= atr * 1.5)
@@ -1589,7 +1589,7 @@ void ManageOpenPositions()
                }
             }
          }
-         
+
          // 2. Dynamic Trailing Stop to lock increasing profits (At 1.2+ ATR with 0.8 ATR healthy buffer)
          if(InpUseTrailingStop && profitDistance >= atr * InpTrailATR_Multi)
          {
@@ -1639,12 +1639,12 @@ bool IsTradingSession()
    string symUpper = _Symbol;
    StringToUpper(symUpper);
    if(StringFind(symUpper, "BTC") >= 0 || StringFind(symUpper, "ETH") >= 0) return true;
-   
+
    MqlDateTime timeStruct;
    TimeCurrent(timeStruct);
    int hour = timeStruct.hour;
    int min  = timeStruct.min;
-   
+
    if(InpUseGoldenHoursOnly)
    {
       // Kaufman Rule 7: Intraday breakouts have highest probability in the first 90-120 mins of session open
@@ -1652,23 +1652,23 @@ bool IsTradingSession()
       bool isLondonGolden = (hour >= 8 && hour < 10);
       // New York Open Window: 13:00 - 15:00 GMT
       bool isNYGolden     = (hour >= 13 && hour < 15);
-      
+
       if(isLondonGolden || isNYGolden) return true;
       return false;
    }
-   
+
    //--- Asian Session: 00:00 - 08:00 GMT
    if(InpTradeAsian && hour >= 0 && hour < 8)
       return true;
-   
+
    //--- London Session: 08:00 - 16:00 GMT
    if(InpTradeLondon && hour >= 8 && hour < 16)
       return true;
-   
+
    //--- New York Session: 13:00 - 21:00 GMT
    if(InpTradeNewYork && hour >= 13 && hour < 21)
       return true;
-   
+
    return false;
 }
 
@@ -1678,7 +1678,7 @@ bool IsTradingSession()
 bool IsMinBarsPassed()
 {
    if(g_lastTradeTime == 0) return true;
-   
+
    //--- Get number of bars since last trade
    int barsSince = iBarShift(_Symbol, InpTimeframe, g_lastTradeTime);
    if(barsSince < 0) return true;
@@ -1756,7 +1756,7 @@ bool CheckEquityDrawdown()
    {
       if(InpShowDashboard) UpdateDashboard("⛔ EQUITY SHIELD: " + DoubleToString(drawdownPct, 2) + "% drawdown - HALTED");
       Print("🛡️ Equity Drawdown Shield triggered: ", DoubleToString(drawdownPct, 2), "% >= ", DoubleToString(InpMaxDrawdownPercent, 1), "% limit.");
-      
+
       // Emergency close all active positions
       for(int i = PositionsTotal() - 1; i >= 0; i--)
       {
@@ -1781,10 +1781,10 @@ bool CheckDailyLimits()
       g_dailyStartBalance = m_account.Balance();
       if(g_dailyStartBalance <= 0) return false; // Failsafe against uninitialized MT5 state
    }
-   
+
    double currentBalance = m_account.Balance();
    double dailyPnL = currentBalance - g_dailyStartBalance;
-   
+
    //--- Also count floating P&L
    double floatingPnL = 0;
    for(int i = PositionsTotal() - 1; i >= 0; i--)
@@ -1795,14 +1795,14 @@ bool CheckDailyLimits()
             floatingPnL += m_position.Profit() + m_position.Swap() + m_position.Commission();
       }
    }
-   
+
    double totalPnL = dailyPnL + floatingPnL;
-   
+
    //--- Convert percentages to USD amounts based on starting balance
    double targetAmount = g_dailyStartBalance * (InpDailyProfitTargetPercent / 100.0);
    double triggerAmount = g_dailyStartBalance * (InpDailyProfitTrailingTriggerPercent / 100.0);
    double lockStepAmount = g_dailyStartBalance * (InpDailyProfitTrailingLockPercent / 100.0);
-   
+
    //--- Dynamic Daily Profit Trailing Lock
    if(totalPnL > g_maxDailyProfit)
    {
@@ -1813,26 +1813,26 @@ bool CheckDailyLimits()
          if(newLock > g_dailyProfitLock) g_dailyProfitLock = newLock;
       }
    }
-   
+
    if(g_dailyProfitLock != -999.0 && totalPnL <= g_dailyProfitLock)
    {
       if(InpShowDashboard) UpdateDashboard("🛡️ DAILY PROFIT LOCKED ($" + DoubleToString(g_dailyProfitLock, 2) + ") - STOPPED");
       return true;
    }
-   
+
    if(InpDailyProfitTargetPercent > 0 && targetAmount > 0 && totalPnL >= targetAmount)
    {
       if(InpShowDashboard) UpdateDashboard("✅ DAILY TARGET HIT (+" + DoubleToString(InpDailyProfitTargetPercent, 1) + "%) - STOPPED");
       return true;
    }
-   
+
    double lossLimitAmount = g_dailyStartBalance * (InpDailyLossLimitPercent / 100.0);
    if(InpDailyLossLimitPercent > 0 && lossLimitAmount > 0 && totalPnL <= -lossLimitAmount)
    {
       if(InpShowDashboard) UpdateDashboard("⛔ DAILY LOSS HIT (-" + DoubleToString(InpDailyLossLimitPercent, 1) + "%) - STOPPED");
       return true;
    }
-   
+
    return false;
 }
 
@@ -1854,7 +1854,7 @@ void CheckNewDay()
       g_dailyLossHit      = false;
       g_maxDailyProfit    = 0.0;
       g_dailyProfitLock   = -999.0;
-      
+
       Print("🌅 New trading day! Balance: ", DoubleToString(g_dailyStartBalance, 2));
    }
 }
@@ -1867,7 +1867,7 @@ bool ValidateStopLevels(ENUM_ORDER_TYPE orderType, double price, double sl, doub
    double minStop = m_symbol.StopsLevel() * _Point;
    if(minStop <= 0)
       minStop = m_symbol.Spread() * _Point * 2.0; // Rule 2: Guarantee minimum distance using 2x Spread
-   
+
    if(orderType == ORDER_TYPE_BUY)
    {
       if(price - sl < minStop) return false;
@@ -1878,7 +1878,7 @@ bool ValidateStopLevels(ENUM_ORDER_TYPE orderType, double price, double sl, doub
       if(sl - price < minStop) return false;
       if(price - tp < minStop) return false;
    }
-   
+
    return true;
 }
 
@@ -1888,21 +1888,21 @@ bool ValidateStopLevels(ENUM_ORDER_TYPE orderType, double price, double sl, doub
 void UpdateDashboard(string statusMessage)
 {
    if(!InpShowDashboard) return;
-   
+
    // Optimize dashboard updates to prevent terminal lag
    static int tickCounter = 0;
    static string lastStatus = "";
-   
+
    bool forceUpdate = false;
    if(statusMessage != "" && statusMessage != lastStatus)
    {
       lastStatus = statusMessage;
       forceUpdate = true;
    }
-   
+
    tickCounter++;
    if(tickCounter % 10 != 0 && !forceUpdate) return;
-   
+
    //--- Colors
    color clrTitle   = clrGold;
    color clrText    = clrWhite;
@@ -1910,13 +1910,13 @@ void UpdateDashboard(string statusMessage)
    color clrLoss    = clrRed;
    color clrStatus  = clrDodgerBlue;
    color clrBg      = clrBlack;
-   
+
    int x = 10;
    int y = 30;
    int lineHeight = 18;
    int fontSize = 9;
    string fontName = "Consolas";
-   
+
    //--- Title
    CreateLabel("XMBOT_Title", x, y, "╔═══════════════════════════════════╗", clrTitle, fontSize, fontName);
    y += lineHeight;
@@ -1924,14 +1924,14 @@ void UpdateDashboard(string statusMessage)
    y += lineHeight;
    CreateLabel("XMBOT_Sep1", x, y, "╠═══════════════════════════════════╣", clrTitle, fontSize, fontName);
    y += lineHeight;
-   
+
    //--- Symbol & Timeframe
    string symDisplay = InpAutoMultiSymbol ? "PORTFOLIO" : _Symbol;
-   CreateLabel("XMBOT_Symbol", x, y, 
-      StringFormat("║ Symbol: %-10s TF: %-8s  ║", symDisplay, EnumToString(InpTimeframe)), 
+   CreateLabel("XMBOT_Symbol", x, y,
+      StringFormat("║ Symbol: %-10s TF: %-8s  ║", symDisplay, EnumToString(InpTimeframe)),
       clrText, fontSize, fontName);
    y += lineHeight;
-   
+
    //--- Spread
    double spread = GetCurrentSpreadPoints();
    color spreadColor = (spread <= g_maxSpreadPoints) ? clrProfit : clrLoss;
@@ -1939,7 +1939,7 @@ void UpdateDashboard(string statusMessage)
       StringFormat("║ Spread: %-6.1f pts (Max: %-5.0f)   ║", spread, g_maxSpreadPoints),
       spreadColor, fontSize, fontName);
    y += lineHeight;
-   
+
    //--- Balance & Equity
    CreateLabel("XMBOT_Balance", x, y,
       StringFormat("║ Balance: $%-10.2f             ║", m_account.Balance()),
@@ -1949,7 +1949,7 @@ void UpdateDashboard(string statusMessage)
       StringFormat("║ Equity:  $%-10.2f             ║", m_account.Equity()),
       clrText, fontSize, fontName);
    y += lineHeight;
-   
+
    //--- Daily PnL
    double dailyPnL = m_account.Balance() - g_dailyStartBalance;
    double dailyPnLPct = (g_dailyStartBalance > 0) ? (dailyPnL / g_dailyStartBalance * 100) : 0;
@@ -1958,18 +1958,18 @@ void UpdateDashboard(string statusMessage)
       StringFormat("║ Daily P&L: %+.2f (%+.2f%%)       ║", dailyPnL, dailyPnLPct),
       pnlColor, fontSize, fontName);
    y += lineHeight;
-   
+
    //--- Open Trades
    int openTrades = CountOpenPositions();
    CreateLabel("XMBOT_Trades", x, y,
       StringFormat("║ Open: %d/%d | Today: %-3d          ║", openTrades, InpMaxOpenTrades, g_totalTradesToday),
       clrText, fontSize, fontName);
    y += lineHeight;
-   
+
    //--- Separator
    CreateLabel("XMBOT_Sep2", x, y, "╠═══════════════════════════════════╣", clrTitle, fontSize, fontName);
    y += lineHeight;
-   
+
    //--- Indicator Values
    if(ArraySize(bufRSI) > 0 && ArraySize(bufMACD_Main) > 0)
    {
@@ -1980,7 +1980,7 @@ void UpdateDashboard(string statusMessage)
          rsiColor, fontSize, fontName);
       y += lineHeight;
    }
-   
+
    if(ArraySize(bufATR) > 0)
    {
       CreateLabel("XMBOT_ATR", x, y,
@@ -1988,20 +1988,20 @@ void UpdateDashboard(string statusMessage)
          clrText, fontSize, fontName);
       y += lineHeight;
    }
-   
+
    //--- Separator
    CreateLabel("XMBOT_Sep3", x, y, "╠═══════════════════════════════════╣", clrTitle, fontSize, fontName);
    y += lineHeight;
-   
+
    //--- Status
    CreateLabel("XMBOT_Status", x, y,
       StringFormat("║ %-35s║", statusMessage),
       clrStatus, fontSize, fontName);
    y += lineHeight;
-   
+
    //--- Bottom border
    CreateLabel("XMBOT_Bottom", x, y, "╚═══════════════════════════════════╝", clrTitle, fontSize, fontName);
-   
+
    //--- Force chart redraw
    ChartRedraw();
 }
@@ -2019,7 +2019,7 @@ void CreateLabel(string name, int x, int y, string text, color clr, int fontSize
       ObjectSetInteger(0, name, OBJPROP_SELECTABLE, false);
       ObjectSetInteger(0, name, OBJPROP_HIDDEN, true);
    }
-   
+
    ObjectSetInteger(0, name, OBJPROP_XDISTANCE, x);
    ObjectSetInteger(0, name, OBJPROP_YDISTANCE, y);
    ObjectSetString(0, name, OBJPROP_TEXT, text);
@@ -2035,35 +2035,35 @@ void OnTrade()
 {
    //--- Check for recently closed positions in history
    HistorySelect(g_currentDay, TimeCurrent());
-   
+
    //--- Reset daily win/loss accumulators to prevent repeated deal double-counting
    g_winTrades = 0;
    g_lossTrades = 0;
    g_totalProfit = 0;
-   
+
    int totalDeals = HistoryDealsTotal();
    for(int i = totalDeals - 1; i >= 0; i--)
    {
       ulong ticket = HistoryDealGetTicket(i);
       if(ticket <= 0) continue;
-      
+
       //--- Only count our deals
       if(HistoryDealGetInteger(ticket, DEAL_MAGIC) != InpMagicNumber) continue;
       if(HistoryDealGetString(ticket, DEAL_SYMBOL) != _Symbol) continue;
-      
+
       //--- Only count exit deals
       ENUM_DEAL_ENTRY entry = (ENUM_DEAL_ENTRY)HistoryDealGetInteger(ticket, DEAL_ENTRY);
       if(entry != DEAL_ENTRY_OUT) continue;
-      
-      double profit = HistoryDealGetDouble(ticket, DEAL_PROFIT) + 
-                      HistoryDealGetDouble(ticket, DEAL_SWAP) + 
+
+      double profit = HistoryDealGetDouble(ticket, DEAL_PROFIT) +
+                      HistoryDealGetDouble(ticket, DEAL_SWAP) +
                       HistoryDealGetDouble(ticket, DEAL_COMMISSION);
-      
+
       if(profit > 0)
          g_winTrades++;
       else if(profit < 0)
          g_lossTrades++;
-      
+
       g_totalProfit += profit;
    }
 }
@@ -2074,15 +2074,15 @@ void OnTrade()
 bool CheckBullishFVG()
 {
    if(!InpUseSMC_FVG) return true; // Bypass if disabled
-   
+
    double high[], low[];
    ArraySetAsSeries(high, true); ArraySetAsSeries(low, true);
-   
+
    if(CopyHigh(_Symbol, PERIOD_CURRENT, 0, InpFVG_Lookback, high) <= 0) return false;
    if(CopyLow(_Symbol, PERIOD_CURRENT, 0, InpFVG_Lookback, low) <= 0) return false;
-   
+
    double currentPrice = m_symbol.Ask();
-   
+
    for(int i = 1; i < InpFVG_Lookback - 2; i++)
    {
       // Bullish FVG: Low of candle i > High of candle i+2
@@ -2101,15 +2101,15 @@ bool CheckBullishFVG()
 bool CheckBearishFVG()
 {
    if(!InpUseSMC_FVG) return true; // Bypass if disabled
-   
+
    double high[], low[];
    ArraySetAsSeries(high, true); ArraySetAsSeries(low, true);
-   
+
    if(CopyHigh(_Symbol, PERIOD_CURRENT, 0, InpFVG_Lookback, high) <= 0) return false;
    if(CopyLow(_Symbol, PERIOD_CURRENT, 0, InpFVG_Lookback, low) <= 0) return false;
-   
+
    double currentPrice = m_symbol.Bid();
-   
+
    for(int i = 1; i < InpFVG_Lookback - 2; i++)
    {
       // Bearish FVG: High of candle i < Low of candle i+2
@@ -2131,13 +2131,13 @@ bool CheckBearishFVG()
 bool CheckCorrelation(int type) // 1=BUY, -1=SELL
 {
    if(!InpUseCorrelation) return true; // Bypass if disabled
-   
+
    double corrEma[];
    ArraySetAsSeries(corrEma, true);
    if(CopyBuffer(h_corrEma, 0, 0, 1, corrEma) <= 0) return true; // Fallback if no data
-   
+
    double corrPrice = iClose(InpCorrSymbol, InpTimeframe, 0);
-   
+
    if(type == 1) // BUY EURUSD -> USDCHF must be dropping (Price < EMA)
    {
       return (corrPrice < corrEma[0]);
@@ -2155,10 +2155,10 @@ bool CheckCorrelation(int type) // 1=BUY, -1=SELL
 bool GetAIPrediction(int type_code, double rsi, double spread, double macd, double atr)
 {
    if(!InpUseONNX_AI || h_onnx == INVALID_HANDLE) return true; // Bypass if disabled or missing
-   
+
    MqlDateTime dt;
    TimeToStruct(TimeCurrent(), dt);
-   
+
    float inputs[9];
    inputs[0] = (float)rsi;
    inputs[1] = (float)spread;
@@ -2169,10 +2169,10 @@ bool GetAIPrediction(int type_code, double rsi, double spread, double macd, doub
    inputs[6] = (float)MathAbs(rsi - 50.0);
    inputs[7] = (float)(spread / (atr + 0.00001));
    inputs[8] = (float)dt.day_of_week;
-   
+
    long prediction[1];
    float probabilities[2];
-   
+
    if(OnnxRun(h_onnx, ONNX_NO_CONVERSION, inputs, prediction, probabilities))
    {
       double winProb = probabilities[1];
@@ -2187,7 +2187,7 @@ bool GetAIPrediction(int type_code, double rsi, double spread, double macd, doub
          return false;
       }
    }
-   
+
    Print("❌ ONNX Run Error: ", GetLastError());
    return true; // Failsafe pass
 }
@@ -2198,21 +2198,21 @@ bool GetAIPrediction(int type_code, double rsi, double spread, double macd, doub
 bool CheckOrderBookDOM(int type_code) // 1=BUY, -1=SELL
 {
    if(!InpUseDOM_Filter) return true;
-   
+
    MqlBookInfo book[];
    if(!MarketBookGet(_Symbol, book)) return true; // Failsafe pass if broker blocks DOM
-   
+
    double totalBuyVol = 0;
    double totalSellVol = 0;
-   
+
    for(int i = 0; i < ArraySize(book); i++)
    {
       if(book[i].type == BOOK_TYPE_SELL) totalSellVol += (double)book[i].volume;
       else if(book[i].type == BOOK_TYPE_BUY) totalBuyVol += (double)book[i].volume;
    }
-   
+
    if(totalBuyVol == 0 || totalSellVol == 0) return true;
-   
+
    if(type_code == 1) // Wants to BUY
    {
       if(totalSellVol >= totalBuyVol * InpDOM_WallRatio)
@@ -2229,7 +2229,7 @@ bool CheckOrderBookDOM(int type_code) // 1=BUY, -1=SELL
          return false;
       }
    }
-   
+
    return true;
 }
 
@@ -2253,17 +2253,17 @@ void OnChartEvent(const int id, const long &lparam, const double &dparam, const 
 bool IsNewsTime()
 {
    if(!InpAvoidHighImpactNews) return false;
-   
+
    // Get the two currencies from the symbol (e.g. "EUR" and "USD" from "EURUSD")
    string curr1 = StringSubstr(_Symbol, 0, 3);
    string curr2 = StringSubstr(_Symbol, 3, 3);
-   
+
    datetime timeFrom = TimeCurrent() - (InpNewsPauseBefore * 60);
    datetime timeTo   = TimeCurrent() + (InpNewsPauseAfter * 60);
-   
+
    // Array to hold calendar values
    MqlCalendarValue values[];
-   
+
    // Check Currency 1
    static bool warned = false;
    if(!CalendarValueHistory(values, timeFrom, timeTo, NULL, curr1))
@@ -2288,7 +2288,7 @@ bool IsNewsTime()
          }
       }
    }
-   
+
    // Check Currency 2
    if(StringLen(curr2) == 3)
    {
@@ -2308,7 +2308,7 @@ bool IsNewsTime()
          }
       }
    }
-   
+
    return false;
 }
 //+------------------------------------------------------------------+
@@ -2319,15 +2319,15 @@ double CalculateER(int period)
    double close[];
    ArraySetAsSeries(close, true);
    if(CopyClose(_Symbol, PERIOD_CURRENT, 0, period + 1, close) <= period) return 0.0;
-   
+
    double change = MathAbs(close[0] - close[period]); // Net price change
    double sumVolatility = 0;
-   
+
    for(int i = 0; i < period; i++)
    {
       sumVolatility += MathAbs(close[i] - close[i+1]);
    }
-   
+
    if(sumVolatility == 0) return 0.0;
    return change / sumVolatility;
 }
@@ -2342,7 +2342,7 @@ bool CheckPriceShock(double currentATR)
    ArraySetAsSeries(close, true);
    if(CopyOpen(_Symbol, PERIOD_CURRENT, 0, 1, open) <= 0) return false;
    if(CopyClose(_Symbol, PERIOD_CURRENT, 0, 1, close) <= 0) return false;
-   
+
    double range = MathAbs(close[0] - open[0]);
    if(currentATR > 0 && range > 5.0 * currentATR)
    {
