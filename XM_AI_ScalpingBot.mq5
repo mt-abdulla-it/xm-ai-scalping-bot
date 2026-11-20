@@ -5,10 +5,10 @@
 //+------------------------------------------------------------------+
 #property copyright   "mt-abdulla-it"
 #property link        "https://github.com/mt-abdulla-it/xm-ai-scalping-bot"
-#property version     "16.24"
+#property version     "16.25"
 #property description "AI-Powered Institutional Scalping Bot"
-#property description "🧠 v16.24 ONNX MACHINE LEARNING BRAIN ACTIVATED - M5 TREND SURFING"
-#property description "30-Pair Portfolio | Standalone ONNX AI | Kaufman ER + KAMA | Hard Loss Shield"
+#property description "🧠 v16.25 ONNX MACHINE LEARNING BRAIN ACTIVATED - M5 TREND SURFING"
+#property description "30-Pair Portfolio | Standalone ONNX AI | Kaufman ER + KAMA | Micro-Account Shield"
 
 //--- Include the trade library
 #include <Trade\Trade.mqh>
@@ -505,7 +505,21 @@ void OnTick()
       }
    }
    
-   //--- LAYER 1: Daily limit & 5% Equity Shield check
+   //--- LAYER 3: Get indicator values BEFORE managing positions!
+   if(!UpdateIndicators())
+   {
+      if(InpShowDashboard) UpdateDashboard("⚠️ Waiting for indicator data...");
+      return;
+   }
+   
+   //--- Manage existing positions (trailing stop, breakeven, hard loss shield) - ALWAYS RUN!
+   ManageOpenPositions();
+   
+   //--- ML LOGGER: Shadow manual user trades and log closed trades
+   ShadowManualTrades();
+   CheckClosedTradesAndLog();
+   
+   //--- LAYER 1: Daily limit & Equity Drawdown Shield check (Guards NEW entries)
    if(g_dailyLossHit)
    {
       return;
@@ -514,25 +528,9 @@ void OnTick()
    if(CheckDailyLimits() || CheckEquityDrawdown())
    {
       g_dailyLossHit = true;
-      Print("⏸️ Daily Target, Loss Limit, or 5% Equity Shield reached! Stopping trading.");
+      Print("⏸️ Daily Target, Loss Limit, or Equity Shield reached! New entries paused, open positions managed.");
       return;
    }
-   
-   //--- LAYER 3: Get indicator values BEFORE managing positions!
-   if(!UpdateIndicators())
-   {
-      if(InpShowDashboard) UpdateDashboard("⚠️ Waiting for indicator data...");
-      return;
-   }
-   
-    //--- (AI Telemetry Removed)
-   
-   //--- Manage existing positions (trailing stop, breakeven)
-   ManageOpenPositions();
-   
-   //--- ML LOGGER: Shadow manual user trades and log closed trades
-   ShadowManualTrades();
-   CheckClosedTradesAndLog();
    
    //--- LAYER 2: Market filter checks
    if(!IsSpreadAcceptable())
@@ -1762,11 +1760,14 @@ bool CheckEquityDrawdown()
    double equity  = m_account.Equity();
    if(balance <= 0) return false;
 
+   // 🛡️ Dynamic micro-account floor: ensure 1 normal trade doesn't trip emergency drawdown shield
+   double effectiveMaxDD = MathMax(InpMaxDrawdownPercent, ((InpMaxDollarLossPerTrade * 1.5) / balance) * 100.0);
+
    double drawdownPct = (balance > equity) ? (((balance - equity) / balance) * 100.0) : 0.0;
-   if(drawdownPct >= InpMaxDrawdownPercent)
+   if(drawdownPct >= effectiveMaxDD)
    {
       if(InpShowDashboard) UpdateDashboard("⛔ EQUITY SHIELD: " + DoubleToString(drawdownPct, 2) + "% drawdown - HALTED");
-      Print("🛡️ Equity Drawdown Shield triggered: ", DoubleToString(drawdownPct, 2), "% >= ", DoubleToString(InpMaxDrawdownPercent, 1), "% limit.");
+      Print("🛡️ Equity Drawdown Shield triggered: ", DoubleToString(drawdownPct, 2), "% >= ", DoubleToString(effectiveMaxDD, 1), "% limit.");
       
       // Emergency close all active positions
       for(int i = PositionsTotal() - 1; i >= 0; i--)
@@ -1837,10 +1838,11 @@ bool CheckDailyLimits()
       return true;
    }
    
-   double lossLimitAmount = g_dailyStartBalance * (InpDailyLossLimitPercent / 100.0);
+   // 🛡️ Dynamic micro-account loss floor: ensure daily loss limit allows at least 2.5 full trades
+   double lossLimitAmount = MathMax(g_dailyStartBalance * (InpDailyLossLimitPercent / 100.0), InpMaxDollarLossPerTrade * 2.5);
    if(InpDailyLossLimitPercent > 0 && lossLimitAmount > 0 && totalPnL <= -lossLimitAmount)
    {
-      if(InpShowDashboard) UpdateDashboard("⛔ DAILY LOSS HIT (-" + DoubleToString(InpDailyLossLimitPercent, 1) + "%) - STOPPED");
+      if(InpShowDashboard) UpdateDashboard("⛔ DAILY LOSS HIT (-$" + DoubleToString(lossLimitAmount, 2) + ") - STOPPED");
       return true;
    }
    
