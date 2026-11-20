@@ -125,7 +125,7 @@ input double   InpTrailStepATR     = 1.0;     // ⚡ Trail step buffer: ATR × 1
 input group "=== ⏰ Trading Session Filter ==="
 input bool     InpTradeLondon      = true;    // London Session (08:00-16:00 GMT) - High Win %
 input bool     InpTradeNewYork     = true;    // New York Session (13:00-21:00 GMT) - High Win %
-input bool     InpTradeAsian       = true;    // Asian Session (Turned ON: 24/7 continuous trading to reach 1000 milestone)
+input bool     InpTradeAsian       = false;   // 🌙 Asian Session: OFF (Auto-Sleep at night to avoid low volume chop)
 input bool     InpUseGoldenHoursOnly = false; // 🛡️ Golden hours only (Set false for full London/NY sessions)
 
 //--- General Settings
