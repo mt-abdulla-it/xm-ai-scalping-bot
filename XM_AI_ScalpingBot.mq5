@@ -5,10 +5,10 @@
 //+------------------------------------------------------------------+
 #property copyright   "mt-abdulla-it"
 #property link        "https://github.com/mt-abdulla-it/xm-ai-scalping-bot"
-#property version     "16.27"
+#property version     "16.28"
 #property description "AI-Powered Institutional Scalping Bot"
-#property description "🧠 v16.27 SNIPER RECOVERY QUANT BRAIN - 60.86% ACCURACY ONNX MODEL"
-#property description "30-Pair Portfolio | Adaptive AI Prob Thresholds | Kaufman ER + KAMA | Anti-Chop Guard"
+#property description "🧠 v16.28 QUANT RECOVERY SUITE - 4 INSTITUTIONAL ENGINES ACTIVATED"
+#property description "Per-Symbol 3-Loss Shield | Accelerated Profit Lock | Peak Session Windows | 24/7 Crypto Mode"
 
 //--- Include the trade library
 #include <Trade\Trade.mqh>
@@ -1246,6 +1246,11 @@ void CheckClosedTradesAndLog()
             {
                SetSymbolLossCooldown(_Symbol);
             }
+            else if(profit > 0)
+            {
+               // 🎯 Reset consecutive losses on profitable trade!
+               GlobalVariableDel("CONSEC_LOSS_" + _Symbol);
+            }
          }
          
          // Cleanup Stealth Mode Global Variables
@@ -1544,13 +1549,15 @@ void ManageOpenPositions()
          // 2. Dynamic Trailing Stop to lock increasing profits (At 1.2+ ATR with 0.8 ATR healthy buffer)
          if(InpUseTrailingStop && profitDistance >= atr * InpTrailATR_Multi)
          {
-            double newSL = NormalizeDouble(currentPrice - atr * InpTrailStepATR, _Digits);
+            // ⚡ ACCELERATED TRAILING LOCK: When profit >= $4.00, tighten buffer to 0.6x ATR to guarantee at least +$2.50 to +$3.00 locked!
+            double stepMulti = (netProfit >= 4.00) ? MathMin(InpTrailStepATR, 0.6) : InpTrailStepATR;
+            double newSL = NormalizeDouble(currentPrice - atr * stepMulti, _Digits);
             if(newSL > currentSL + _Point && newSL > openPrice)
             {
                if(InpUseStealthMode)
                {
                   GlobalVariableSet("SL_" + IntegerToString(ticket), newSL);
-                  Print("👻 🔄 BUY Trailing SL (Stealth) locked profit: ", DoubleToString(currentSL, _Digits), " → ", DoubleToString(newSL, _Digits));
+                  Print("👻 🔄 BUY Trailing SL (Stealth) locked profit: ", DoubleToString(currentSL, _Digits), " → ", DoubleToString(newSL, _Digits), (netProfit >= 4.0 ? " [⚡ ACCELERATED LOCK]" : ""));
                }
                else if(m_trade.PositionModify(ticket, newSL, m_position.TakeProfit()))
                {
@@ -1600,13 +1607,15 @@ void ManageOpenPositions()
          // 2. Dynamic Trailing Stop to lock increasing profits (At 1.2+ ATR with 0.8 ATR healthy buffer)
          if(InpUseTrailingStop && profitDistance >= atr * InpTrailATR_Multi)
          {
-            double newSL = NormalizeDouble(currentPrice + atr * InpTrailStepATR, _Digits);
+            // ⚡ ACCELERATED TRAILING LOCK: When profit >= $4.00, tighten buffer to 0.6x ATR to guarantee at least +$2.50 to +$3.00 locked!
+            double stepMulti = (netProfit >= 4.00) ? MathMin(InpTrailStepATR, 0.6) : InpTrailStepATR;
+            double newSL = NormalizeDouble(currentPrice + atr * stepMulti, _Digits);
             if((newSL < currentSL - _Point || currentSL == 0) && newSL < openPrice)
             {
                if(InpUseStealthMode)
                {
                   GlobalVariableSet("SL_" + IntegerToString(ticket), newSL);
-                  Print("👻 🔄 SELL Trailing SL (Stealth) locked profit: ", DoubleToString(currentSL, _Digits), " → ", DoubleToString(newSL, _Digits));
+                  Print("👻 🔄 SELL Trailing SL (Stealth) locked profit: ", DoubleToString(currentSL, _Digits), " → ", DoubleToString(newSL, _Digits), (netProfit >= 4.0 ? " [⚡ ACCELERATED LOCK]" : ""));
                }
                else if(m_trade.PositionModify(ticket, newSL, m_position.TakeProfit()))
                {
@@ -1642,31 +1651,49 @@ double GetCurrentSpreadPoints()
 //+------------------------------------------------------------------+
 bool IsTradingSession()
 {
-   // Crypto trades 24/7 (including Saturdays and Sundays)
-   string symUpper = _Symbol;
-   StringToUpper(symUpper);
-   if(StringFind(symUpper, "BTC") >= 0 || StringFind(symUpper, "ETH") >= 0) return true;
-   
    MqlDateTime timeStruct;
    TimeCurrent(timeStruct);
    int hour = timeStruct.hour;
-   int min  = timeStruct.min;
+   int day  = timeStruct.day_of_week;
+   
+   string symUpper = _Symbol;
+   StringToUpper(symUpper);
+   bool isCrypto = (StringFind(symUpper, "BTC") >= 0 || StringFind(symUpper, "ETH") >= 0);
+   
+   // 🪙 Feature 4: Weekend Crypto Engine (Saturday day 6 & Sunday day 0)
+   if(day == 0 || day == 6)
+   {
+      // Crypto trades 24/7 on weekends!
+      if(isCrypto) return true;
+      return false; // Forex and Indices closed on weekends
+   }
+   
+   // Crypto trades 24/7 during weekdays
+   if(isCrypto) return true;
+   
+   // ⏰ Feature 3: Peak Volume Windows (Kaufman Rule 7)
+   // US Stock Indices (Nasdaq, S&P 500) trade strictly during active London/NY hours (08:00 - 21:00 GMT)
+   if(StringFind(symUpper, "US100") >= 0 || StringFind(symUpper, "US500") >= 0 || StringFind(symUpper, "US30") >= 0)
+   {
+      if(hour >= 8 && hour < 21) return true;
+      return false; // Block late-night illiquid hours on indices
+   }
    
    if(InpUseGoldenHoursOnly)
    {
       // Kaufman Rule 7: Intraday breakouts have highest probability in the first 90-120 mins of session open
-      // London Open Window: 08:00 - 10:00 GMT
       bool isLondonGolden = (hour >= 8 && hour < 10);
-      // New York Open Window: 13:00 - 15:00 GMT
       bool isNYGolden     = (hour >= 13 && hour < 15);
-      
       if(isLondonGolden || isNYGolden) return true;
       return false;
    }
    
-   //--- Asian Session: 00:00 - 08:00 GMT
+   //--- Asian Session: 00:00 - 08:00 GMT (Allowed for JPY pairs)
    if(InpTradeAsian && hour >= 0 && hour < 8)
-      return true;
+   {
+      if(StringFind(symUpper, "JPY") >= 0) return true;
+      return false; // Block dead-volume on EUR/GBP in Asian hours
+   }
    
    //--- London Session: 08:00 - 16:00 GMT
    if(InpTradeLondon && hour >= 8 && hour < 16)
@@ -2447,9 +2474,27 @@ bool IsAnyPositionInLoss()
 void SetSymbolLossCooldown(string sym)
 {
    if(InpLossCooldownMinutes <= 0) return;
-   datetime cdUntil = TimeCurrent() + (InpLossCooldownMinutes * 60);
+   
+   // 🛡️ Track consecutive losses for this specific symbol
+   string countGV = "CONSEC_LOSS_" + sym;
+   int lossCount = 1;
+   if(GlobalVariableCheck(countGV))
+   {
+      lossCount = (int)GlobalVariableGet(countGV) + 1;
+   }
+   GlobalVariableSet(countGV, (double)lossCount);
+   
+   int cdMinutes = InpLossCooldownMinutes;
+   // 🛑 3-Consecutive Loss Limiter: Auto-pause symbol for 2 hours (120 min) to protect capital
+   if(lossCount >= 3)
+   {
+      cdMinutes = 120;
+      Print("🛡️ 🛑 3 CONSECUTIVE LOSSES on ", sym, "! Activating 2-Hour Auto-Cooling to halt chop and defend capital.");
+   }
+   
+   datetime cdUntil = TimeCurrent() + (cdMinutes * 60);
    GlobalVariableSet("COOLDOWN_" + sym, (double)cdUntil);
-   Print("⏳ 🛑 LOSS COOLDOWN ACTIVATED for ", sym, "! Pausing trading on this symbol for ", InpLossCooldownMinutes, " minutes until ", TimeToString(cdUntil));
+   Print("⏳ 🛑 LOSS COOLDOWN ACTIVATED for ", sym, "! (Loss #", lossCount, ") Pausing trading on this symbol for ", cdMinutes, " minutes until ", TimeToString(cdUntil));
 }
 
 bool IsSymbolInCooldown(string sym)
