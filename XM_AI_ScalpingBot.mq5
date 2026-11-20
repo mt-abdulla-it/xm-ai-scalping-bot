@@ -5,10 +5,10 @@
 //+------------------------------------------------------------------+
 #property copyright   "mt-abdulla-it"
 #property link        "https://github.com/mt-abdulla-it/xm-ai-scalping-bot"
-#property version     "16.25"
+#property version     "16.26"
 #property description "AI-Powered Institutional Scalping Bot"
-#property description "🧠 v16.25 ONNX MACHINE LEARNING BRAIN ACTIVATED - M5 TREND SURFING"
-#property description "30-Pair Portfolio | Standalone ONNX AI | Kaufman ER + KAMA | Micro-Account Shield"
+#property description "🧠 v16.26 ONNX MACHINE LEARNING BRAIN ACTIVATED - 24/5 CONTINUOUS SCALPING"
+#property description "30-Pair Portfolio | Standalone ONNX AI | Kaufman ER + KAMA | Dynamic Micro Shield"
 
 //--- Include the trade library
 #include <Trade\Trade.mqh>
@@ -29,11 +29,11 @@ input double   InpRiskPercent      = 1.0;     // 🛡️ 1.0% Risk per trade
 input double   InpMaxAllowedLot    = 0.10;    // 🛡️ Global Hard Max Lot (Pro 0.10 Lot Scaling: +$15 to +$25 per Win)
 input bool     InpUseCompounding   = true;    // Auto-compounding lot sizing enabled?
 input bool     InpUseKellyCriterion = false;  // ⛔ DISABLED - dangerous on micro accounts < $500
-input double   InpDailyProfitTargetPercent = 10.0; // 🎯 Stop trading if NET profit hits +10% ($10 today)
-input double   InpDailyProfitTrailingTriggerPercent = 3.0; // 🛡️ Start locking profit after +3% ($3)
-input double   InpDailyProfitTrailingLockPercent    = 1.5;  // 🛡️ Lock at least +1.5% ($1.50)
-input double   InpDailyLossLimitPercent = 3.0;  // ⛔ Daily Loss Limit 3.0% (Max -$3.00 on $100 balance)
-input double   InpMaxDrawdownPercent   = 3.0;   // Maximum Equity Drawdown Shield (3.0%)
+input double   InpDailyProfitTargetPercent = 20.0; // 🎯 Stop trading if NET profit hits +20% ($20 on $100 balance)
+input double   InpDailyProfitTrailingTriggerPercent = 0.0; // 🛡️ Profit trailing lock (0 = disabled, lets bot trade all day)
+input double   InpDailyProfitTrailingLockPercent    = 0.0;  // 🛡️ Lock percentage (0 = disabled)
+input double   InpDailyLossLimitPercent = 10.0; // ⛔ Daily Loss Limit 10.0% ($12.00 floor on $100 balance, allows 3 trades)
+input double   InpMaxDrawdownPercent   = 15.0;  // Maximum Equity Drawdown Shield (15.0% cushion for multi-trade floating noise)
 input double   InpMaxDollarLossPerTrade = 4.00;  // 🛡️ Hard Dollar Loss Shield: Strict $4.00 Max Loss Cap (Zero Large Losses!)
 input int      InpMaxOpenTrades    = 30;        // Max 30 total open trades across all pairs (Quality Portfolio)
 input int      InpMaxTradesPerSymbol = 2;       // Max 2 open trades per symbol (Reduced exposure)
@@ -520,16 +520,14 @@ void OnTick()
    CheckClosedTradesAndLog();
    
    //--- LAYER 1: Daily limit & Equity Drawdown Shield check (Guards NEW entries)
-   if(g_dailyLossHit)
-   {
-      return;
-   }
-   
    if(CheckDailyLimits() || CheckEquityDrawdown())
    {
       g_dailyLossHit = true;
-      Print("⏸️ Daily Target, Loss Limit, or Equity Shield reached! New entries paused, open positions managed.");
       return;
+   }
+   else
+   {
+      g_dailyLossHit = false; // Keep trading enabled when within limits!
    }
    
    //--- LAYER 2: Market filter checks
@@ -1760,8 +1758,8 @@ bool CheckEquityDrawdown()
    double equity  = m_account.Equity();
    if(balance <= 0) return false;
 
-   // 🛡️ Dynamic micro-account floor: ensure 1 normal trade doesn't trip emergency drawdown shield
-   double effectiveMaxDD = MathMax(InpMaxDrawdownPercent, ((InpMaxDollarLossPerTrade * 1.5) / balance) * 100.0);
+   // 🛡️ Dynamic micro-account floor: ensure 15% cushion so normal multi-trade floating noise doesn't trigger emergency halt
+   double effectiveMaxDD = MathMax(InpMaxDrawdownPercent, 15.0);
 
    double drawdownPct = (balance > equity) ? (((balance - equity) / balance) * 100.0) : 0.0;
    if(drawdownPct >= effectiveMaxDD)
@@ -1797,52 +1795,21 @@ bool CheckDailyLimits()
    double currentBalance = m_account.Balance();
    double dailyPnL = currentBalance - g_dailyStartBalance;
    
-   //--- Also count floating P&L
-   double floatingPnL = 0;
-   for(int i = PositionsTotal() - 1; i >= 0; i--)
-   {
-      if(m_position.SelectByIndex(i))
-      {
-         if(m_position.Magic() == InpMagicNumber)
-            floatingPnL += m_position.Profit() + m_position.Swap() + m_position.Commission();
-      }
-   }
-   
-   double totalPnL = dailyPnL + floatingPnL;
-   
    //--- Convert percentages to USD amounts based on starting balance
    double targetAmount = g_dailyStartBalance * (InpDailyProfitTargetPercent / 100.0);
-   double triggerAmount = g_dailyStartBalance * (InpDailyProfitTrailingTriggerPercent / 100.0);
-   double lockStepAmount = g_dailyStartBalance * (InpDailyProfitTrailingLockPercent / 100.0);
    
-   //--- Dynamic Daily Profit Trailing Lock
-   if(totalPnL > g_maxDailyProfit)
+   // 🎯 Target Hit: only halt when closed profit reaches target AND no trades are floating
+   if(InpDailyProfitTargetPercent > 0 && targetAmount > 0 && dailyPnL >= targetAmount && PositionsTotal() == 0)
    {
-      g_maxDailyProfit = totalPnL;
-      if(triggerAmount > 0 && g_maxDailyProfit >= triggerAmount)
-      {
-         double newLock = g_maxDailyProfit - (triggerAmount - lockStepAmount);
-         if(newLock > g_dailyProfitLock) g_dailyProfitLock = newLock;
-      }
-   }
-   
-   if(g_dailyProfitLock != -999.0 && totalPnL <= g_dailyProfitLock)
-   {
-      if(InpShowDashboard) UpdateDashboard("🛡️ DAILY PROFIT LOCKED ($" + DoubleToString(g_dailyProfitLock, 2) + ") - STOPPED");
+      if(InpShowDashboard) UpdateDashboard("✅ DAILY TARGET HIT (+$" + DoubleToString(dailyPnL, 2) + ") - STOPPED");
       return true;
    }
    
-   if(InpDailyProfitTargetPercent > 0 && targetAmount > 0 && totalPnL >= targetAmount)
+   // 🛡️ Dynamic micro-account loss floor: ensure daily loss limit allows at least 3 full trades ($12.00 on $100)
+   double lossLimitAmount = MathMax(g_dailyStartBalance * (InpDailyLossLimitPercent / 100.0), InpMaxDollarLossPerTrade * 3.0);
+   if(InpDailyLossLimitPercent > 0 && lossLimitAmount > 0 && dailyPnL <= -lossLimitAmount)
    {
-      if(InpShowDashboard) UpdateDashboard("✅ DAILY TARGET HIT (+" + DoubleToString(InpDailyProfitTargetPercent, 1) + "%) - STOPPED");
-      return true;
-   }
-   
-   // 🛡️ Dynamic micro-account loss floor: ensure daily loss limit allows at least 2.5 full trades
-   double lossLimitAmount = MathMax(g_dailyStartBalance * (InpDailyLossLimitPercent / 100.0), InpMaxDollarLossPerTrade * 2.5);
-   if(InpDailyLossLimitPercent > 0 && lossLimitAmount > 0 && totalPnL <= -lossLimitAmount)
-   {
-      if(InpShowDashboard) UpdateDashboard("⛔ DAILY LOSS HIT (-$" + DoubleToString(lossLimitAmount, 2) + ") - STOPPED");
+      if(InpShowDashboard) UpdateDashboard("⛔ DAILY LOSS HIT (-$" + DoubleToString(MathAbs(dailyPnL), 2) + ") - STOPPED");
       return true;
    }
    
