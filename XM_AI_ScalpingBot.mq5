@@ -366,16 +366,24 @@ int OnInit()
    g_dailyProfitLock   = -999.0;
    g_accountHalted     = false;
    
-   //--- Total Drawdown Circuit Breaker: Track initial deposit (persists via GlobalVariable)
-   string gvName = "XMBOT_InitialDeposit_" + IntegerToString(InpMagicNumber);
+   //--- Total Drawdown Circuit Breaker: Track initial deposit (persists via GlobalVariable per Account Login)
+   string gvName = "XMBOT_InitialDeposit_" + IntegerToString(m_account.Login()) + "_" + IntegerToString(InpMagicNumber);
+   
+   // Clean up legacy variable from previous accounts without Login scoping
+   string legacyGvName = "XMBOT_InitialDeposit_" + IntegerToString(InpMagicNumber);
+   if(GlobalVariableCheck(legacyGvName))
+   {
+      GlobalVariableDel(legacyGvName);
+   }
+   
    if(GlobalVariableCheck(gvName))
    {
       g_initialDeposit = GlobalVariableGet(gvName);
-      if(m_account.Balance() > g_initialDeposit * 1.5)
+      if(m_account.Balance() > g_initialDeposit * 1.5 || m_account.Balance() < g_initialDeposit * 0.4)
       {
          g_initialDeposit = m_account.Balance();
          GlobalVariableSet(gvName, g_initialDeposit);
-         Print("🛡️ Circuit Breaker: Balance increased/reset to $", DoubleToString(g_initialDeposit, 2), " — GV updated!");
+         Print("🛡️ Circuit Breaker: Balance reset/updated to $", DoubleToString(g_initialDeposit, 2), " — GV updated!");
       }
       else
       {
