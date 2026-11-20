@@ -48,7 +48,7 @@ flowchart TD
     Market -->|Live Tick Data| EA
     EA -->|Extract 14 Engineered Features| ModelFeatures
     ModelFeatures -->|Tensor Input| ONNX
-    ONNX -->|Directional Probability (>65%)| Protection
+    ONNX -->|"Directional Probability &gt; 65%"| Protection
     Protection -->|Verified Safe Signal| Execution
     Execution -->|Trade Order| Market
     Retrain -.->|Optimized Weights| ONNX
