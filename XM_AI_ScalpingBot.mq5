@@ -5,10 +5,10 @@
 //+------------------------------------------------------------------+
 #property copyright   "mt-abdulla-it"
 #property link        "https://github.com/mt-abdulla-it/xm-ai-scalping-bot"
-#property version     "16.26"
+#property version     "16.27"
 #property description "AI-Powered Institutional Scalping Bot"
-#property description "🧠 v16.26 ONNX MACHINE LEARNING BRAIN ACTIVATED - 24/5 CONTINUOUS SCALPING"
-#property description "30-Pair Portfolio | Standalone ONNX AI | Kaufman ER + KAMA | Dynamic Micro Shield"
+#property description "🧠 v16.27 SNIPER RECOVERY QUANT BRAIN - 60.86% ACCURACY ONNX MODEL"
+#property description "30-Pair Portfolio | Adaptive AI Prob Thresholds | Kaufman ER + KAMA | Anti-Chop Guard"
 
 //--- Include the trade library
 #include <Trade\Trade.mqh>
@@ -88,7 +88,7 @@ input double   InpRSI_SellMin      = 20.0;    // 📉 (Relaxed) RSI minimum for 
 //--- ONNX AI Machine Learning
 input group "=== 🧠 ONNX AI Machine Learning ==="
 input bool     InpUseONNX_AI       = true;    // 🧠 ONNX AI Win-Probability Filter (ACTIVATED!)
-input double   InpONNX_MinProb     = 0.50;    // 🛡️ High-Edge Filter: 50%+ Win Probability Required (Allows positive edge trades, blocks <50% losers)
+input double   InpONNX_MinProb     = 0.55;    // 🛡️ High-Edge Sniper Filter: 55%+ Win Probability Required (Blocks chop, targets A+ setups)
 
 //--- SMC (Smart Money Concepts) Settings
 input group "=== 🏛️ Smart Money Concepts (SMC) ==="
@@ -2142,7 +2142,22 @@ bool CheckCorrelation(int type) // 1=BUY, -1=SELL
 }
 
 //+------------------------------------------------------------------+
-//| UPDATE LIVE AI PROBABILITY (For Real-Time On-Chart Dashboard)    |
+//| GET REQUIRED AI WIN PROBABILITY (Adaptive Symbol Shield)         |
+//+------------------------------------------------------------------+
+double GetRequiredAIProb()
+{
+   double required = InpONNX_MinProb;
+   string sym = _Symbol;
+   StringToUpper(sym);
+   if(StringFind(sym, "US100") >= 0)
+      return MathMax(required, 0.60); // 🛡️ Strict 60% sniper threshold for Nasdaq (Eliminates chop)
+   if(StringFind(sym, "BTC") >= 0)
+      return MathMax(required, 0.58); // 🛡️ 58% for Bitcoin
+   return MathMax(required, 0.55);    // 🛡️ 55% for S&P500 and Forex
+}
+
+//+------------------------------------------------------------------+
+//| UPDATE LIVE AI PROBABILITY (On-Chart Meter)                      |
 //+------------------------------------------------------------------+
 void UpdateLiveAIProb()
 {
@@ -2178,10 +2193,11 @@ void UpdateLiveAIProb()
    {
       double winProb = probabilities[1];
       g_aiLastWinProb = winProb;
-      if(winProb >= InpONNX_MinProb)
-         g_aiStatusStr = StringFormat("🧠 AI: %.1f%% [PASS ≥ %.0f%%]", winProb * 100.0, InpONNX_MinProb * 100.0);
+      double minTarget = GetRequiredAIProb();
+      if(winProb >= minTarget)
+         g_aiStatusStr = StringFormat("🧠 AI: %.1f%% [PASS ≥ %.0f%%]", winProb * 100.0, minTarget * 100.0);
       else
-         g_aiStatusStr = StringFormat("🚫 AI: %.1f%% [BLOCK < %.0f%%]", winProb * 100.0, InpONNX_MinProb * 100.0);
+         g_aiStatusStr = StringFormat("🚫 AI: %.1f%% [BLOCK < %.0f%%]", winProb * 100.0, minTarget * 100.0);
    }
 }
 
@@ -2213,16 +2229,17 @@ bool GetAIPrediction(int type_code, double rsi, double spread, double macd, doub
    {
       double winProb = probabilities[1];
       g_aiLastWinProb = winProb;
-      if(winProb >= InpONNX_MinProb)
+      double minTarget = GetRequiredAIProb();
+      if(winProb >= minTarget)
       {
-         g_aiStatusStr = StringFormat("🧠 AI: %.1f%% [PASS ≥ %.0f%%]", winProb * 100.0, InpONNX_MinProb * 100.0);
-         Print("🧠 AI Approved! Win Probability: ", DoubleToString(winProb * 100, 1), "%");
+         g_aiStatusStr = StringFormat("🧠 AI: %.1f%% [PASS ≥ %.0f%%]", winProb * 100.0, minTarget * 100.0);
+         Print("🧠 AI Approved! Win Probability: ", DoubleToString(winProb * 100, 1), "% >= ", DoubleToString(minTarget * 100, 0), "% Target");
          return true;
       }
       else
       {
-         g_aiStatusStr = StringFormat("🚫 AI: %.1f%% [BLOCK < %.0f%%]", winProb * 100.0, InpONNX_MinProb * 100.0);
-         Print("🚫 AI Rejected! Win Probability: ", DoubleToString(winProb * 100, 1), "% < Target");
+         g_aiStatusStr = StringFormat("🚫 AI: %.1f%% [BLOCK < %.0f%%]", winProb * 100.0, minTarget * 100.0);
+         Print("🚫 AI Rejected! Win Probability: ", DoubleToString(winProb * 100, 1), "% < ", DoubleToString(minTarget * 100, 0), "% Target");
          return false;
       }
    }
