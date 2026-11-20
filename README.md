@@ -22,6 +22,40 @@
 
 ---
 
+
+
+## 🏗️ System Architecture & Execution Pipeline
+
+```mermaid
+flowchart TD
+    subgraph MT5["MetaTrader 5 Client Terminal"]
+        Market["Live Tick & Price Feed (XM Broker)"]
+        EA["XM_AI_ScalpingBot.mq5 (Expert Advisor)"]
+        Execution["Fast Execution Engine"]
+    end
+
+    subgraph AI["Machine Learning Inference"]
+        ONNX["Embedded ONNX Runtime (ai_brain.onnx)"]
+        ModelFeatures["Rolling Indicator & Volatility Tensor"]
+        Retrain["Continuous Retraining Pipeline (Python)"]
+    end
+
+    subgraph Protection["Risk & Capital Safeguards"]
+        SpreadFilter["Microsecond Spread Filter"]
+        ATRStop["Dynamic ATR Trailing Stop & Take Profit"]
+    end
+
+    Market -->|Live Tick Data| EA
+    EA -->|Extract 14 Engineered Features| ModelFeatures
+    ModelFeatures -->|Tensor Input| ONNX
+    ONNX -->|Directional Probability (>65%)| Protection
+    Protection -->|Verified Safe Signal| Execution
+    Execution -->|Trade Order| Market
+    Retrain -.->|Optimized Weights| ONNX
+```
+
+---
+
 ## 📑 Table of Contents
 
 - [Overview](#-overview)
@@ -378,3 +412,14 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 <p align="center">
   Made with ❤️ by <a href="https://github.com/mt-abdulla-it">Abdullah</a>
 </p>
+
+
+---
+
+## 🌟 Support This Project
+
+If you find this AI Scalping Engine useful, please consider giving it a **Star (⭐)**! It helps more algorithmic traders and developers discover this open-source work.
+
+[![Star History Chart](https://api.star-history.com/svg?repos=mt-abdulla-it/xm-ai-scalping-bot&type=Date)](https://star-history.com/#mt-abdulla-it/xm-ai-scalping-bot&Date)
+
+---
