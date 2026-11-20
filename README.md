@@ -268,7 +268,7 @@ The bot features a self-contained, real-time quantitative machine learning pipel
 The input feature vector captures market momentum, transaction friction, volatility regimes, temporal session effects, and non-linear interactions:
 
 $$\vec{x} = \begin{bmatrix} 
-\text{RSI} & \text{Spread} & \text{MACD} & \text{ATR} & \text{Type\_Code} & \text{Hour} & |\text{RSI} - 50| & \frac{\text{Spread}}{\text{ATR} + \epsilon} & \text{DayOfWeek} 
+\text{RSI} & \text{Spread} & \text{MACD} & \text{ATR} & \text{Type\\_Code} & \text{Hour} & |\text{RSI} - 50| & \frac{\text{Spread}}{\text{ATR} + \epsilon} & \text{DayOfWeek} 
 \end{bmatrix}$$
 
 | Feature Index | Feature Name | Domain Description | Feature Importance |
