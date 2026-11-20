@@ -118,7 +118,7 @@ input double   InpTP_ATR_Multi     = 2.5;     // 🎯 High-Reward Take Profit = 
 //--- Trailing Stop Settings
 input group "=== 🔄 Trailing Stop Settings ==="
 input bool     InpUseTrailingStop  = true;    // Enable dynamic ATR trailing stop
-input double   InpTrailATR_Multi   = 2.0;     // 🛡️ Trailing start: ATR × 2.0 (Only trails after strong profit)
+input double   InpTrailATR_Multi   = 1.5;     // 🛡️ Trailing start: ATR × 1.5 (Trails earlier to lock in profits faster!)
 input double   InpTrailStepATR     = 1.0;     // ⚡ Trail step buffer: ATR × 1.0 (Full 1.0 ATR breathing room so pullbacks don't choke trades)
 
 //--- Session Filter Settings
@@ -1514,8 +1514,9 @@ void ManageOpenPositions()
       {
          double profitDistance = currentPrice - openPrice;
          
-         // 1. Dynamic Breakeven (At 1.5 ATR distance & Net Profit >= $3.00) -> Protects real gains without suffocating trades
-         if((profitDistance >= atr * 1.5 && netProfit >= 3.00) && currentSL < openPrice)
+         // 1. Dynamic Breakeven: Scale threshold for micro lots (0.01 lot needs $0.80, larger lots need $2.00)
+         double minBeProfit = (m_position.Volume() <= 0.02) ? 0.80 : 2.00;
+         if((profitDistance >= atr * 1.2 && netProfit >= minBeProfit) && currentSL < openPrice)
          {
             double beSL = NormalizeDouble(openPrice + (m_symbol.Spread() * _Point * 2.0), _Digits);
             if(InpUseStealthMode)
@@ -1572,8 +1573,9 @@ void ManageOpenPositions()
       {
          double profitDistance = openPrice - currentPrice;
          
-         // 1. Dynamic Breakeven (At 1.5 ATR distance & Net Profit >= $3.00) -> Protects real gains without suffocating trades
-         if((profitDistance >= atr * 1.5 && netProfit >= 3.00) && (currentSL > openPrice || currentSL == 0))
+         // 1. Dynamic Breakeven: Scale threshold for micro lots (0.01 lot needs $0.80, larger lots need $2.00)
+         double minBeProfit = (m_position.Volume() <= 0.02) ? 0.80 : 2.00;
+         if((profitDistance >= atr * 1.2 && netProfit >= minBeProfit) && (currentSL > openPrice || currentSL == 0))
          {
             double beSL = NormalizeDouble(openPrice - (m_symbol.Spread() * _Point * 2.0), _Digits);
             if(InpUseStealthMode)
