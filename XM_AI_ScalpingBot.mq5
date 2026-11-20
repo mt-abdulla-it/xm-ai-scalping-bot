@@ -29,7 +29,8 @@ input double   InpRiskPercent      = 1.0;     // 🛡️ 1.0% Risk per trade
 input double   InpMaxAllowedLot    = 0.10;    // 🛡️ Global Hard Max Lot (Pro 0.10 Lot Scaling: +$15 to +$25 per Win)
 input bool     InpUseCompounding   = true;    // Auto-compounding lot sizing enabled?
 input bool     InpUseKellyCriterion = false;  // ⛔ DISABLED - dangerous on micro accounts < $500
-input double   InpDailyProfitTargetPercent = 20.0; // 🎯 Stop trading if NET profit hits +20% ($20 on $100 balance)
+input double   InpDailyProfitTargetPercent = 15.0; // 🎯 Stop trading if NET profit hits +15% ($15 on $100 balance)
+input int      InpDailyMaxTrades   = 20;        // 🛑 Max Daily Trades Cap (20 trades max per day to prevent chop over-trading)
 input double   InpDailyProfitTrailingTriggerPercent = 0.0; // 🛡️ Profit trailing lock (0 = disabled, lets bot trade all day)
 input double   InpDailyProfitTrailingLockPercent    = 0.0;  // 🛡️ Lock percentage (0 = disabled)
 input double   InpDailyLossLimitPercent = 10.0; // ⛔ Daily Loss Limit 10.0% ($12.00 floor on $100 balance, allows 3 trades)
@@ -70,7 +71,7 @@ input int      InpEmaSlow          = 21;      // Slow EMA
 
 //--- MTF (Multi-Timeframe) Trend Filter
 input group "=== ⏱️ MTF Trend Filter ==="
-input bool           InpUseMTFFilter   = false;        // Fast Scalping: disabled to allow both BUY & SELL M5 swings
+input bool           InpUseMTFFilter   = true;         // ⏱️ MTF Trend Alignment (Elder Triple Screen H1 EMA50 - No Counter-Trend!)
 input ENUM_TIMEFRAMES InpTrendTimeframe = PERIOD_H1;    // Higher Timeframe — H1 for strong trend (Elder Triple Screen)
 input int            InpTrendEMA       = 50;           // EMA Period for Trend Filter
 
@@ -1829,6 +1830,13 @@ bool CheckDailyLimits()
    if(InpDailyProfitTargetPercent > 0 && targetAmount > 0 && dailyPnL >= targetAmount && PositionsTotal() == 0)
    {
       if(InpShowDashboard) UpdateDashboard("✅ DAILY TARGET HIT (+$" + DoubleToString(dailyPnL, 2) + ") - STOPPED");
+      return true;
+   }
+
+   // 🛑 Daily Max Trades Cap: prevent over-trading in chop
+   if(InpDailyMaxTrades > 0 && g_totalTradesToday >= InpDailyMaxTrades && PositionsTotal() == 0)
+   {
+      if(InpShowDashboard) UpdateDashboard("🛑 MAX TRADES (" + IntegerToString(g_totalTradesToday) + ") HIT - STOPPED");
       return true;
    }
    
