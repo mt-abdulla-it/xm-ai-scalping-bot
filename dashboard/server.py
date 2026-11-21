@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 import os
+import sys
 import glob
 import re
 import json
 import subprocess
 from datetime import datetime
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
+from ai_engine.model_router import router, MODELS, SYSTEM_PROMPT
+from ai_engine.memory import get_memories, add_memory, delete_memory, format_memories_for_prompt, auto_extract_and_save_preferences
+from ai_engine.rag import ingest_document, search_knowledge_base, format_rag_context, list_documents
+from ai_engine.osint_cti import extract_iocs, query_dns_intelligence, query_rdap_whois, map_mitre_technique
+from ai_engine.database import save_message, get_conversation_history, list_conversations, log_audit, get_recent_audit_logs
 
 app = Flask(__name__, template_folder='templates')
 
@@ -127,6 +138,128 @@ def index():
 @app.route('/api/status')
 def api_status():
     return jsonify(get_trading_data())
+
+# ==============================================================================
+# 🤖 Next-Gen AI Assistant & Multi-Model Routes
+# ==============================================================================
+@app.route('/api/models', methods=['GET'])
+def api_models():
+    return jsonify({
+        "models": MODELS,
+        "health": router.health_status,
+        "token_usage": router.token_usage
+    })
+
+@app.route('/api/chat', methods=['POST'])
+def api_chat():
+    data = request.get_json() or {}
+    prompt = data.get("prompt", "").strip()
+    if not prompt:
+        return jsonify({"error": "Prompt is required"}), 400
+        
+    model_key = data.get("model")
+    conversation_id = data.get("conversation_id", "default_session")
+    use_rag = data.get("use_rag", True)
+    use_memory = data.get("use_memory", True)
+    
+    # Save user message to SQLite
+    save_message(conversation_id, "user", prompt, model=model_key)
+    auto_extract_and_save_preferences(prompt)
+    
+    # Build System Instruction with Memory & RAG Context
+    sys_prompt = SYSTEM_PROMPT
+    if use_memory:
+        mem_ctx = format_memories_for_prompt()
+        if mem_ctx: sys_prompt += f"\n{mem_ctx}"
+    if use_rag:
+        rag_ctx = format_rag_context(prompt)
+        if rag_ctx: sys_prompt += f"\n{rag_ctx}"
+        
+    history = get_conversation_history(conversation_id, limit=8)
+    
+    # Generate via Model Router
+    result = router.generate(prompt, model_key=model_key, system_instruction=sys_prompt, history=history)
+    
+    # Save Assistant Response
+    save_message(conversation_id, "assistant", result.get("text", ""), model=result.get("model"))
+    log_audit("chat_query", "web_user", {"prompt_len": len(prompt), "model": result.get("model")})
+    
+    return jsonify(result)
+
+@app.route('/api/conversations', methods=['GET'])
+def api_conversations():
+    return jsonify({"conversations": list_conversations()})
+
+@app.route('/api/conversations/<conv_id>', methods=['GET'])
+def api_conversation_history(conv_id):
+    return jsonify({"history": get_conversation_history(conv_id, limit=50)})
+
+# ==============================================================================
+# 🧠 Long-Term Memory Routes
+# ==============================================================================
+@app.route('/api/memory', methods=['GET', 'POST'])
+def api_memory():
+    if request.method == 'GET':
+        return jsonify({"memories": get_memories()})
+    data = request.get_json() or {}
+    key = data.get("key", "").strip()
+    value = data.get("value", "").strip()
+    category = data.get("category", "preference")
+    if not key or not value:
+        return jsonify({"error": "Key and Value required"}), 400
+    mem_id = add_memory(key, value, category=category)
+    return jsonify({"success": True, "id": mem_id})
+
+@app.route('/api/memory/<int:mem_id>', methods=['DELETE'])
+def api_memory_delete(mem_id):
+    success = delete_memory(mem_id)
+    return jsonify({"success": success})
+
+# ==============================================================================
+# 📚 RAG Knowledge Base Routes
+# ==============================================================================
+@app.route('/api/rag/documents', methods=['GET'])
+def api_rag_docs():
+    return jsonify({"documents": list_documents()})
+
+@app.route('/api/rag/upload', methods=['POST'])
+def api_rag_upload():
+    data = request.get_json() or {}
+    filename = data.get("filename", "user_upload.txt")
+    content = data.get("content", "").strip()
+    if not content:
+        return jsonify({"error": "Content cannot be empty"}), 400
+    res = ingest_document(filename, content)
+    return jsonify({"success": True, "document": res})
+
+# ==============================================================================
+# 🛡️ Defensive OSINT & CTI Routes
+# ==============================================================================
+@app.route('/api/osint/analyze', methods=['POST'])
+def api_osint_analyze():
+    data = request.get_json() or {}
+    target = data.get("target", "").strip()
+    if not target:
+        return jsonify({"error": "Target or text required"}), 400
+        
+    iocs = extract_iocs(target)
+    dns_info = query_dns_intelligence(target) if "." in target and " " not in target else None
+    whois_info = query_rdap_whois(target) if "." in target and " " not in target else None
+    
+    return jsonify({
+        "target": target,
+        "iocs": iocs,
+        "dns": dns_info,
+        "whois": whois_info
+    })
+
+@app.route('/api/mitre/<technique_id>', methods=['GET'])
+def api_mitre(technique_id):
+    return jsonify(map_mitre_technique(technique_id))
+
+@app.route('/api/audit', methods=['GET'])
+def api_audit():
+    return jsonify({"logs": get_recent_audit_logs(limit=30)})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
