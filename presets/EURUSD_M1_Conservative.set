@@ -1,0 +1,20 @@
+; XM AI Scalping Bot - Conservative Profile
+; Optimal for low-drawdown personal accounts & cautious growth
+InpRiskPercent=0.5
+InpMaxAllowedLot=0.05
+InpUseCompounding=true
+InpUseKellyCriterion=false
+InpDailyProfitTargetPercent=5.0
+InpDailyProfitTrailingTriggerPercent=2.0
+InpDailyProfitTrailingLockPercent=1.0
+InpDailyLossLimitPercent=2.0
+InpMaxDrawdownPercent=2.5
+InpMaxDollarLossPerTrade=5.00
+InpMaxOpenTrades=10
+InpMaxTradesPerSymbol=1
+InpMaxSpreadPoints=20.0
+InpLossCooldownMinutes=5
+InpGlobalOrderBufferSeconds=3
+InpAvoidHighImpactNews=true
+InpNewsPauseBefore=10
+InpNewsPauseAfter=10

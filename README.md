@@ -425,6 +425,48 @@ If you find this AI Scalping Engine useful, please consider giving it a **Star (
 ---
 
 
+## 💎 Commercial Editions & Licensing Tiers
+
+| Features & Capabilities | 🆓 Community Edition | 🚀 Trader Pro (Most Popular ⭐) | 👑 Prop Firm VIP Edition |
+| :--- | :---: | :---: | :---: |
+| **Target Use-Case** | Code Inspection & Demo Testing | Live Trading on Personal Accounts | Funded Challenge Passing & Scaling |
+| **Permitted Account Type** | Demo / Paper Accounts Only | **1 Live Account** + Unlimited Demo | **Unlimited Live & Prop Accounts** |
+| **Supported Assets** | EURUSD (M1 timeframe) | All Major FX Pairs (EURUSD, GBPUSD, USDJPY) | All FX + Gold (XAUUSD) & Indices (US30, NAS100) |
+| **Neural Inference Engine** | Local ONNX Runtime | Low-Latency ONNX Model Weights | High-Precision Custom Trained Checkpoints |
+| **Prop Firm Risk Shield** | ❌ None | Standard Stop Loss | ✅ **FTMO / FundedNext 4% Hard Daily Cap** |
+| **Pre-configured .set Files** | Conservative Demo Preset | Conservative + High-Yield Aggressive | All Presets + Custom Challenge Setup |
+| **Distribution Format** | Open-Source Source Code | Compiled `.ex5` Binary + Setup Guide | `.ex5` Binary + 1-on-1 VIP Deployment |
+| **Support & Updates** | Community GitHub Issues | Direct Email & Release Updates | Priority Telegram / WhatsApp Support |
+| **Pricing** | **FREE** | **$99** *(Regular $149)* | **$299** *(Regular $399)* |
+
+---
+
+### 💳 How to Purchase a Commercial License
+1. **Choose your tier:** Select either **Trader Pro ($99)** or **Prop Firm VIP ($299)**.
+2. **Contact Author:** Email **[mt.abdulla.it@gmail.com](mailto:mt.abdulla.it@gmail.com)** or message on **[LinkedIn](https://www.linkedin.com/in/mt-abdulla-it)**.
+3. **Supported Payment Options:**
+   - **Crypto:** USDT (TRC-20 / ERC-20), Bitcoin (BTC), Ethereum (ETH)
+   - **Credit / Debit Cards:** Secure checkout via Stripe / Agensi.io
+   - **Bank Transfer / Wise:** Available for VIP licenses
+4. **Instant Delivery:** Receive your compiled `.ex5` binary, licensing key, and VIP presets package within hours.
+
+---
+
+## 🎛️ Pre-configured Trading Presets (.set)
+
+Ready-to-use MetaTrader 5 preset files are included in the [`presets/`](presets/) directory:
+
+- 🛡️ **`presets/EURUSD_M1_Conservative.set`**: Low-risk profile (0.5% risk/trade, 2% max daily loss) designed for consistent account growth.
+- ⚡ **`presets/EURUSD_M1_Aggressive.set`**: High-yield compounding profile (2.0% risk/trade, 15% daily profit target) for accelerated capital growth.
+- 🏆 **`presets/PropFirm_FTMO_FundedNext.set`**: Strict prop firm challenge guard (3% max daily loss cap, 4% max drawdown cap) compliant with FTMO, FundedNext, and Funding Pips rules.
+
+### Loading a Preset in MetaTrader 5:
+1. Attach `XM_AI_ScalpingBot` to any M1 chart.
+2. In the **Inputs** tab, click **Load**.
+3. Select your desired `.set` file from the `presets/` folder and click **OK**.
+
+---
+
 ## 📜 Commercial Licensing & Terms
 
 This software is distributed under a dual **Commercial & Evaluation License**:
