@@ -448,6 +448,9 @@ This project is licensed under the **Commercial & Evaluation License (CSL-1.0)**
   <a href="docs/STRATEGY.md">Strategy & Math</a> •
   <a href="docs/BACKTESTING.md">Backtesting Guide</a> •
   <a href="docs/DEPLOYMENT.md">VPS Deployment</a> •
+  <a href="docs/SESSION_GUIDE.md">Trading Sessions</a> •
+  <a href="docs/PROP_FIRM_GUIDE.md">Prop Firm Guide</a> •
+  <a href="docs/SAFETY_CHECKLIST.md">Safety Checklist</a> •
   <a href="docs/FAQ.md">FAQ</a> •
   <a href="CHANGELOG.md">Changelog</a> •
   <a href="ROADMAP.md">Roadmap</a>

@@ -5,10 +5,10 @@
 //+------------------------------------------------------------------+
 #property copyright   "mt-abdulla-it"
 #property link        "https://github.com/mt-abdulla-it/xm-ai-scalping-bot"
-#property version     "16.20"
+#property version     "16.30"
 #property description "AI-Powered Institutional Scalping Bot"
-#property description "🧠 v16.20 ONNX MACHINE LEARNING BRAIN ACTIVATED"
-#property description "30-Pair Portfolio | Standalone ONNX AI | Kaufman ER + KAMA | Hard Loss Shield"
+#property description "🧠 v16.30 ONNX MACHINE LEARNING BRAIN ACTIVATED"
+#property description "30-Pair Portfolio | Standalone ONNX AI | Commercial & Prop Firm Edition"
 
 //--- Include the trade library
 #include <Trade\Trade.mqh>
