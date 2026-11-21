@@ -59,8 +59,8 @@ def get_trading_data():
         is_running = False
 
     # Default baseline from live MT5 account
-    balance = 75.95
-    equity = 87.15
+    balance = 68.48
+    equity = 82.80
     today_pnl = 0.0
     wins = 0
     losses = 0
@@ -68,20 +68,7 @@ def get_trading_data():
     ai_status = "Scanning active markets..."
     last_trade_time = "N/A"
 
-    # 1. Parse live account telemetry written by MT5 EA
-    live_acc_path = os.path.join(FILES_DIR, "live_account.json")
-    if os.path.exists(live_acc_path):
-        try:
-            with open(live_acc_path, 'r') as f:
-                acc_telemetry = json.load(f)
-                balance = float(acc_telemetry.get('balance', balance))
-                equity = float(acc_telemetry.get('equity', equity))
-                if 'status' in acc_telemetry and acc_telemetry['status']:
-                    ai_status = acc_telemetry['status']
-        except Exception:
-            pass
-
-    # 2. Parse XMBot_ML_Data.csv for trade history
+    # 1. Parse XMBot_ML_Data.csv for trade history
     csv_path = os.path.join(FILES_DIR, "XMBot_ML_Data.csv")
     if os.path.exists(csv_path):
         try:
@@ -128,6 +115,19 @@ def get_trading_data():
         if "Balance:" in line:
             m = re.search(r'Balance:\s*\$?([0-9\.]+)', line)
             if m: balance = float(m.group(1))
+
+    # 3. Live account telemetry from MT5 EA (highest priority)
+    live_acc_path = os.path.join(FILES_DIR, "live_account.json")
+    if os.path.exists(live_acc_path):
+        try:
+            with open(live_acc_path, 'r') as f:
+                acc_telemetry = json.load(f)
+                balance = float(acc_telemetry.get('balance', balance))
+                equity = float(acc_telemetry.get('equity', equity))
+                if 'status' in acc_telemetry and acc_telemetry['status']:
+                    ai_status = acc_telemetry['status']
+        except Exception:
+            pass
 
     # Target Progress Calculation
     target_amount = 15.00

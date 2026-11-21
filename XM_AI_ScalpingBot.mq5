@@ -226,6 +226,7 @@ void     ExecuteBuy();
 void     ExecuteSell();
 double   GetCurrentSpreadPoints();
 void     UpdateDashboard(string status);
+void     ExportAccountTelemetry(string statusMessage);
 void     UpdateLiveAIProb();
 double   CalculateLotSize(double slDistancePrice, ENUM_ORDER_TYPE orderType = ORDER_TYPE_BUY);
 bool     ValidateStopLevels(ENUM_ORDER_TYPE orderType, double price, double sl, double tp);
@@ -411,6 +412,10 @@ int OnInit()
          Print("📊 DOM Order Flow tracking enabled.");
    }
    
+   //--- Enable 1-second system timer for real-time telemetry streaming
+   EventSetTimer(1);
+   ExportAccountTelemetry("Engine: Realtime Tick Guard Active");
+   
    return(INIT_SUCCEEDED);
 }
 
@@ -419,6 +424,8 @@ int OnInit()
 //+------------------------------------------------------------------+
 void OnDeinit(const int reason)
 {
+   //--- Stop system timer
+   EventKillTimer();
    //--- Release indicator handles
    if(h_kama      != INVALID_HANDLE) IndicatorRelease(h_kama);
    if(h_emaFast   != INVALID_HANDLE) IndicatorRelease(h_emaFast);
@@ -2091,14 +2098,31 @@ void UpdateDashboard(string statusMessage)
    CreateLabel("XMBOT_Bottom", x, y, "╚═══════════════════════════════════╝", clrTitle, fontSize, fontName);
    
    //--- Export real-time account telemetry for Web Dashboard & Python Brain
-   int accFile = FileOpen("live_account.json", FILE_WRITE | FILE_TXT | FILE_ANSI);
+   ExportAccountTelemetry(statusMessage);
+   
+   //--- Force chart redraw
+   ChartRedraw();
+}
+
+//+------------------------------------------------------------------+
+//| EXPORT ACCOUNT TELEMETRY FOR DASHBOARD & PYTHON BRAIN            |
+//+------------------------------------------------------------------+
+void ExportAccountTelemetry(string statusMessage)
+{
+   int accFile = FileOpen("live_account.json", FILE_WRITE | FILE_TXT | FILE_ANSI | FILE_SHARE_READ | FILE_SHARE_WRITE);
    if(accFile != INVALID_HANDLE)
    {
+      double balance = m_account.Balance();
+      double equity  = m_account.Equity();
+      double margin  = m_account.Margin();
+      double freeMargin = m_account.FreeMargin();
+      double dailyPnL = (g_dailyStartBalance > 0) ? (balance - g_dailyStartBalance) : 0.0;
+      
       string jsonState = StringFormat("{\n  \"balance\": %.2f,\n  \"equity\": %.2f,\n  \"margin\": %.2f,\n  \"free_margin\": %.2f,\n  \"daily_pnl\": %.2f,\n  \"status\": \"%s\",\n  \"timestamp\": \"%s\"\n}",
-         m_account.Balance(),
-         m_account.Equity(),
-         m_account.Margin(),
-         m_account.FreeMargin(),
+         balance,
+         equity,
+         margin,
+         freeMargin,
          dailyPnL,
          statusMessage,
          TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS)
@@ -2106,9 +2130,14 @@ void UpdateDashboard(string statusMessage)
       FileWriteString(accFile, jsonState);
       FileClose(accFile);
    }
-   
-   //--- Force chart redraw
-   ChartRedraw();
+}
+
+//+------------------------------------------------------------------+
+//| Expert timer function (1-second heartbeat)                       |
+//+------------------------------------------------------------------+
+void OnTimer()
+{
+   ExportAccountTelemetry(g_signalStatus != "" ? g_signalStatus : "Engine: Realtime Tick Guard Active");
 }
 
 //+------------------------------------------------------------------+
