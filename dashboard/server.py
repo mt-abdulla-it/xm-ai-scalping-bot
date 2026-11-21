@@ -30,6 +30,13 @@ from ai_engine.news_sentinel import get_macro_radar_status
 
 app = Flask(__name__, template_folder='templates')
 
+@app.after_request
+def add_no_cache_headers(response):
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
 XM_DIR = os.path.expanduser("~/.wine/drive_c/Program Files/XM Global MT5")
 MQL5_DIR = os.path.join(XM_DIR, "MQL5")
 FILES_DIR = os.path.join(MQL5_DIR, "Files")

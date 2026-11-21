@@ -904,7 +904,10 @@
                 <div class="pulse"></div>
                 <span id="system-status-text">Stack Online</span>
             </div>
-            <div id="last-update" style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono';">Live</div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <div class="led-dot" style="background: var(--green); box-shadow: 0 0 10px var(--green);"></div>
+                <div id="last-update" style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono';">Live</div>
+            </div>
         </div>
     </header>
 
@@ -3002,12 +3005,12 @@
         loadTradeJournal();
         loadNewsRadar();
         loadEAConfig();
-        setInterval(updateDashboard, 3000);
+        setInterval(updateDashboard, 1000);
         setInterval(updateMarketSessions, 1000);
-        setInterval(loadRiskAnalytics, 10000);
-        setInterval(loadHWMMetrics, 5000);
-        setInterval(loadTradeJournal, 8000);
-        setInterval(loadNewsRadar, 30000);
+        setInterval(loadRiskAnalytics, 8000);
+        setInterval(loadHWMMetrics, 2000);
+        setInterval(loadTradeJournal, 5000);
+        setInterval(loadNewsRadar, 15000);
     };
 </script>
 
