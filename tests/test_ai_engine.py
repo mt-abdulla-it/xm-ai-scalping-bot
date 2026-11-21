@@ -148,5 +148,34 @@ class TestAIEngine(unittest.TestCase):
             self.assertIn("grade", entries[0])
             self.assertIn("critique", entries[0])
 
+    def test_monte_carlo_simulation(self):
+        from ai_engine.monte_carlo import run_monte_carlo_simulation
+        csv_path = os.path.expanduser("~/.wine/drive_c/Program Files/XM Global MT5/MQL5/Files/XMBot_ML_Data.csv")
+        mc = run_monte_carlo_simulation(csv_path, initial_capital=100.0, iterations=200, trades_per_sim=50)
+        self.assertTrue(mc["success"])
+        self.assertIn("ruin_probability_pct", mc)
+        self.assertIn("median_final_equity", mc)
+        self.assertIn("value_at_risk_99", mc)
+        self.assertIn("expected_shortfall_cvar_95", mc)
+        self.assertEqual(len(mc["sample_trajectories"]), 8)
+
+    def test_ea_config_manager(self):
+        from ai_engine.config_manager import get_ea_config, update_ea_config
+        cfg = get_ea_config()
+        self.assertIn("kaufman_er_threshold", cfg)
+        self.assertIn("hard_loss_shield_usd", cfg)
+        
+        updated = update_ea_config({"kaufman_er_threshold": 0.38})
+        self.assertTrue(updated["success"])
+        self.assertEqual(updated["config"]["kaufman_er_threshold"], 0.38)
+
+    def test_news_sentinel_radar(self):
+        from ai_engine.news_sentinel import get_macro_radar_status
+        radar = get_macro_radar_status()
+        self.assertIn("is_blackout_active", radar)
+        self.assertIn("action_recommendation", radar)
+        self.assertIn("next_event", radar)
+        self.assertGreater(len(radar["upcoming_events"]), 0)
+
 if __name__ == "__main__":
     unittest.main()

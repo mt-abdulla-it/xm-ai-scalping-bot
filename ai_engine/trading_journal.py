@@ -126,3 +126,4 @@ def generate_journal_entries(csv_path: str, limit: int = 15) -> List[Dict[str, A
         pass
 
     return entries
+

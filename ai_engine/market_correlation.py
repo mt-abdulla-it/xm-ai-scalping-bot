@@ -58,3 +58,4 @@ def calculate_correlation_matrix(assets: List[str] = None) -> Dict[str, Any]:
         "risk_clusters": high_clusters,
         "diversification_status": "HIGH RISK: EURUSD and GBPUSD correlation > 0.85" if len(high_clusters) > 0 else "OPTIMAL DIVERSIFICATION"
     }
+

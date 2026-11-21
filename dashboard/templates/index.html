@@ -1125,6 +1125,33 @@
             </div>
         </div>
 
+        <!-- 🌐 Macro Blackout Clock & Economic News Volatility Radar -->
+        <div class="card" style="margin-bottom: 22px; border: 1px solid rgba(255, 158, 67, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                <div class="metric-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 0;">
+                    <span style="font-size: 16px;">🌐</span>
+                    <span style="color: #fff; font-weight: 700;">Macro Blackout Clock & Volatility Radar</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="news-radar-badge" class="badge-buy" style="font-size: 11px;">CHECKING RADAR...</span>
+                    <button class="btn-send" style="padding: 5px 12px; font-size: 11px;" onclick="loadNewsRadar()">Refresh Radar 🔄</button>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Next High-Impact Event</div>
+                    <div id="news-next-title" style="font-size: 15px; font-weight: 700; color: #fff; margin-top: 4px;">Loading event feed...</div>
+                    <div id="news-next-countdown" style="font-size: 12px; color: var(--cyan); margin-top: 4px; font-family: 'JetBrains Mono';">Countdown: --m</div>
+                </div>
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Algorithmic Directive</div>
+                    <div id="news-action-rec" style="font-size: 14px; font-weight: 700; color: var(--green); margin-top: 4px;">NORMAL TRADING</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">±15m Pre/Post-News Auto Blackout Shield</div>
+                </div>
+            </div>
+            <div id="news-upcoming-list" style="display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px;"></div>
+        </div>
+
         <!-- ⚡ Live High-Impact Economic Calendar & Macro News Shield -->
         <div class="card" style="margin-bottom: 22px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
@@ -1198,9 +1225,86 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" style="margin-bottom: 22px;">
             <div class="metric-title">AI Scalping Status & Filters</div>
             <div id="ai-live-text" style="font-size: 13px; color: #E2E8F0; font-family: 'JetBrains Mono', monospace;">Scanning active market feeds...</div>
+        </div>
+
+        <!-- ⚙️ Live EA Configurator & Hot Parameter Over-The-Air (OTA) Tuning -->
+        <div class="card" style="margin-bottom: 22px; border: 1px solid rgba(0, 242, 254, 0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                <div class="metric-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 0;">
+                    <span style="font-size: 16px;">⚙️</span>
+                    <span>Live EA Configurator & Hot Parameter Over-The-Air (OTA) Tuning</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-send" style="padding: 6px 14px; font-size: 12px; background: rgba(0, 230, 118, 0.2); border-color: rgba(0, 230, 118, 0.4); color: var(--green);" onclick="saveEAConfig()">💾 Save & Sync to MT5 EA</button>
+                    <button class="btn-send" style="padding: 6px 12px; font-size: 12px;" onclick="loadEAConfig()">Reload 🔄</button>
+                </div>
+            </div>
+
+            <div class="grid-4" style="margin-bottom: 16px;">
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">ONNX AI Brain Filter</div>
+                    <label style="display: flex; align-items: center; gap: 8px; margin-top: 8px; cursor: pointer;">
+                        <input type="checkbox" id="cfg-use-onnx">
+                        <span id="cfg-use-onnx-label" style="font-size: 12px; font-weight: 700; color: var(--yellow);">Disabled (Data Collection)</span>
+                    </label>
+                </div>
+
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Kaufman ER Threshold</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                        <input type="range" id="cfg-er-thresh" min="0.10" max="0.60" step="0.05" value="0.35" style="width: 70%;" oninput="document.getElementById('cfg-er-val').innerText = this.value">
+                        <span id="cfg-er-val" style="font-family: 'JetBrains Mono'; font-weight: 700; color: var(--cyan); font-size: 13px;">0.35</span>
+                    </div>
+                </div>
+
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Trailing Stop ATR Multiplier</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                        <input type="range" id="cfg-trailing-atr" min="1.0" max="4.0" step="0.25" value="2.0" style="width: 70%;" oninput="document.getElementById('cfg-atr-val').innerText = this.value + 'x'">
+                        <span id="cfg-atr-val" style="font-family: 'JetBrains Mono'; font-weight: 700; color: var(--green); font-size: 13px;">2.0x</span>
+                    </div>
+                </div>
+
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Hard Loss Shield ($)</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                        <input type="number" id="cfg-loss-shield" min="1.0" max="25.0" step="0.5" value="2.50" class="chat-input" style="padding: 4px 8px; font-size: 12px; width: 80px;">
+                        <span style="font-size: 11px; color: var(--purple); font-weight: 600;">Max / Trade</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-4" style="margin-bottom: 0;">
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Max Lot Safety Cap</div>
+                    <input type="number" id="cfg-max-lot" min="0.01" max="0.10" step="0.01" value="0.03" class="chat-input" style="padding: 4px 8px; font-size: 12px; width: 100%; margin-top: 6px;">
+                    <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">Enforced on &lt;$200 accounts</div>
+                </div>
+
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Adaptive Breakeven Trigger</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                        <input type="range" id="cfg-be-atr" min="1.0" max="3.0" step="0.25" value="1.5" style="width: 70%;" oninput="document.getElementById('cfg-be-val').innerText = this.value + 'x'">
+                        <span id="cfg-be-val" style="font-family: 'JetBrains Mono'; font-weight: 700; color: var(--cyan); font-size: 13px;">1.5x</span>
+                    </div>
+                </div>
+
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Max Spread Tolerance (Points)</div>
+                    <input type="number" id="cfg-max-spread" min="5" max="50" step="1" value="15" class="chat-input" style="padding: 4px 8px; font-size: 12px; width: 100%; margin-top: 6px;">
+                </div>
+
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">News Blackout Buffer</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                        <input type="range" id="cfg-news-mins" min="5" max="45" step="5" value="15" style="width: 70%;" oninput="document.getElementById('cfg-news-val').innerText = this.value + 'm'">
+                        <span id="cfg-news-val" style="font-family: 'JetBrains Mono'; font-weight: 700; color: var(--orange); font-size: 13px;">15m</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1344,6 +1448,50 @@
             <div class="metric-title">📈 Vectorized Strategy Equity Curve</div>
             <div style="height: 280px; width: 100%; margin-top: 10px;">
                 <canvas id="backtestChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 🎲 Institutional Monte Carlo Risk of Ruin & Tail-Risk Simulator -->
+        <div class="card" style="margin-top: 22px; border: 1px solid rgba(179, 136, 255, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                <div class="metric-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 0;">
+                    <span style="font-size: 16px;">🎲</span>
+                    <span>Institutional Monte Carlo Risk of Ruin & Tail-Risk Simulator</span>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <span id="mc-ruin-badge" class="badge-buy" style="font-size: 11px;">READY (1,000 PATHS)</span>
+                    <button class="btn-send" style="padding: 6px 14px; font-size: 12px; background: rgba(179, 136, 255, 0.2); border-color: rgba(179, 136, 255, 0.4); color: var(--purple);" onclick="runMonteCarloSim()">Simulate 1,000 Paths 🎲</button>
+                </div>
+            </div>
+
+            <div class="grid-4" style="margin-bottom: 16px;">
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Probability of Ruin (&lt;50% DD)</div>
+                    <div id="mc-ruin-prob" style="font-size: 20px; font-weight: 800; color: var(--green); font-family: 'JetBrains Mono'; margin-top: 4px;">0.00%</div>
+                    <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Target: &lt; 0.01%</div>
+                </div>
+
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Median Final Equity</div>
+                    <div id="mc-median-equity" style="font-size: 20px; font-weight: 800; color: var(--cyan); font-family: 'JetBrains Mono'; margin-top: 4px;">$100.00</div>
+                    <div id="mc-tails-range" style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">5th: $-- | 95th: $--</div>
+                </div>
+
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Kaufman 99% Stress Drawdown</div>
+                    <div id="mc-kaufman-stress" style="font-size: 20px; font-weight: 800; color: var(--orange); font-family: 'JetBrains Mono'; margin-top: 4px;">0.00%</div>
+                    <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Worst-case 2x historical stress</div>
+                </div>
+
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Expected Shortfall (CVaR 95%)</div>
+                    <div id="mc-cvar" style="font-size: 20px; font-weight: 800; color: var(--purple); font-family: 'JetBrains Mono'; margin-top: 4px;">$0.00</div>
+                    <div id="mc-var99" style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">VaR 99%: $0.00</div>
+                </div>
+            </div>
+
+            <div style="height: 260px; width: 100%;">
+                <canvas id="monteCarloChart"></canvas>
             </div>
         </div>
     </div>
@@ -2665,6 +2813,181 @@
         }
     }
 
+    // ==============================================================================
+    // 🌐 Macro Blackout Clock & Economic News Radar Loader
+    // ==============================================================================
+    async function loadNewsRadar() {
+        try {
+            const res = await fetch('/api/news/radar');
+            const data = await res.json();
+            
+            const badge = document.getElementById('news-radar-badge');
+            badge.innerText = data.is_blackout_active ? '⚠️ MACRO BLACKOUT ACTIVE' : '🛡️ CLEAR TRADING WINDOW';
+            badge.className = data.is_blackout_active ? 'badge-sell' : 'badge-buy';
+
+            const next = data.next_event;
+            if (next) {
+                document.getElementById('news-next-title').innerText = `${next.title} (${next.currency})`;
+                document.getElementById('news-next-countdown').innerText = `Countdown: ${next.minutes_until} mins (UTC ${next.time_utc} | Prev: ${next.previous} / Fcst: ${next.forecast})`;
+            }
+
+            const recElem = document.getElementById('news-action-rec');
+            recElem.innerText = data.action_recommendation;
+            recElem.style.color = data.status_color === 'red' ? 'var(--red)' : (data.status_color === 'orange' ? 'var(--orange)' : 'var(--green)');
+
+            const listElem = document.getElementById('news-upcoming-list');
+            if (data.upcoming_events && data.upcoming_events.length > 0) {
+                listElem.innerHTML = data.upcoming_events.map(ev => `
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--card-border); padding: 5px 10px; border-radius: 6px;">
+                        <span style="color: var(--cyan); font-weight: 700;">${ev.time_utc} UTC</span>: 
+                        <strong>${ev.currency} ${ev.title}</strong>
+                        <span style="color: var(--text-muted); margin-left: 4px;">(${ev.minutes_until}m)</span>
+                    </div>
+                `).join('');
+            }
+        } catch (e) {
+            console.error('News radar error:', e);
+        }
+    }
+
+    // ==============================================================================
+    // ⚙️ Live EA Configurator & OTA Parameter Synchronization
+    // ==============================================================================
+    async function loadEAConfig() {
+        try {
+            const res = await fetch('/api/ea/config');
+            const data = await res.json();
+            
+            const chkOnnx = document.getElementById('cfg-use-onnx');
+            chkOnnx.checked = data.use_onnx_ai;
+            document.getElementById('cfg-use-onnx-label').innerText = data.use_onnx_ai ? 'Enabled (AI Predictions Active)' : 'Disabled (Data Collection)';
+            document.getElementById('cfg-use-onnx-label').style.color = data.use_onnx_ai ? 'var(--green)' : 'var(--yellow)';
+
+            document.getElementById('cfg-er-thresh').value = data.kaufman_er_threshold;
+            document.getElementById('cfg-er-val').innerText = data.kaufman_er_threshold;
+
+            document.getElementById('cfg-trailing-atr').value = data.trailing_stop_atr;
+            document.getElementById('cfg-atr-val').innerText = data.trailing_stop_atr + 'x';
+
+            document.getElementById('cfg-loss-shield').value = data.hard_loss_shield_usd;
+            document.getElementById('cfg-max-lot').value = data.max_lot_cap;
+
+            document.getElementById('cfg-be-atr').value = data.auto_breakeven_atr;
+            document.getElementById('cfg-be-val').innerText = data.auto_breakeven_atr + 'x';
+
+            document.getElementById('cfg-max-spread').value = data.max_spread_points;
+
+            document.getElementById('cfg-news-mins').value = data.news_blackout_minutes;
+            document.getElementById('cfg-news-val').innerText = data.news_blackout_minutes + 'm';
+        } catch (e) {
+            console.error('EA config load failed:', e);
+        }
+    }
+
+    async function saveEAConfig() {
+        const payload = {
+            use_onnx_ai: document.getElementById('cfg-use-onnx').checked,
+            kaufman_er_threshold: parseFloat(document.getElementById('cfg-er-thresh').value),
+            trailing_stop_atr: parseFloat(document.getElementById('cfg-trailing-atr').value),
+            hard_loss_shield_usd: parseFloat(document.getElementById('cfg-loss-shield').value),
+            max_lot_cap: parseFloat(document.getElementById('cfg-max-lot').value),
+            auto_breakeven_atr: parseFloat(document.getElementById('cfg-be-atr').value),
+            max_spread_points: parseInt(document.getElementById('cfg-max-spread').value),
+            news_blackout_minutes: parseInt(document.getElementById('cfg-news-mins').value)
+        };
+
+        try {
+            const res = await fetch('/api/ea/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                playCashSound();
+                speakAnnounce('AegisQuant parameters synchronized to MT5 EA.');
+                showToast('EA Parameters Hot-Synced to MT5! 🚀', 'success');
+                loadEAConfig();
+            }
+        } catch (e) {
+            showToast('Sync error: ' + e, 'warning');
+        }
+    }
+
+    // ==============================================================================
+    // 🎲 Institutional Monte Carlo Risk of Ruin & Fan Chart
+    // ==============================================================================
+    let monteCarloChart = null;
+
+    async function runMonteCarloSim() {
+        const badge = document.getElementById('mc-ruin-badge');
+        badge.innerText = 'SIMULATING 1,000 PATHS...';
+        showToast('Running 1,000 Monte Carlo Iterations 🎲', 'info');
+
+        try {
+            const res = await fetch('/api/monte-carlo/simulate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ capital: 100.0, iterations: 1000, sim_trades: 100, ruin_pct: 50.0 })
+            });
+            const data = await res.json();
+
+            badge.innerText = data.ruin_status;
+            badge.className = data.ruin_probability_pct > 1.0 ? 'badge-sell' : 'badge-buy';
+
+            document.getElementById('mc-ruin-prob').innerText = data.ruin_probability_pct.toFixed(2) + '%';
+            document.getElementById('mc-median-equity').innerText = '$' + data.median_final_equity.toFixed(2);
+            document.getElementById('mc-tails-range').innerText = `5th Tail: $${data.bearish_tail_p5} | 95th: $${data.bullish_tail_p95}`;
+            document.getElementById('mc-kaufman-stress').innerText = data.kaufman_stress_99_dd_pct.toFixed(2) + '%';
+            document.getElementById('mc-cvar').innerText = '$' + data.expected_shortfall_cvar_95.toFixed(2);
+            document.getElementById('mc-var99').innerText = `VaR 99%: $${data.value_at_risk_99.toFixed(2)}`;
+
+            // Render Fan Chart
+            const ctx = document.getElementById('monteCarloChart').getContext('2d');
+            if (monteCarloChart) monteCarloChart.destroy();
+
+            const datasets = data.sample_trajectories.map((traj, idx) => ({
+                label: `Path ${idx + 1}`,
+                data: traj,
+                borderColor: idx === 0 ? '#00F2FE' : `rgba(179, 136, 255, ${0.15 + (idx * 0.08)})`,
+                borderWidth: idx === 0 ? 2.5 : 1.2,
+                pointRadius: 0,
+                fill: false,
+                tension: 0.1
+            }));
+
+            monteCarloChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: data.sample_trajectories[0].length }, (_, i) => `T${i * 2}`),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        x: { grid: { color: 'rgba(255, 255, 255, 0.04)' } },
+                        y: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { callback: v => '$' + v }
+                        }
+                    }
+                }
+            });
+
+            playMsgSound();
+            speakAnnounce(`Monte Carlo completed: Ruin probability is ${data.ruin_probability_pct} percent.`);
+            showToast('Monte Carlo Simulation Complete! 🎯', 'success');
+        } catch (e) {
+            console.error('Monte Carlo failed:', e);
+            showToast('Monte Carlo error: ' + e, 'warning');
+        }
+    }
+
     window.onload = () => {
         initCharts();
         updateDashboard();
@@ -2676,11 +2999,14 @@
         loadHWMMetrics();
         loadCorrelationMatrix();
         loadTradeJournal();
+        loadNewsRadar();
+        loadEAConfig();
         setInterval(updateDashboard, 3000);
         setInterval(updateMarketSessions, 1000);
         setInterval(loadRiskAnalytics, 10000);
         setInterval(loadHWMMetrics, 5000);
         setInterval(loadTradeJournal, 8000);
+        setInterval(loadNewsRadar, 30000);
     };
 </script>
 

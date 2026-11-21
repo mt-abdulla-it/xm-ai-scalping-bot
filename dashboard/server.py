@@ -24,6 +24,9 @@ from ai_engine.system_sentinel import get_full_system_health
 from ai_engine.market_correlation import calculate_correlation_matrix
 from ai_engine.ai_debate import run_ai_committee_debate
 from ai_engine.trading_journal import calculate_hwm_metrics, generate_journal_entries
+from ai_engine.monte_carlo import run_monte_carlo_simulation
+from ai_engine.config_manager import get_ea_config, update_ea_config
+from ai_engine.news_sentinel import get_macro_radar_status
 
 app = Flask(__name__, template_folder='templates')
 
@@ -723,6 +726,54 @@ def api_journal_entries():
     limit = int(request.args.get('limit', 15))
     entries = generate_journal_entries(csv_path, limit=limit)
     return jsonify(entries)
+
+# ==============================================================================
+# 🎲 Institutional Monte Carlo Risk of Ruin & Tail-Risk Simulator Route
+# ==============================================================================
+@app.route('/api/monte-carlo/simulate', methods=['POST'])
+def api_monte_carlo():
+    data = request.get_json() or {}
+    csv_path = os.path.join(FILES_DIR, "XMBot_ML_Data.csv")
+    initial_cap = float(data.get("capital", 100.0))
+    iterations = int(data.get("iterations", 1000))
+    trades_per_sim = int(data.get("sim_trades", 100))
+    ruin_pct = float(data.get("ruin_pct", 50.0))
+
+    sim_res = run_monte_carlo_simulation(
+        csv_path,
+        initial_capital=initial_cap,
+        iterations=iterations,
+        trades_per_sim=trades_per_sim,
+        ruin_level_pct=ruin_pct
+    )
+    log_audit("monte_carlo_sim", "web_user", {
+        "iterations": iterations,
+        "ruin_prob": sim_res.get("ruin_probability_pct"),
+        "var_99": sim_res.get("value_at_risk_99")
+    })
+    return jsonify(sim_res)
+
+# ==============================================================================
+# ⚙️ Over-The-Air (OTA) Live EA Configuration Routes
+# ==============================================================================
+@app.route('/api/ea/config', methods=['GET', 'POST'])
+def api_ea_config():
+    if request.method == 'POST':
+        params = request.get_json() or {}
+        res = update_ea_config(params)
+        log_audit("ea_config_update", "web_user", params)
+        return jsonify(res)
+    else:
+        cfg = get_ea_config()
+        return jsonify(cfg)
+
+# ==============================================================================
+# 🌐 Macro Blackout Clock & Economic News Volatility Radar Route
+# ==============================================================================
+@app.route('/api/news/radar', methods=['GET'])
+def api_news_radar():
+    radar = get_macro_radar_status()
+    return jsonify(radar)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
