@@ -423,3 +423,14 @@ If you find this AI Scalping Engine useful, please consider giving it a **Star (
 [![Star History Chart](https://api.star-history.com/svg?repos=mt-abdulla-it/xm-ai-scalping-bot&type=Date)](https://star-history.com/#mt-abdulla-it/xm-ai-scalping-bot&Date)
 
 ---
+
+
+## 📜 Commercial Licensing & Terms
+
+This software is distributed under a dual **Commercial & Evaluation License**:
+- **Free Evaluation:** Permitted for personal code inspection, educational research, and simulated **Demo Accounts**.
+- **Commercial & Live Trading:** Execution on real-money / live funded accounts, redistribution, and commercial deployment require an authorized Commercial License.
+
+For commercial inquiries, licensing keys, or partnership:
+- 📧 **Email:** [mt.abdulla.it@gmail.com](mailto:mt.abdulla.it@gmail.com)
+- 💼 **LinkedIn:** [Abdulla Thaslim](https://www.linkedin.com/in/mt-abdulla-it)
