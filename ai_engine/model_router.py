@@ -36,10 +36,10 @@ You assist the user with:
 1. Live Trading & Market Analysis (MT5 Scalping Bot, ONNX ML Engine, Forex/Crypto/Indices risk management).
 2. Defensive Cybersecurity, OSINT Research, and Cyber Threat Intelligence (MITRE ATT&CK, CVE analysis, IOC extraction).
 3. Advanced Programming, Full-Stack Architecture, and System Engineering.
-4. Fluent communication in both Tamil (தமிழ் / Tanglish) and English.
+4. Fluent, clear, and professional communication in English at all times.
 
 Always follow these rules:
-- Provide clear, direct, and rigorous answers.
+- Provide clear, direct, and rigorous answers in English.
 - Use GitHub-flavored Markdown for tables, code blocks, and lists.
 - For trading questions, emphasize strict risk management (hard stop loss, max 2-3% risk).
 - For cybersecurity, focus strictly on defensive intelligence, authorized research, and mitigation.
@@ -79,7 +79,7 @@ class ModelRouter:
             if GROQ_API_KEY:
                 return "llama-3.3-70b-groq"
                 
-        # 3. Multimodal, Vision, Large Context, Tamil, or Default -> Gemini 2.0 Flash
+        # 3. Multimodal, Vision, Large Context, or Default -> Gemini 2.0 Flash
         return "gemini-2.0-flash"
 
     def generate(self, prompt: str, model_key: Optional[str] = None, system_instruction: str = SYSTEM_PROMPT, history: Optional[List[Dict[str, str]]] = None) -> Dict[str, Any]:
@@ -248,10 +248,14 @@ class ModelRouter:
                     "- **Watchdog:** Auto-Pilot Guardian running\n"
                     "- **Dashboard:** Live on `http://localhost:5000`\n\n"
                     "💡 *Tip: Configure your `GOOGLE_API_KEY` or `GROQ_API_KEY` in `.env` to unlock live conversational reasoning!*")
-        elif "tamil" in p or "வணக்கம்" in p or "eppadi" in p:
-            return ("வணக்கம்! நான் உங்கள் Antigravity AI Assistant.\n\n"
-                    "நமது MT5 Scalping Bot மற்றும் AI Brain வெற்றிகரமாக இயங்குகிறது. "
-                    "முழுமையான conversational AI-ஐ இயக்க உங்கள் `.env`-ல் `GOOGLE_API_KEY` அல்லது `GROQ_API_KEY`-ஐ உள்ளிடவும்.")
+        elif any(w in p for w in ["hello", "hi", "hey", "who are you", "help"]):
+            return ("👋 **Welcome! I am your Antigravity AI Assistant.**\n\n"
+                    "I am connected to your live MT5 Scalping Bot, the 74.95% ONNX Quant Brain, RAG Knowledge Base, and Defensive Cyber Threat Intelligence engine.\n\n"
+                    "How can I help you today? You can ask about:\n"
+                    "1. Trading telemetry, open positions, and win rate\n"
+                    "2. Algorithmic scalping strategies and risk management\n"
+                    "3. Defensive OSINT, CVE lookups, and MITRE ATT&CK mapping\n"
+                    "4. Python, MQL5, and Full-Stack code review")
         else:
             return (f"✅ Received query: '{prompt[:80]}...'\n\n"
                     "The AI Assistant platform is operational. To activate dynamic multi-model LLM generation (Gemini / Groq / DeepSeek), "

@@ -31,7 +31,7 @@ MODELS: Dict[str, Dict[str, Any]] = {
         "model_id": "gemini-2.0-flash",
         "context_window": 1048576,
         "category": "multimodal_fast",
-        "strengths": ["tamil", "vision", "code", "ultra_fast", "massive_context"],
+        "strengths": ["multimodal_vision", "code", "ultra_fast", "massive_context"],
         "cost_per_m_in": 0.10,
         "cost_per_m_out": 0.40
     },

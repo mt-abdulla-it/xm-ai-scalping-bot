@@ -438,9 +438,10 @@
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span>⚡ Model:</span>
                     <select id="chat-model-select" class="model-select">
-                        <option value="gemini-2.0-flash">Google Gemini 2.0 Flash (Fast / 1M Context / Tamil)</option>
+                        <option value="gemini-2.0-flash">Google Gemini 2.0 Flash (Fast / 1M Context / Multimodal)</option>
                         <option value="llama-3.3-70b-groq">Llama 3.3 70B (Groq 280 tps / Sub-100ms)</option>
-                        <option value="deepseek-r1">DeepSeek-R1 (Deep Math & Reasoning)</option>
+                        <option value="deepseek-r1-groq">DeepSeek-R1 Distill 70B (Groq 280 tps Reasoning)</option>
+                        <option value="deepseek-r1">DeepSeek-R1 (Direct API Deep Reasoning)</option>
                         <option value="qwen-2.5-coder-local">Qwen 2.5 Coder 32B (Local Ollama)</option>
                     </select>
                 </div>
@@ -452,14 +453,14 @@
 
             <div class="chat-messages" id="chat-messages">
                 <div class="msg msg-ai">
-                    👋 <strong>வணக்கம்! I am your Next-Generation Antigravity AI Platform.</strong><br>
+                    👋 <strong>Welcome! I am your Next-Generation Antigravity AI Platform.</strong><br>
                     I am connected to your live MT5 Scalping Bot, the 74.95% ONNX Quant Brain, RAG Knowledge Base, and Defensive Cyber Threat Intelligence engine. How can I assist you today?
                     <div class="msg-meta">System Model: Auto-Routed | Grounded RAG: Active</div>
                 </div>
             </div>
 
             <div class="chat-input-bar">
-                <input type="text" id="chat-input" class="chat-input" placeholder="Type your query in Tamil (தமிழ்), Tanglish, or English..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Type your prompt, question, or research query in English..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
                 <button class="btn-send" onclick="sendChatMessage()">Send 🚀</button>
             </div>
         </div>
