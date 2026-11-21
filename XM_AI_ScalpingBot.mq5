@@ -5,10 +5,10 @@
 //+------------------------------------------------------------------+
 #property copyright   "mt-abdulla-it"
 #property link        "https://github.com/mt-abdulla-it/xm-ai-scalping-bot"
-#property version     "16.28"
+#property version     "16.30"
 #property description "AI-Powered Institutional Scalping Bot"
-#property description "🧠 v16.28 QUANT RECOVERY SUITE - 4 INSTITUTIONAL ENGINES ACTIVATED"
-#property description "Per-Symbol 3-Loss Shield | Accelerated Profit Lock | Peak Session Windows | 24/7 Crypto Mode"
+#property description "🧠 v16.30 QUANT RECOVERY & ONNX MACHINE LEARNING BRAIN ACTIVATED"
+#property description "30-Pair Portfolio | Standalone ONNX AI | Commercial & Prop Firm Edition"
 
 //--- Include the trade library
 #include <Trade\Trade.mqh>
