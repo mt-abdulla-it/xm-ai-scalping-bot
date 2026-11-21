@@ -81,3 +81,4 @@ def update_ea_config(new_params: Dict[str, Any]) -> Dict[str, Any]:
         "config": current,
         "synced_to_mt5": os.path.exists(CONFIG_FILE_PATH)
     }
+

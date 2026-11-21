@@ -77,3 +77,4 @@ def get_macro_radar_status(blackout_window_mins: int = 15) -> Dict[str, Any]:
         "next_event": next_event or events_with_timing[0],
         "upcoming_events": events_with_timing[:5]
     }
+

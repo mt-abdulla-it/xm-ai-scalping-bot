@@ -963,9 +963,9 @@
 
         <div class="grid-4">
             <div class="card kpi-card kpi-accent-cyan">
-                <div class="metric-title">Account Balance</div>
+                <div class="metric-title">Account Balance & Floating Equity</div>
                 <div class="metric-value" id="val-balance">$0.00</div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Live MT5 Terminal</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Live MT5 • <strong id="val-equity" style="color: var(--cyan); font-family: 'JetBrains Mono';">Equity: $0.00</strong></div>
             </div>
             <div class="card kpi-card kpi-accent-green">
                 <div class="metric-title">Today's Net P&L</div>
@@ -2366,6 +2366,7 @@
             const data = await res.json();
 
             document.getElementById('val-balance').innerText = '$' + data.balance.toFixed(2);
+            document.getElementById('val-equity').innerText = 'Equity: $' + data.equity.toFixed(2);
             const pnlElem = document.getElementById('val-pnl');
             const sign = data.today_pnl >= 0 ? '+' : '';
             pnlElem.innerText = sign + '$' + data.today_pnl.toFixed(2);

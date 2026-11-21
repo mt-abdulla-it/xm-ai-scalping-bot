@@ -2090,6 +2090,23 @@ void UpdateDashboard(string statusMessage)
    //--- Bottom border
    CreateLabel("XMBOT_Bottom", x, y, "╚═══════════════════════════════════╝", clrTitle, fontSize, fontName);
    
+   //--- Export real-time account telemetry for Web Dashboard & Python Brain
+   int accFile = FileOpen("live_account.json", FILE_WRITE | FILE_TXT | FILE_ANSI);
+   if(accFile != INVALID_HANDLE)
+   {
+      string jsonState = StringFormat("{\n  \"balance\": %.2f,\n  \"equity\": %.2f,\n  \"margin\": %.2f,\n  \"free_margin\": %.2f,\n  \"daily_pnl\": %.2f,\n  \"status\": \"%s\",\n  \"timestamp\": \"%s\"\n}",
+         m_account.Balance(),
+         m_account.Equity(),
+         m_account.Margin(),
+         m_account.FreeMargin(),
+         dailyPnL,
+         statusMessage,
+         TimeToString(TimeCurrent(), TIME_DATE | TIME_SECONDS)
+      );
+      FileWriteString(accFile, jsonState);
+      FileClose(accFile);
+   }
+   
    //--- Force chart redraw
    ChartRedraw();
 }
