@@ -130,29 +130,67 @@ def train_onnx_model():
     for i, col in enumerate(FEATURE_COLS, 1):
         print(f"   [{i}] {col}")
 
-    # 5-Fold Stratified Cross-Validation with Asymmetric Loss Penalty
-    # We penalize Class 0 (Losses) 1.35x heavier to eliminate false positive trades (Sniper AI)
+    # Quantitative Risk-Adjusted Cost-Sensitive Weighting (Institutional Quant Approach)
+    # Penalize trades that produced large dollar losses proportionally harder
+    abs_profit = df['Profit'].abs().values
+    sample_weights = np.where(y == 0, 1.35 + np.clip(abs_profit * 0.2, 0.0, 1.5), 1.0)
+
+    # 5-Fold Stratified Cross-Validation with PnL Cost-Sensitive Weighting
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     clf = RandomForestClassifier(
-        n_estimators=300,
+        n_estimators=350,
         max_depth=6,
         min_samples_split=4,
-        class_weight={0: 1.35, 1: 1.0},
+        min_samples_leaf=2,
+        max_features='sqrt',
         random_state=42,
         n_jobs=-1
     )
     
-    print("\n⚙️ Running 5-Fold Stratified Cross-Validation (Asymmetric Precision Shield)...")
-    from sklearn.metrics import precision_score, recall_score
-    cv_acc = cross_val_score(clf, X, y, cv=cv, scoring="accuracy")
-    cv_prec = cross_val_score(clf, X, y, cv=cv, scoring="precision")
-    mean_acc = cv_acc.mean() * 100
-    mean_prec = cv_prec.mean() * 100
-    print(f"🎯 5-Fold CV Accuracy:  {mean_acc:.2f}% (+/- {cv_acc.std()*100:.2f}%)")
-    print(f"🛡️ 5-Fold CV Precision: {mean_prec:.2f}% (High-Confidence Win Rate on Executed Trades)")
+    print("\n⚙️ Running 5-Fold Stratified Cross-Validation (Institutional Quant Engine)...")
+    cv_accs = []
+    cv_precs_50 = []
+    cv_precs_55 = []
+    cv_precs_60 = []
 
-    # Train production model on full dataset
-    clf.fit(X, y)
+    for train_idx, val_idx in cv.split(X, y):
+        model_fold = RandomForestClassifier(
+            n_estimators=350,
+            max_depth=6,
+            min_samples_split=4,
+            min_samples_leaf=2,
+            max_features='sqrt',
+            random_state=42,
+            n_jobs=-1
+        )
+        model_fold.fit(X.iloc[train_idx], y.iloc[train_idx], sample_weight=sample_weights[train_idx])
+        preds = model_fold.predict(X.iloc[val_idx])
+        probs = model_fold.predict_proba(X.iloc[val_idx])[:, 1]
+        
+        from sklearn.metrics import accuracy_score, precision_score
+        cv_accs.append(accuracy_score(y.iloc[val_idx], preds))
+        cv_precs_50.append(precision_score(y.iloc[val_idx], preds, zero_division=0))
+        
+        sel_55 = probs >= 0.55
+        if sel_55.sum() > 0:
+            cv_precs_55.append(y.iloc[val_idx][sel_55].sum() / sel_55.sum())
+            
+        sel_60 = probs >= 0.60
+        if sel_60.sum() > 0:
+            cv_precs_60.append(y.iloc[val_idx][sel_60].sum() / sel_60.sum())
+
+    mean_acc = np.mean(cv_accs) * 100
+    mean_prec_50 = np.mean(cv_precs_50) * 100
+    mean_prec_55 = np.mean(cv_precs_55) * 100 if cv_precs_55 else mean_prec_50
+    mean_prec_60 = np.mean(cv_precs_60) * 100 if cv_precs_60 else mean_prec_55
+    
+    print(f"🎯 5-Fold CV Accuracy:               {mean_acc:.2f}% (+/- {np.std(cv_accs)*100:.2f}%)")
+    print(f"🛡️ Win Precision @ 0.50 Threshold:   {mean_prec_50:.2f}% (Base Edge)")
+    print(f"🎯 Win Precision @ 0.55 MT5 Sniper:  {mean_prec_55:.2f}% (Live Scalper Target)")
+    print(f"⚡ Win Precision @ 0.60 Index Guard: {mean_prec_60:.2f}% (US100 / BTC Sniper)")
+
+    # Train production model on full dataset with PnL weights
+    clf.fit(X, y, sample_weight=sample_weights)
 
     # Feature Importance Breakdown
     print("\n📊 Feature Importance Ranking:")
@@ -186,7 +224,9 @@ def train_onnx_model():
         "total_records": len(df),
         "features": FEATURE_COLS,
         "cv_accuracy": round(mean_acc, 2),
-        "cv_precision": round(mean_prec, 2),
+        "cv_precision_base": round(mean_prec_50, 2),
+        "cv_precision_sniper": round(mean_prec_55, 2),
+        "cv_precision_ultra": round(mean_prec_60, 2),
         "target_win_ratio": round((y.sum() / len(y)) * 100, 2)
     }
     with open(".ml_state.json", "w") as f:

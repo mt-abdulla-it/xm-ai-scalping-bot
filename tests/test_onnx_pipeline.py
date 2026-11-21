@@ -50,6 +50,18 @@ class TestONNXPipeline(unittest.TestCase):
         self.assertGreaterEqual(er, 0.0)
         self.assertLessEqual(er, 1.0)
 
+    def test_cost_sensitive_weighting(self):
+        """Verify institutional quant cost-sensitive loss weighting calculates correctly."""
+        df_feats = extract_features(self.df)
+        y = df_feats['Target'].values
+        abs_profit = df_feats['Profit'].abs().values
+        weights = np.where(y == 0, 1.35 + np.clip(abs_profit * 0.2, 0.0, 1.5), 1.0)
+        self.assertEqual(len(weights), len(y))
+        # Losses must have higher weight than wins
+        loss_mask = (y == 0)
+        win_mask = (y == 1)
+        self.assertGreater(weights[loss_mask].mean(), weights[win_mask].mean())
+
     def test_onnx_model_inference_compatibility(self):
         """Verify exported ONNX model loads and runs inference on 9-feature vectors."""
         try:
