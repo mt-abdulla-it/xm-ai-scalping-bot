@@ -118,7 +118,9 @@ class ModelRouter:
         if model_key == "gemini-2.0-flash":
             return self._call_gemini(prompt, system_instruction, history)
         elif model_key == "llama-3.3-70b-groq":
-            return self._call_groq(prompt, system_instruction, history)
+            return self._call_groq(prompt, system_instruction, history, model_id="llama-3.3-70b-versatile")
+        elif model_key == "deepseek-r1-groq":
+            return self._call_groq(prompt, system_instruction, history, model_id="deepseek-r1-distill-llama-70b")
         elif model_key == "deepseek-r1":
             return self._call_deepseek(prompt, system_instruction, history)
         elif model_key == "qwen-2.5-coder-local":
@@ -157,42 +159,47 @@ class ModelRouter:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    def _call_groq(self, prompt: str, system_instruction: str, history: Optional[List[Dict[str, str]]]) -> Dict[str, Any]:
+    def _call_groq(self, prompt: str, system_instruction: str, history: Optional[List[Dict[str, str]]], model_id: str = "llama-3.3-70b-versatile") -> Dict[str, Any]:
         if not GROQ_API_KEY:
             return {"success": False, "error": "GROQ_API_KEY is not configured."}
             
         try:
             if self.groq_client:
-                messages = [{"role": "system", "content": system_instruction}]
-                if history:
-                    for h in history[-6:]:
-                        messages.append({"role": h.get("role", "user"), "content": h.get("content", "")})
-                messages.append({"role": "user", "content": prompt})
+                messages = []
+                # R1 distill models perform best with system instructions inside or simple system prompt
+                if "r1" in model_id.lower():
+                    messages.append({"role": "user", "content": f"{system_instruction}\n\nUser Question: {prompt}"})
+                else:
+                    messages.append({"role": "system", "content": system_instruction})
+                    if history:
+                        for h in history[-6:]:
+                            messages.append({"role": h.get("role", "user"), "content": h.get("content", "")})
+                    messages.append({"role": "user", "content": prompt})
                 
                 chat = self.groq_client.chat.completions.create(
                     messages=messages,
-                    model="llama-3.3-70b-versatile",
-                    temperature=0.3,
+                    model=model_id,
+                    temperature=0.6 if "r1" in model_id.lower() else 0.3,
                     max_tokens=MAX_OUTPUT_TOKENS
                 )
                 return {
                     "success": True,
                     "text": chat.choices[0].message.content,
-                    "model": "llama-3.3-70b-groq"
+                    "model": model_id
                 }
             else:
                 # REST API
                 url = "https://api.groq.com/openai/v1/chat/completions"
                 headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
                 payload = {
-                    "model": "llama-3.3-70b-versatile",
+                    "model": model_id,
                     "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}],
                     "temperature": 0.3
                 }
                 res = requests.post(url, json=payload, headers=headers, timeout=15)
                 if res.status_code == 200:
                     text = res.json()["choices"][0]["message"]["content"]
-                    return {"success": True, "text": text, "model": "llama-3.3-70b-groq"}
+                    return {"success": True, "text": text, "model": model_id}
                 return {"success": False, "error": f"HTTP {res.status_code}: {res.text}"}
         except Exception as e:
             return {"success": False, "error": str(e)}
@@ -252,3 +259,4 @@ class ModelRouter:
 
 # Global Router Instance
 router = ModelRouter()
+

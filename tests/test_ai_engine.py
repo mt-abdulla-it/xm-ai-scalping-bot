@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from ai_engine.database import save_message, get_conversation_history, log_audit, get_recent_audit_logs
 from ai_engine.memory import add_memory, get_memories, delete_memory, format_memories_for_prompt
 from ai_engine.rag import chunk_text, ingest_document, search_knowledge_base, format_rag_context
-from ai_engine.osint_cti import extract_iocs, query_dns_intelligence, map_mitre_technique
+from ai_engine.osint_cti import extract_iocs, query_dns_intelligence, map_mitre_technique, check_tor_exit_node, check_cisa_kev
 from ai_engine.model_router import ModelRouter
 
 class TestAIEngine(unittest.TestCase):
@@ -67,6 +67,15 @@ class TestAIEngine(unittest.TestCase):
         mitre_res = map_mitre_technique("T1059")
         self.assertTrue(mitre_res["found"])
         self.assertEqual(mitre_res["name"], "Command and Scripting Interpreter")
+
+        # Test Tor Exit Node Defensive Intelligence
+        tor_res = check_tor_exit_node("127.0.0.1")
+        self.assertIn("is_tor_exit_node", tor_res)
+        self.assertFalse(tor_res["is_tor_exit_node"]) # Localhost is never Tor
+
+        # Test CISA KEV Government Cyber Intelligence
+        kev_res = check_cisa_kev("CVE-2023-34362") # MOVEit Transfer
+        self.assertIn("cve", kev_res)
 
     def test_model_router_offline_fallback(self):
         router = ModelRouter()

@@ -127,3 +127,78 @@ def map_mitre_technique(technique_id: str) -> Dict[str, Any]:
         "technique_id": t_id,
         "message": f"Technique {t_id} not in offline core matrix. Consult attack.mitre.org."
     }
+
+# Cache for Tor Exit Nodes
+_TOR_EXIT_NODES_CACHE = None
+_TOR_CACHE_TIME = 0
+
+def check_tor_exit_node(ip_address: str) -> Dict[str, Any]:
+    """Defensive Dark Web Intelligence: Checks if an IPv4 address is an active Tor exit node."""
+    global _TOR_EXIT_NODES_CACHE, _TOR_CACHE_TIME
+    import time
+    now = time.time()
+    
+    clean_ip = ip_address.strip()
+    # Cache for 1 hour (3600s)
+    if _TOR_EXIT_NODES_CACHE is None or (now - _TOR_CACHE_TIME) > 3600:
+        try:
+            url = "https://check.torproject.org/torbulkexitlist"
+            req = urllib.request.Request(url, headers={'User-Agent': 'Antigravity-Defensive-Intel'})
+            with urllib.request.urlopen(req, timeout=5) as r:
+                _TOR_EXIT_NODES_CACHE = set(r.read().decode().splitlines())
+                _TOR_CACHE_TIME = now
+        except Exception as e:
+            _TOR_EXIT_NODES_CACHE = set()
+
+    is_tor = clean_ip in _TOR_EXIT_NODES_CACHE if _TOR_EXIT_NODES_CACHE else False
+    return {
+        "ip": clean_ip,
+        "is_tor_exit_node": is_tor,
+        "threat_risk": "HIGH" if is_tor else "LOW_TO_NEUTRAL",
+        "total_active_tor_nodes_tracked": len(_TOR_EXIT_NODES_CACHE) if _TOR_EXIT_NODES_CACHE else 0,
+        "source": "Tor Project Official Bulk Exit Directory"
+    }
+
+_CISA_KEV_CACHE = None
+_CISA_CACHE_TIME = 0
+
+def check_cisa_kev(cve_id: str) -> Dict[str, Any]:
+    """Deep Web Government Cyber Intelligence: Queries CISA Known Exploited Vulnerabilities Catalog."""
+    global _CISA_KEV_CACHE, _CISA_CACHE_TIME
+    import time
+    now = time.time()
+    clean_cve = cve_id.strip().upper()
+    
+    # Cache for 6 hours
+    if _CISA_KEV_CACHE is None or (now - _CISA_CACHE_TIME) > 21600:
+        try:
+            url = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Defensive-CTI-Engine)'})
+            with urllib.request.urlopen(req, timeout=6) as r:
+                data = json.loads(r.read().decode())
+                _CISA_KEV_CACHE = {v["cveID"].upper(): v for v in data.get("vulnerabilities", [])}
+                _CISA_CACHE_TIME = now
+        except Exception:
+            _CISA_KEV_CACHE = {}
+
+    if _CISA_KEV_CACHE and clean_cve in _CISA_KEV_CACHE:
+        v = _CISA_KEV_CACHE[clean_cve]
+        return {
+            "found_in_cisa_kev": True,
+            "cve": clean_cve,
+            "vendor_project": v.get("vendorProject", "N/A"),
+            "product": v.get("product", "N/A"),
+            "vulnerability_name": v.get("vulnerabilityName", "N/A"),
+            "date_added": v.get("dateAdded", "N/A"),
+            "due_date": v.get("dueDate", "N/A"),
+            "known_ransomware_campaign_use": v.get("knownRansomwareCampaignUse", "Unknown"),
+            "required_action": v.get("requiredAction", "Patch immediately according to vendor instructions."),
+            "source": "CISA Known Exploited Vulnerabilities (KEV) Government Feed"
+        }
+        
+    return {
+        "found_in_cisa_kev": False,
+        "cve": clean_cve,
+        "notice": f"{clean_cve} is not listed in CISA KEV as an actively weaponized exploit in the wild."
+    }
+

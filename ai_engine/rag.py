@@ -118,3 +118,4 @@ def list_documents() -> List[Dict[str, Any]]:
     rows = cur.fetchall()
     conn.close()
     return [dict(r) for r in rows]
+

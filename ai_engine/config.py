@@ -45,6 +45,16 @@ MODELS: Dict[str, Dict[str, Any]] = {
         "cost_per_m_in": 0.59,
         "cost_per_m_out": 0.79
     },
+    "deepseek-r1-groq": {
+        "name": "DeepSeek-R1 Distill 70B (Groq 280 tps)",
+        "provider": "groq",
+        "model_id": "deepseek-r1-distill-llama-70b",
+        "context_window": 128000,
+        "category": "fast_reasoning",
+        "strengths": ["sub_second_reasoning", "quant_logic", "math", "fast_cyber_audit"],
+        "cost_per_m_in": 0.59,
+        "cost_per_m_out": 0.79
+    },
     "deepseek-r1": {
         "name": "DeepSeek-R1 (Reasoning Master)",
         "provider": "deepseek",
@@ -77,3 +87,4 @@ MAX_OUTPUT_TOKENS = 4096
 RATE_LIMIT_RPM = 60
 ENABLE_AUDIT_LOGGING = True
 REQUIRE_APPROVAL_FOR_DESTRUCTIVE_OPS = True
+

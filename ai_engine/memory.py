@@ -77,3 +77,4 @@ def auto_extract_and_save_preferences(user_text: str, user_id: str = "default_us
     if re.search(r'\b(tamil|tanglish|tamil-english|english)\b', user_text, re.I):
         lang = "Tamil / Tanglish" if "tamil" in user_text.lower() else "English"
         add_memory("preferred_language", lang, category="preference", user_id=user_id)
+

@@ -15,7 +15,7 @@ if BASE_DIR not in sys.path:
 from ai_engine.model_router import router, MODELS, SYSTEM_PROMPT
 from ai_engine.memory import get_memories, add_memory, delete_memory, format_memories_for_prompt, auto_extract_and_save_preferences
 from ai_engine.rag import ingest_document, search_knowledge_base, format_rag_context, list_documents
-from ai_engine.osint_cti import extract_iocs, query_dns_intelligence, query_rdap_whois, map_mitre_technique
+from ai_engine.osint_cti import extract_iocs, query_dns_intelligence, query_rdap_whois, map_mitre_technique, check_tor_exit_node, check_cisa_kev
 from ai_engine.database import save_message, get_conversation_history, list_conversations, log_audit, get_recent_audit_logs
 
 app = Flask(__name__, template_folder='templates')
@@ -246,12 +246,28 @@ def api_osint_analyze():
     dns_info = query_dns_intelligence(target) if "." in target and " " not in target else None
     whois_info = query_rdap_whois(target) if "." in target and " " not in target else None
     
+    # Live Dark Web Tor Exit Node Verification for detected IPs
+    tor_analysis = []
+    for ip in iocs.get("ipv4", [])[:5]:
+        tor_analysis.append(check_tor_exit_node(ip))
+        
+    # Live Government Deep Web CISA KEV Verification for detected CVEs
+    cisa_analysis = []
+    for cve in iocs.get("cve", [])[:5]:
+        cisa_analysis.append(check_cisa_kev(cve))
+        
     return jsonify({
         "target": target,
         "iocs": iocs,
         "dns": dns_info,
-        "whois": whois_info
+        "whois": whois_info,
+        "darkweb_tor_nodes": tor_analysis,
+        "cisa_kev_weaponized_cves": cisa_analysis
     })
+
+@app.route('/api/cisa-kev/<cve_id>', methods=['GET'])
+def api_cisa_kev_lookup(cve_id):
+    return jsonify(check_cisa_kev(cve_id))
 
 @app.route('/api/mitre/<technique_id>', methods=['GET'])
 def api_mitre(technique_id):
