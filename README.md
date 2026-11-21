@@ -443,7 +443,7 @@ If you find this AI Scalping Engine useful, please consider giving it a **Star (
 
 ### 💳 How to Purchase a Commercial License
 1. **Choose your tier:** Select either **Trader Pro ($99)** or **Prop Firm VIP ($299)**.
-2. **Contact Author:** Email **[mt.abdulla.it@gmail.com](mailto:mt.abdulla.it@gmail.com)** or message on **[LinkedIn](https://www.linkedin.com/in/mt-abdulla-it)**.
+2. **Contact Author:** Email **[mt.abdulla.it@gmail.com](mailto:mt.abdulla.it@gmail.com)** directly.
 3. **Supported Payment Options:**
    - **Crypto:** USDT (TRC-20 / ERC-20), Bitcoin (BTC), Ethereum (ETH)
    - **Credit / Debit Cards:** Secure checkout via Stripe / Agensi.io
@@ -475,4 +475,3 @@ This software is distributed under a dual **Commercial & Evaluation License**:
 
 For commercial inquiries, licensing keys, or partnership:
 - 📧 **Email:** [mt.abdulla.it@gmail.com](mailto:mt.abdulla.it@gmail.com)
-- 💼 **LinkedIn:** [Abdulla Thaslim](https://www.linkedin.com/in/mt-abdulla-it)
