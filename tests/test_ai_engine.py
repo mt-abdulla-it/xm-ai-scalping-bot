@@ -86,5 +86,35 @@ class TestAIEngine(unittest.TestCase):
         fallback = router._local_rule_fallback("Show me trading bot status and balance")
         self.assertIn("Trading Bot Status", fallback)
 
+    def test_telegram_gateway_unconfigured(self):
+        from ai_engine.telegram_notifier import send_telegram_alert, get_credentials
+        res = send_telegram_alert("Test message")
+        self.assertIn("success", res)
+
+    def test_strategy_backtest_engine(self):
+        from ai_engine.backtest_engine import run_strategy_backtest
+        csv_path = os.path.expanduser("~/.wine/drive_c/Program Files/XM Global MT5/MQL5/Files/XMBot_ML_Data.csv")
+        res = run_strategy_backtest(csv_path, er_threshold=0.35, sl_atr_mult=2.0)
+        self.assertIn("success", res)
+        if res.get("success"):
+            self.assertIn("equity_curve", res)
+            self.assertIn("win_rate", res)
+
+    def test_pdf_tearsheet_generation(self):
+        from ai_engine.pdf_report import generate_pdf_tearsheet
+        csv_path = os.path.expanduser("~/.wine/drive_c/Program Files/XM Global MT5/MQL5/Files/XMBot_ML_Data.csv")
+        pdf_buf = generate_pdf_tearsheet(csv_path, balance=150.0, today_pnl=12.50)
+        pdf_bytes = pdf_buf.getvalue()
+        self.assertGreater(len(pdf_bytes), 50)
+        self.assertTrue(pdf_bytes.startswith(b'%PDF') or b'AegisQuant' in pdf_bytes)
+
+    def test_system_sentinel_health(self):
+        from ai_engine.system_sentinel import get_full_system_health
+        from ai_engine.database import DB_PATH
+        health = get_full_system_health(DB_PATH)
+        self.assertIn("status", health)
+        self.assertIn("processes", health)
+        self.assertIn("benchmarks_ms", health)
+
 if __name__ == "__main__":
     unittest.main()

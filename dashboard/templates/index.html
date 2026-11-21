@@ -33,7 +33,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Sleek Cyber Custom Scrollbars */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -191,7 +190,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            position: relative;
+            white-space: nowrap;
         }
 
         .tab-btn:hover {
@@ -222,7 +221,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Header Micro-LED Buttons */
         .pill-toggle {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--card-border);
@@ -289,7 +287,6 @@
             100% { opacity: 0.4; }
         }
 
-        /* Luxury Glassmorphic Cards */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -311,7 +308,6 @@
             margin-bottom: 22px;
         }
 
-        /* KPI Metric Cards with Glowing Accent Top Borders */
         .kpi-card {
             position: relative;
             overflow: hidden;
@@ -374,7 +370,6 @@
         .profit-pos { color: var(--green); text-shadow: 0 0 12px rgba(0, 230, 118, 0.3); }
         .profit-neg { color: var(--red); text-shadow: 0 0 12px rgba(255, 82, 82, 0.3); }
 
-        /* Remote Control Bar */
         .control-bar {
             display: flex;
             align-items: center;
@@ -444,7 +439,6 @@
             transform: translateY(-1px);
         }
 
-        /* TradingView Switcher Bar */
         .tv-symbol-bar {
             display: flex;
             gap: 8px;
@@ -471,7 +465,6 @@
             box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
         }
 
-        /* 🎛️ Quad Matrix Styles */
         .chart-layout-bar {
             display: flex;
             gap: 8px;
@@ -494,7 +487,6 @@
             height: 314px;
         }
 
-        /* 🛡️ Risk Matrix Grid */
         .risk-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -530,7 +522,6 @@
             margin-top: 6px;
         }
 
-        /* Quick Prompts UX */
         .quick-prompts {
             display: flex;
             gap: 8px;
@@ -559,7 +550,6 @@
             border-color: var(--cyan);
         }
 
-        /* Thinking Typing Indicator Animation */
         .typing-indicator {
             display: inline-flex;
             align-items: center;
@@ -583,7 +573,6 @@
             40% { transform: scale(1.1); opacity: 1; }
         }
 
-        /* Modal Styles */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -608,7 +597,6 @@
             animation: fadeIn 0.25s ease-out;
         }
 
-        /* Chat Styles */
         .chat-container {
             display: flex;
             flex-direction: column;
@@ -725,7 +713,6 @@
             outline: none;
         }
 
-        /* Enhanced Table Styles */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -803,7 +790,6 @@
             color: #A7F3D0;
         }
 
-        /* Floating Cyber Toast Notification */
         .toast-container {
             position: fixed;
             bottom: 24px;
@@ -836,7 +822,26 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        /* Printable Statement Styles */
+        /* Form Controls for Backtest Lab */
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .slider-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        input[type="range"] {
+            accent-color: var(--cyan);
+            cursor: pointer;
+        }
+
         @media print {
             body { background: #fff !important; color: #000 !important; padding: 0 !important; }
             header, .nav-tabs, .control-bar, .market-bar, .tv-symbol-bar, #tradingview_chart_container, #quad_matrix_container, .chat-container, .btn-ctrl, button, .quick-prompts { display: none !important; }
@@ -905,8 +910,10 @@
     <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchTab('tab-trading')">📈 Trading & ONNX Brain</button>
         <button class="tab-btn" onclick="switchTab('tab-chat')">🤖 Multi-Model AI Assistant</button>
+        <button class="tab-btn" onclick="switchTab('tab-backtest')">🧪 Strategy Backtest Lab</button>
         <button class="tab-btn" onclick="switchTab('tab-rag')">📚 RAG Knowledge Base</button>
         <button class="tab-btn" onclick="switchTab('tab-osint')">🛡️ OSINT & Threat Intel</button>
+        <button class="tab-btn" onclick="switchTab('tab-sentinel')">🩺 System Sentinel & Alerts</button>
         <button class="tab-btn" onclick="switchTab('tab-memory')">🧠 Long-Term Memory & Audit</button>
     </div>
 
@@ -927,6 +934,7 @@
                 <button class="btn-ctrl btn-pause" onclick="sendControlCommand('PAUSE')">⏸️ PAUSE BOT</button>
                 <button class="btn-ctrl btn-resume" onclick="sendControlCommand('RESUME')">▶️ RESUME BOT</button>
                 <button class="btn-ctrl" style="background: rgba(0, 242, 254, 0.15); color: var(--cyan); border: 1px solid rgba(0, 242, 254, 0.35);" onclick="exportTradesCSV()">📥 Export CSV</button>
+                <button class="btn-ctrl" style="background: rgba(255, 158, 67, 0.15); color: var(--orange); border: 1px solid rgba(255, 158, 67, 0.35);" onclick="downloadPDFReport()">📑 Download PDF</button>
                 <button class="btn-ctrl" style="background: rgba(179, 136, 255, 0.15); color: var(--purple); border: 1px solid rgba(179, 136, 255, 0.35);" onclick="printAuditStatement()">🖨️ Print Statement</button>
             </div>
         </div>
@@ -988,11 +996,8 @@
                 </div>
             </div>
 
-            <!-- Single Focus Chart -->
-            <div id="tradingview_chart_container" style="height: 420px; width: 100%; border-radius: 10px; overflow: hidden; background: #080C16;">
-            </div>
+            <div id="tradingview_chart_container" style="height: 420px; width: 100%; border-radius: 10px; overflow: hidden; background: #080C16;"></div>
 
-            <!-- Quad Matrix 2x2 Grid -->
             <div id="quad_matrix_container" class="quad-grid" style="display: none;">
                 <div id="tv_quad_1" class="quad-cell"></div>
                 <div id="tv_quad_2" class="quad-cell"></div>
@@ -1138,7 +1143,6 @@
                 </div>
             </div>
 
-            <!-- Quick Prompt Suggestions UX -->
             <div class="quick-prompts">
                 <button class="quick-pill" onclick="sendQuickPrompt('Analyze our recent trading session performance and win rate.')">📊 Session Audit</button>
                 <button class="quick-pill" onclick="sendQuickPrompt('Explain current Perry Kaufman Market Regime and volatility state.')">⚡ Kaufman Regime</button>
@@ -1153,7 +1157,80 @@
         </div>
     </div>
 
-    <!-- TAB 3: RAG KNOWLEDGE BASE -->
+    <!-- TAB 3: STRATEGY BACKTEST LAB -->
+    <div id="tab-backtest" class="tab-content">
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px; margin-bottom: 22px;">
+            <div class="card">
+                <div class="metric-title">🧪 Strategy Simulation Controls</div>
+                <div class="slider-group" style="margin-top: 14px;">
+                    <div class="slider-row">
+                        <span>Kaufman ER Threshold:</span>
+                        <span id="label-bt-er" style="color: var(--cyan); font-family: 'JetBrains Mono';">0.35</span>
+                    </div>
+                    <input type="range" id="input-bt-er" min="0.10" max="0.70" step="0.05" value="0.35" oninput="document.getElementById('label-bt-er').innerText = this.value">
+                    <div style="font-size: 10px; color: var(--text-muted);">Filters out market noise when ER < threshold</div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-row">
+                        <span>ATR Stop Loss Multiplier:</span>
+                        <span id="label-bt-sl" style="color: var(--green); font-family: 'JetBrains Mono';">2.0x</span>
+                    </div>
+                    <input type="range" id="input-bt-sl" min="1.0" max="4.0" step="0.25" value="2.0" oninput="document.getElementById('label-bt-sl').innerText = this.value + 'x'">
+                    <div style="font-size: 10px; color: var(--text-muted);">Turtle dynamic volatility buffer scaling</div>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <div style="font-size: 12px; font-weight: 600; margin-bottom: 6px;">Initial Capital ($):</div>
+                    <input type="number" id="input-bt-capital" class="chat-input" value="100.0" style="width: 100%;">
+                </div>
+
+                <button class="btn-send" style="width: 100%; padding: 12px;" onclick="runBacktestSimulation()">Run Vectorized Simulation 🚀</button>
+            </div>
+
+            <div class="card">
+                <div class="metric-title">📊 Simulated Performance Metrics</div>
+                <div class="risk-grid" style="margin-top: 8px;">
+                    <div class="risk-stat">
+                        <div class="risk-label">Final Equity</div>
+                        <div class="risk-val" id="bt-final-bal" style="color: var(--cyan);">$100.00</div>
+                    </div>
+                    <div class="risk-stat">
+                        <div class="risk-label">Net Profit</div>
+                        <div class="risk-val profit-pos" id="bt-net-profit">+$0.00</div>
+                    </div>
+                    <div class="risk-stat">
+                        <div class="risk-label">Win Rate</div>
+                        <div class="risk-val" id="bt-winrate" style="color: var(--green);">0.0%</div>
+                    </div>
+                    <div class="risk-stat">
+                        <div class="risk-label">Profit Factor</div>
+                        <div class="risk-val" id="bt-profit-factor">1.00</div>
+                    </div>
+                    <div class="risk-stat">
+                        <div class="risk-label">Simulated Sharpe</div>
+                        <div class="risk-val" id="bt-sharpe" style="color: var(--purple);">--</div>
+                    </div>
+                    <div class="risk-stat">
+                        <div class="risk-label">Max Drawdown</div>
+                        <div class="risk-val profit-neg" id="bt-maxdd">$0.00</div>
+                    </div>
+                </div>
+                <div style="margin-top: 14px; font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono';" id="bt-trades-count">
+                    Recorded Trades Evaluated: 0 | High Noise Trades Filtered: 0
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="metric-title">📈 Vectorized Strategy Equity Curve</div>
+            <div style="height: 280px; width: 100%; margin-top: 10px;">
+                <canvas id="backtestChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: RAG KNOWLEDGE BASE -->
     <div id="tab-rag" class="tab-content">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="card">
@@ -1171,7 +1248,7 @@
         </div>
     </div>
 
-    <!-- TAB 4: OSINT & THREAT INTELLIGENCE -->
+    <!-- TAB 5: OSINT & THREAT INTELLIGENCE -->
     <div id="tab-osint" class="tab-content">
         <div class="card" style="margin-bottom: 22px;">
             <div class="metric-title">Defensive Threat Intelligence & IOC Extractor</div>
@@ -1202,7 +1279,72 @@
         </div>
     </div>
 
-    <!-- TAB 5: MEMORY & AUDIT -->
+    <!-- TAB 6: SYSTEM SENTINEL & ALERTS -->
+    <div id="tab-sentinel" class="tab-content">
+        <div class="grid-4" style="margin-bottom: 22px;">
+            <div class="card kpi-card kpi-accent-green">
+                <div class="metric-title">MT5 Wine Engine</div>
+                <div class="metric-value" id="sentinel-mt5-status" style="color: var(--green); font-size: 20px;">ONLINE</div>
+                <div id="sentinel-mt5-stats" style="font-size: 11px; color: var(--text-muted); margin-top: 6px; font-family: 'JetBrains Mono';">PID: -- | CPU: --% | RAM: -- MB</div>
+            </div>
+            <div class="card kpi-card kpi-accent-cyan">
+                <div class="metric-title">Auto-Pilot Guardian</div>
+                <div class="metric-value" id="sentinel-guardian-status" style="color: var(--cyan); font-size: 20px;">ACTIVE</div>
+                <div id="sentinel-guardian-stats" style="font-size: 11px; color: var(--text-muted); margin-top: 6px; font-family: 'JetBrains Mono';">Daemon Running (Self-Healing)</div>
+            </div>
+            <div class="card kpi-card kpi-accent-purple">
+                <div class="metric-title">Web Control Gateway</div>
+                <div class="metric-value" style="color: var(--purple); font-size: 20px;">ONLINE</div>
+                <div id="sentinel-web-stats" style="font-size: 11px; color: var(--text-muted); margin-top: 6px; font-family: 'JetBrains Mono';">Port 5000 Active</div>
+            </div>
+            <div class="card kpi-card kpi-accent-amber">
+                <div class="metric-title">Disk Storage</div>
+                <div class="metric-value" id="sentinel-disk-free" style="color: var(--yellow); font-size: 20px;">-- GB</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Available Workspace Storage</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 22px;">
+            <div class="card">
+                <div class="metric-title">⚡ Subsystem Latency Benchmarks</div>
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 14px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                        <span>SQLite Local Audit DB:</span>
+                        <span id="lat-db" style="font-family: 'JetBrains Mono'; font-weight: 700; color: var(--green);">-- ms</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                        <span>Groq Sub-100ms Inference:</span>
+                        <span id="lat-groq" style="font-family: 'JetBrains Mono'; font-weight: 700; color: var(--cyan);">-- ms</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                        <span>Tor Bulk Exit Node Directory:</span>
+                        <span id="lat-tor" style="font-family: 'JetBrains Mono'; font-weight: 700; color: var(--orange);">-- ms</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                        <span>CISA KEV Weaponized Catalog:</span>
+                        <span id="lat-cisa" style="font-family: 'JetBrains Mono'; font-weight: 700; color: var(--purple);">-- ms</span>
+                    </div>
+                </div>
+                <button class="btn-send" style="width: 100%; margin-top: 18px; padding: 10px;" onclick="loadSystemHealth()">Refresh Benchmarks 🩺</button>
+            </div>
+
+            <div class="card">
+                <div class="metric-title">📱 Telegram Mobile Push Alerts Gateway</div>
+                <div style="margin-top: 10px; font-size: 13px; color: var(--text-muted);">
+                    Telegram Status: <strong id="telegram-status-text" style="color: #fff;">Checking...</strong>
+                </div>
+                <div style="margin-top: 14px;">
+                    <input type="text" id="telegram-test-msg" class="chat-input" placeholder="Custom test notification..." value="🔔 AegisQuant Sentinel: Real-time mobile alert test." style="width: 100%; margin-bottom: 12px;">
+                    <button class="btn-send" style="width: 100%; padding: 10px;" onclick="sendTelegramTest()">Dispatch Test Ping 📲</button>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">
+                    Set <code>TELEGRAM_BOT_TOKEN</code> and <code>TELEGRAM_CHAT_ID</code> in your environment for instant smartphone trade alerts.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 7: MEMORY & AUDIT -->
     <div id="tab-memory" class="tab-content">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="card">
@@ -1238,6 +1380,7 @@
 <script>
     let ratioChart = null;
     let equityChart = null;
+    let backtestChart = null;
     let currentEquityMode = 'recent';
     let prevTradesCount = 0;
     let lastAnnouncedRegime = '';
@@ -1337,7 +1480,7 @@
         try {
             const ctx = getAudioCtx();
             const now = ctx.currentTime;
-            const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 ascending arpeggio
+            const freqs = [523.25, 659.25, 783.99, 1046.50];
             freqs.forEach((f, idx) => {
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
@@ -1367,7 +1510,6 @@
             const gain = ctx.createGain();
             osc.type = 'sawtooth';
             
-            // Warble alarm frequency
             osc.frequency.setValueAtTime(880, now);
             osc.frequency.linearRampToValueAtTime(440, now + 0.15);
             osc.frequency.linearRampToValueAtTime(880, now + 0.30);
@@ -1422,12 +1564,6 @@
         const pad = n => n.toString().padStart(2, '0');
         document.getElementById('utc-clock').innerText = `UTC ${pad(utcHours)}:${pad(utcMins)}:${pad(utcSecs)}`;
         
-        // Market sessions in UTC minutes:
-        // London: 08:00 - 16:30 (480 - 990)
-        // New York: 13:00 - 21:00 (780 - 1260)
-        // Tokyo: 00:00 - 09:00 (0 - 540)
-        // Sydney: 22:00 - 07:00 (1320 - 420 wrap-around)
-        
         const isLondon = curUtcMinutes >= 480 && curUtcMinutes <= 990;
         const isNY = curUtcMinutes >= 780 && curUtcMinutes <= 1260;
         const isTokyo = curUtcMinutes >= 0 && curUtcMinutes <= 540;
@@ -1450,7 +1586,6 @@
         sessSydney.className = 'session-badge ' + (isSydney ? 'open' : '');
         document.getElementById('clock-sydney').innerText = isSydney ? 'OPEN (22-07:00)' : 'CLOSED';
         
-        // Dynamic Liquidity Overlap Detector
         const overlapElem = document.getElementById('overlap-indicator');
         if (isLondon && isNY) {
             overlapElem.className = 'overlap-banner';
@@ -1611,6 +1746,154 @@
     }
 
     // ==============================================================================
+    // 🧪 Strategy Backtest Simulation Engine (Tab 3)
+    // ==============================================================================
+    async function runBacktestSimulation() {
+        const er_threshold = parseFloat(document.getElementById('input-bt-er').value);
+        const sl_atr_mult = parseFloat(document.getElementById('input-bt-sl').value);
+        const initial_balance = parseFloat(document.getElementById('input-bt-capital').value) || 100.0;
+
+        showToast('Running Vectorized Strategy Simulation... ⏳', 'info');
+
+        try {
+            const res = await fetch('/api/backtest/run', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ er_threshold, sl_atr_mult, initial_balance })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                document.getElementById('bt-final-bal').innerText = '$' + data.final_balance.toFixed(2);
+                const pnlEl = document.getElementById('bt-net-profit');
+                pnlEl.innerText = (data.net_profit >= 0 ? '+' : '') + '$' + data.net_profit.toFixed(2);
+                pnlEl.className = 'risk-val ' + (data.net_profit >= 0 ? 'profit-pos' : 'profit-neg');
+
+                document.getElementById('bt-winrate').innerText = data.win_rate + '%';
+                document.getElementById('bt-profit-factor').innerText = data.profit_factor;
+                document.getElementById('bt-sharpe').innerText = data.sharpe_ratio;
+                document.getElementById('bt-maxdd').innerText = '$' + data.max_drawdown.toFixed(2) + ` (${data.max_drawdown_pct}%)`;
+                document.getElementById('bt-trades-count').innerText = `Recorded Trades Evaluated: ${data.trade_count} | High Noise Trades Filtered: ${data.filtered_noise_trades}`;
+
+                // Update Backtest Chart
+                if (backtestChart) {
+                    backtestChart.data.labels = data.labels;
+                    backtestChart.data.datasets[0].data = data.equity_curve;
+                    backtestChart.data.datasets[0].borderColor = data.net_profit >= 0 ? '#00F2FE' : '#FF5252';
+                    backtestChart.update();
+                }
+                showToast('Backtest Simulation Complete! 🎯', 'success');
+                speakAnnounce(`Backtest completed. Net simulated return: ${data.net_profit} dollars.`);
+            } else {
+                showToast('Simulation failed: ' + data.error, 'warning');
+            }
+        } catch (e) {
+            showToast('Backtest network error: ' + e, 'warning');
+        }
+    }
+
+    function initBacktestChart() {
+        const ctx = document.getElementById('backtestChart').getContext('2d');
+        backtestChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Simulated Equity ($)',
+                    data: [],
+                    borderColor: '#00F2FE',
+                    backgroundColor: 'rgba(0, 242, 254, 0.08)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.2,
+                    pointRadius: 0,
+                    pointHoverRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: '#8F9CAE', maxTicksLimit: 10, font: { size: 10 } }, grid: { color: 'rgba(255, 255, 255, 0.04)' } },
+                    y: { ticks: { color: '#8F9CAE', font: { size: 10 }, callback: v => '$' + v }, grid: { color: 'rgba(255, 255, 255, 0.04)' } }
+                }
+            }
+        });
+    }
+
+    // ==============================================================================
+    // 🩺 System Sentinel & Alerts Gateway (Tab 6)
+    // ==============================================================================
+    async function loadSystemHealth() {
+        try {
+            const res = await fetch('/api/system/health');
+            const data = await res.json();
+
+            const mt5 = data.processes.mt5_terminal;
+            const guardian = data.processes.auto_pilot_guardian;
+
+            const mt5Status = document.getElementById('sentinel-mt5-status');
+            mt5Status.innerText = mt5.running ? 'ONLINE' : 'STOPPED';
+            mt5Status.style.color = mt5.running ? 'var(--green)' : 'var(--red)';
+            document.getElementById('sentinel-mt5-stats').innerText = mt5.running ? `PID: ${mt5.pid} | CPU: ${mt5.cpu_pct}% | RAM: ${mt5.memory_mb} MB` : 'Process not detected';
+
+            const guardStatus = document.getElementById('sentinel-guardian-status');
+            guardStatus.innerText = guardian.running ? 'ACTIVE' : 'STOPPED';
+            guardStatus.style.color = guardian.running ? 'var(--cyan)' : 'var(--red)';
+
+            document.getElementById('sentinel-disk-free').innerText = data.storage.free_disk_gb + ' GB';
+
+            document.getElementById('lat-db').innerText = data.benchmarks_ms.sqlite_database + ' ms';
+            document.getElementById('lat-groq').innerText = data.benchmarks_ms.groq_api + ' ms';
+            document.getElementById('lat-tor').innerText = data.benchmarks_ms.tor_exit_directory + ' ms';
+            document.getElementById('lat-cisa').innerText = data.benchmarks_ms.cisa_gov_kev + ' ms';
+
+            // Also load telegram config status
+            const telRes = await fetch('/api/telegram/config');
+            const telData = await telRes.json();
+            const telStatus = document.getElementById('telegram-status-text');
+            if (telData.configured) {
+                telStatus.innerHTML = `<span style="color: var(--green);">● Configured (${telData.token_masked})</span>`;
+            } else {
+                telStatus.innerHTML = `<span style="color: var(--yellow);">● Unconfigured (Optional Push Alerts)</span>`;
+            }
+        } catch (e) {
+            console.error('Sentinel health check error:', e);
+        }
+    }
+
+    async function sendTelegramTest() {
+        const msg = document.getElementById('telegram-test-msg').value.trim();
+        showToast('Dispatching Telegram Ping... 📲', 'info');
+        try {
+            const res = await fetch('/api/telegram/test', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('Telegram Alert Delivered Successfully! 📱', 'success');
+                speakAnnounce('Telegram test alert dispatched successfully.');
+            } else {
+                showToast(data.error || 'Telegram not configured yet', 'warning');
+            }
+        } catch (e) {
+            showToast('Telegram error: ' + e, 'warning');
+        }
+    }
+
+    // ==============================================================================
+    // 📄 Download Institutional PDF Report
+    // ==============================================================================
+    function downloadPDFReport() {
+        speakAnnounce('Generating institutional PDF performance statement.');
+        showToast('Compiling Institutional PDF Tear-Sheet... 📑', 'success');
+        window.location.href = '/api/report/pdf';
+    }
+
+    // ==============================================================================
     // 📥 Export Audit Reports (CSV & Print PDF Statement)
     // ==============================================================================
     function exportTradesCSV() {
@@ -1632,6 +1915,13 @@
 
         if (tabId === 'tab-rag') loadRagDocs();
         if (tabId === 'tab-memory') { loadMemories(); loadAuditLogs(); }
+        if (tabId === 'tab-sentinel') { loadSystemHealth(); }
+        if (tabId === 'tab-backtest') {
+            setTimeout(() => {
+                if (!backtestChart) initBacktestChart();
+                runBacktestSimulation();
+            }, 100);
+        }
         if (tabId === 'tab-trading') {
             setTimeout(() => {
                 if (currentChartLayout === 'single' && !document.querySelector('#tradingview_chart_container iframe')) {
@@ -1644,7 +1934,6 @@
     }
 
     function initCharts() {
-        // Ratio Donut Chart
         const ctxRatio = document.getElementById('ratioChart').getContext('2d');
         ratioChart = new Chart(ctxRatio, {
             type: 'doughnut',
@@ -1663,7 +1952,6 @@
             }
         });
 
-        // Cumulative Equity Curve
         const ctxEquity = document.getElementById('equityChart').getContext('2d');
         equityChart = new Chart(ctxEquity, {
             type: 'line',
@@ -1695,18 +1983,8 @@
                     }
                 },
                 scales: {
-                    x: {
-                        ticks: { color: '#8F9CAE', maxTicksLimit: 8, font: { size: 10 } },
-                        grid: { color: 'rgba(255, 255, 255, 0.04)' }
-                    },
-                    y: {
-                        ticks: {
-                            color: '#8F9CAE',
-                            font: { size: 10 },
-                            callback: val => (val >= 0 ? '+' : '') + '$' + val
-                        },
-                        grid: { color: 'rgba(255, 255, 255, 0.04)' }
-                    }
+                    x: { ticks: { color: '#8F9CAE', maxTicksLimit: 8, font: { size: 10 } }, grid: { color: 'rgba(255, 255, 255, 0.04)' } },
+                    y: { ticks: { color: '#8F9CAE', font: { size: 10 }, callback: val => (val >= 0 ? '+' : '') + '$' + val }, grid: { color: 'rgba(255, 255, 255, 0.04)' } }
                 }
             }
         });
@@ -1883,7 +2161,6 @@
 
         const messagesContainer = document.getElementById('chat-messages');
         
-        // Append user message
         const userDiv = document.createElement('div');
         userDiv.className = 'msg msg-user';
         userDiv.innerText = text;
@@ -1895,7 +2172,6 @@
         const useRag = document.getElementById('toggle-rag').checked;
         const useMem = document.getElementById('toggle-mem').checked;
 
-        // Append AI animated typing indicator
         const aiDiv = document.createElement('div');
         aiDiv.className = 'msg msg-ai';
         aiDiv.innerHTML = `

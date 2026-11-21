@@ -16,7 +16,11 @@ from ai_engine.model_router import router, MODELS, SYSTEM_PROMPT
 from ai_engine.memory import get_memories, add_memory, delete_memory, format_memories_for_prompt, auto_extract_and_save_preferences
 from ai_engine.rag import ingest_document, search_knowledge_base, format_rag_context, list_documents
 from ai_engine.osint_cti import extract_iocs, query_dns_intelligence, query_rdap_whois, map_mitre_technique, check_tor_exit_node, check_cisa_kev
-from ai_engine.database import save_message, get_conversation_history, list_conversations, log_audit, get_recent_audit_logs
+from ai_engine.database import save_message, get_conversation_history, list_conversations, log_audit, get_recent_audit_logs, DB_PATH
+from ai_engine.telegram_notifier import send_telegram_alert, send_trade_alert, send_emergency_alert, get_credentials
+from ai_engine.backtest_engine import run_strategy_backtest
+from ai_engine.pdf_report import generate_pdf_tearsheet
+from ai_engine.system_sentinel import get_full_system_health
 
 app = Flask(__name__, template_folder='templates')
 
@@ -154,6 +158,8 @@ def api_control():
         with open(cmd_file, "w") as f:
             f.write(cmd + "\n")
         log_audit("remote_control", "web_user", {"command": cmd})
+        if cmd == "CLOSE_ALL":
+            send_emergency_alert("EMERGENCY KILL-SWITCH EXECUTED", "All MT5 open positions liquidated via Web Terminal.")
         return jsonify({
             "success": True,
             "command": cmd,
@@ -601,6 +607,76 @@ def api_trades_export_csv():
         mimetype="text/csv",
         headers={"Content-Disposition": f"attachment;filename=AegisQuant_Trade_Audit_{today_str}.csv"}
     )
+
+# ==============================================================================
+# 📱 Telegram Mobile Alerts & Push Gateway Routes
+# ==============================================================================
+@app.route('/api/telegram/test', methods=['POST'])
+def api_telegram_test():
+    data = request.get_json() or {}
+    custom_msg = data.get("message", "🔔 AegisQuant AI Sentinel: Test communication alert from web terminal.")
+    res = send_telegram_alert(custom_msg)
+    log_audit("telegram_test", "web_user", res)
+    return jsonify(res)
+
+@app.route('/api/telegram/config', methods=['GET'])
+def api_telegram_config():
+    creds = get_credentials()
+    masked_token = f"{creds['token'][:6]}...{creds['token'][-4:]}" if len(creds['token']) > 10 else "Not Configured"
+    return jsonify({
+        "configured": bool(creds['token'] and creds['chat_id']),
+        "token_masked": masked_token,
+        "chat_id": creds['chat_id'] or "Not Configured"
+    })
+
+# ==============================================================================
+# 🧪 Interactive AI Backtest & Strategy Lab Route
+# ==============================================================================
+@app.route('/api/backtest/run', methods=['POST'])
+def api_backtest_run():
+    data = request.get_json() or {}
+    er_threshold = float(data.get("er_threshold", 0.35))
+    sl_atr_mult = float(data.get("sl_atr_mult", 2.0))
+    initial_balance = float(data.get("initial_balance", 100.0))
+    
+    csv_path = os.path.join(FILES_DIR, "XMBot_ML_Data.csv")
+    result = run_strategy_backtest(
+        csv_path=csv_path,
+        er_threshold=er_threshold,
+        sl_atr_mult=sl_atr_mult,
+        initial_balance=initial_balance
+    )
+    log_audit("backtest_run", "web_user", {"er": er_threshold, "sl_atr": sl_atr_mult, "trades": result.get("trade_count", 0)})
+    return jsonify(result)
+
+# ==============================================================================
+# 📄 Automated Institutional PDF Tear-Sheet Route
+# ==============================================================================
+@app.route('/api/report/pdf', methods=['GET'])
+def api_report_pdf():
+    from flask import send_file
+    csv_path = os.path.join(FILES_DIR, "XMBot_ML_Data.csv")
+    trading_data = get_trading_data()
+    balance = float(trading_data.get("balance", 0.0))
+    today_pnl = float(trading_data.get("today_pnl", 0.0))
+    
+    pdf_buffer = generate_pdf_tearsheet(csv_path, balance=balance, today_pnl=today_pnl)
+    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+    log_audit("pdf_export", "web_user", {"balance": balance, "today_pnl": today_pnl})
+    return send_file(
+        pdf_buffer,
+        as_attachment=True,
+        download_name=f"AegisQuant_Institutional_Report_{today_str}.pdf",
+        mimetype="application/pdf"
+    )
+
+# ==============================================================================
+# 🩺 Autonomous Self-Healing & System Health Sentinel Route
+# ==============================================================================
+@app.route('/api/system/health', methods=['GET'])
+def api_system_health():
+    health = get_full_system_health(DB_PATH)
+    return jsonify(health)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
