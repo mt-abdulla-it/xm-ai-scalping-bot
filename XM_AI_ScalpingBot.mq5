@@ -77,7 +77,7 @@ input int            InpTrendEMA       = 50;           // EMA Period for Trend F
 
 //--- Pin Bar Reversal Strategy
 input group "=== 📌 Pin Bar Reversal Strategy ==="
-input bool     InpUsePinBarReversal = true;   // Trade Pin Bar Reversals (Counter-Trend)
+input bool     InpUsePinBarReversal = false;  // 🚫 Counter-Trend Reversals OFF: Strictly follow H1 macro trend (no top/bottom fishing!)
 //--- RSI (Relative Strength Index) Inputs
 input group "=== 📊 RSI Settings ==="
 input int      InpRSI_Period       = 14;      // RSI Period
@@ -1514,8 +1514,11 @@ void ManageOpenPositions()
       {
          double profitDistance = currentPrice - openPrice;
          
-         // 1. Dynamic Breakeven: Scale threshold for micro lots (0.01 lot needs $0.80, larger lots need $2.00)
-         double minBeProfit = (m_position.Volume() <= 0.02) ? 0.80 : 2.00;
+         // 1. Dynamic Breakeven: Scale threshold (Indices/Crypto need $3.00 room, Forex micro-lots need $0.80)
+         string symUpper = m_position.Symbol();
+         StringToUpper(symUpper);
+         bool isHighValueAsset = (StringFind(symUpper, "US100") >= 0 || StringFind(symUpper, "US500") >= 0 || StringFind(symUpper, "BTC") >= 0);
+         double minBeProfit = isHighValueAsset ? 3.00 : ((m_position.Volume() <= 0.02) ? 0.80 : 2.00);
          if((profitDistance >= atr * 1.2 && netProfit >= minBeProfit) && currentSL < openPrice)
          {
             double beSL = NormalizeDouble(openPrice + (m_symbol.Spread() * _Point * 2.0), _Digits);
@@ -1573,8 +1576,11 @@ void ManageOpenPositions()
       {
          double profitDistance = openPrice - currentPrice;
          
-         // 1. Dynamic Breakeven: Scale threshold for micro lots (0.01 lot needs $0.80, larger lots need $2.00)
-         double minBeProfit = (m_position.Volume() <= 0.02) ? 0.80 : 2.00;
+         // 1. Dynamic Breakeven: Scale threshold (Indices/Crypto need $3.00 room, Forex micro-lots need $0.80)
+         string symUpper = m_position.Symbol();
+         StringToUpper(symUpper);
+         bool isHighValueAsset = (StringFind(symUpper, "US100") >= 0 || StringFind(symUpper, "US500") >= 0 || StringFind(symUpper, "BTC") >= 0);
+         double minBeProfit = isHighValueAsset ? 3.00 : ((m_position.Volume() <= 0.02) ? 0.80 : 2.00);
          if((profitDistance >= atr * 1.2 && netProfit >= minBeProfit) && (currentSL > openPrice || currentSL == 0))
          {
             double beSL = NormalizeDouble(openPrice - (m_symbol.Spread() * _Point * 2.0), _Digits);
