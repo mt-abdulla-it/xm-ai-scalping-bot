@@ -33,11 +33,19 @@ FEATURE_COLS = [
 ]
 
 def get_mt5_files_dir():
+    # Priority 1: Direct official MT5 Files path if it exists
+    primary_dir = os.path.expanduser("~/.wine/drive_c/Program Files/XM Global MT5/MQL5/Files")
+    if os.path.exists(os.path.join(primary_dir, "XMBot_ML_Data.csv")):
+        return primary_dir
+
     base_dir = os.path.expanduser("~/.wine/drive_c")
     found_files = []
     
     if os.path.exists(base_dir):
         for root, dirs, files in os.walk(base_dir):
+            # Exclude Strategy Tester agent directories so temporary test data never hijacks live records
+            if "tester" in root.lower() or "agent" in root.lower():
+                continue
             for file in files:
                 if file.lower() == "xmbot_ml_data.csv":
                     full_path = os.path.join(root, file)
@@ -55,7 +63,7 @@ def get_mt5_files_dir():
     if roaming_search:
         return roaming_search[0]
 
-    return os.path.expanduser("~/.wine/drive_c/Program Files/XM Global MT5/MQL5/Files")
+    return primary_dir
 
 def extract_features(df):
     """Engineers high-impact quantitative features from raw trade data."""
@@ -122,22 +130,26 @@ def train_onnx_model():
     for i, col in enumerate(FEATURE_COLS, 1):
         print(f"   [{i}] {col}")
 
-    # 5-Fold Stratified Cross-Validation
+    # 5-Fold Stratified Cross-Validation with Asymmetric Loss Penalty
+    # We penalize Class 0 (Losses) 1.35x heavier to eliminate false positive trades (Sniper AI)
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     clf = RandomForestClassifier(
-        n_estimators=250,
+        n_estimators=300,
         max_depth=6,
         min_samples_split=4,
-        class_weight="balanced",
+        class_weight={0: 1.35, 1: 1.0},
         random_state=42,
         n_jobs=-1
     )
     
-    print("\n⚙️ Running 5-Fold Stratified Cross-Validation...")
-    cv_scores = cross_val_score(clf, X, y, cv=cv, scoring="accuracy")
-    mean_acc = cv_scores.mean() * 100
-    std_acc = cv_scores.std() * 100
-    print(f"🎯 5-Fold CV Accuracy: {mean_acc:.2f}% (+/- {std_acc:.2f}%)")
+    print("\n⚙️ Running 5-Fold Stratified Cross-Validation (Asymmetric Precision Shield)...")
+    from sklearn.metrics import precision_score, recall_score
+    cv_acc = cross_val_score(clf, X, y, cv=cv, scoring="accuracy")
+    cv_prec = cross_val_score(clf, X, y, cv=cv, scoring="precision")
+    mean_acc = cv_acc.mean() * 100
+    mean_prec = cv_prec.mean() * 100
+    print(f"🎯 5-Fold CV Accuracy:  {mean_acc:.2f}% (+/- {cv_acc.std()*100:.2f}%)")
+    print(f"🛡️ 5-Fold CV Precision: {mean_prec:.2f}% (High-Confidence Win Rate on Executed Trades)")
 
     # Train production model on full dataset
     clf.fit(X, y)
@@ -174,6 +186,7 @@ def train_onnx_model():
         "total_records": len(df),
         "features": FEATURE_COLS,
         "cv_accuracy": round(mean_acc, 2),
+        "cv_precision": round(mean_prec, 2),
         "target_win_ratio": round((y.sum() / len(y)) * 100, 2)
     }
     with open(".ml_state.json", "w") as f:
