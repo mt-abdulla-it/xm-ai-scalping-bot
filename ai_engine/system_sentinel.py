@@ -101,3 +101,4 @@ def get_full_system_health(db_path: str) -> Dict[str, Any]:
             "free_disk_gb": free_gb
         }
     }
+

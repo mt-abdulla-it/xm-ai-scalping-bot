@@ -79,3 +79,4 @@ def send_emergency_alert(event_type: str, details: str = "") -> Dict[str, Any]:
         f"<b>Action:</b> Emergency protocol initiated on MT5 terminal."
     )
     return send_telegram_alert(msg)
+

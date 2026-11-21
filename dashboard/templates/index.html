@@ -308,6 +308,28 @@
             margin-bottom: 22px;
         }
 
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .badge-grade {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+        .grade-a-plus { background: rgba(0, 230, 118, 0.2); color: #00E676; border: 1px solid rgba(0, 230, 118, 0.4); }
+        .grade-a { background: rgba(0, 242, 254, 0.2); color: #00F2FE; border: 1px solid rgba(0, 242, 254, 0.4); }
+        .grade-b { background: rgba(179, 136, 255, 0.2); color: #B388FF; border: 1px solid rgba(179, 136, 255, 0.4); }
+        .grade-c { background: rgba(255, 158, 67, 0.2); color: #FF9E43; border: 1px solid rgba(255, 158, 67, 0.4); }
+        .grade-f { background: rgba(255, 82, 82, 0.2); color: #FF5252; border: 1px solid rgba(255, 82, 82, 0.4); }
+
         .kpi-card {
             position: relative;
             overflow: hidden;
@@ -964,6 +986,38 @@
             </div>
         </div>
 
+        <!-- 🌊 High-Water Mark (HWM) & Real-Time Drawdown Depth Gauge -->
+        <div class="card" style="margin-bottom: 22px; background: linear-gradient(135deg, rgba(8, 12, 22, 0.95), rgba(16, 24, 40, 0.95)); border: 1px solid rgba(0, 242, 254, 0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                <div class="metric-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 0;">
+                    <span style="font-size: 16px;">🌊</span>
+                    <span style="font-weight: 700; color: #fff;">Institutional High-Water Mark (HWM) & Drawdown Depth Gauge</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="hwm-status-badge" class="badge-buy" style="font-size: 11px;">AT PEAK CAPITAL</span>
+                    <button class="btn-send" style="padding: 6px 12px; font-size: 11px;" onclick="loadHWMMetrics()">Refresh HWM 🔄</button>
+                </div>
+            </div>
+            <div class="grid-4" style="margin-bottom: 0;">
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Peak High-Water Mark</div>
+                    <div id="hwm-peak-val" style="font-size: 18px; font-weight: 700; color: var(--cyan); font-family: 'JetBrains Mono';">$100.00</div>
+                </div>
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Drawdown from Peak</div>
+                    <div id="hwm-dd-val" style="font-size: 18px; font-weight: 700; color: var(--green); font-family: 'JetBrains Mono';">$0.00 (0.00%)</div>
+                </div>
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Recovery Factor</div>
+                    <div id="hwm-recovery-val" style="font-size: 18px; font-weight: 700; color: var(--orange); font-family: 'JetBrains Mono';">1.00x</div>
+                </div>
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Daily Loss Shield Remaining</div>
+                    <div id="hwm-shield-val" style="font-size: 18px; font-weight: 700; color: var(--purple); font-family: 'JetBrains Mono';">$2.50</div>
+                </div>
+            </div>
+        </div>
+
         <!-- ⚡ Kaufman Volatility & Market Regime Meter -->
         <div class="card" style="margin-bottom: 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
             <div>
@@ -975,6 +1029,27 @@
                 <div id="regime-desc" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Evaluating market noise vs trend efficiency...</div>
             </div>
             <button class="btn-send" style="padding: 8px 16px; font-size: 12px;" onclick="loadMarketRegime()">Refresh Regime 🔄</button>
+        </div>
+
+        <!-- 🔲 Real-Time Multi-Asset Correlation Heatmap Matrix -->
+        <div class="card" style="margin-bottom: 22px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                <div class="metric-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 0;">
+                    <span style="font-size: 16px;">🔲</span>
+                    <span>Real-Time Multi-Asset Correlation Heatmap (M5 Horizon)</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="corr-status-badge" class="badge-buy" style="font-size: 11px;">OPTIMAL DIVERSIFICATION</span>
+                    <button class="btn-send" style="padding: 6px 12px; font-size: 11px;" onclick="loadCorrelationMatrix()">Refresh Matrix 🔄</button>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="correlation-table" style="width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono'; font-size: 12px; text-align: center;">
+                    <thead id="correlation-thead"></thead>
+                    <tbody id="correlation-tbody"></tbody>
+                </table>
+            </div>
+            <div id="correlation-risk-clusters" style="margin-top: 12px; font-size: 12px; color: var(--text-muted);"></div>
         </div>
 
         <!-- 📊 Interactive TradingView Pro Chart & Quad Matrix Switcher -->
@@ -1109,6 +1184,20 @@
             </div>
         </div>
 
+        <!-- 📓 Automated AI Trading Journal & Graded Execution Cards -->
+        <div class="card" style="margin-bottom: 22px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                <div class="metric-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 0;">
+                    <span style="font-size: 16px;">📓</span>
+                    <span>Automated AI Trading Journal & Execution Grade Cards</span>
+                </div>
+                <button class="btn-send" style="padding: 6px 12px; font-size: 11px;" onclick="loadTradeJournal()">Refresh Journal 🔄</button>
+            </div>
+            <div id="journal-cards-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; max-height: 380px; overflow-y: auto;">
+                <div style="color: var(--text-muted); font-size: 12px; padding: 20px; text-align: center; grid-column: 1 / -1;">Loading automated trade journal entries...</div>
+            </div>
+        </div>
+
         <div class="card">
             <div class="metric-title">AI Scalping Status & Filters</div>
             <div id="ai-live-text" style="font-size: 13px; color: #E2E8F0; font-family: 'JetBrains Mono', monospace;">Scanning active market feeds...</div>
@@ -1153,6 +1242,35 @@
             <div class="chat-input-bar">
                 <input type="text" id="chat-input" class="chat-input" placeholder="Type your prompt, question, or research query in English..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
                 <button class="btn-send" onclick="sendChatMessage()">Send 🚀</button>
+            </div>
+        </div>
+
+        <!-- ⚔️ Multi-Model AI Consensus Debate Arena -->
+        <div class="card" style="margin-top: 20px; border: 1px solid rgba(0, 242, 254, 0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                <div class="metric-title" style="display: flex; align-items: center; gap: 8px; margin-bottom: 0;">
+                    <span style="font-size: 16px;">⚔️</span>
+                    <span>Multi-Model AI Consensus Debate Arena (Investment Committee)</span>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="debate-symbol" class="model-select" style="padding: 6px 12px; font-size: 12px;">
+                        <option value="US100">US100 (Nasdaq)</option>
+                        <option value="EURUSD">EURUSD</option>
+                        <option value="GBPUSD">GBPUSD</option>
+                        <option value="BTCUSD">BTCUSD</option>
+                        <option value="USDJPY">USDJPY</option>
+                        <option value="XAUUSD">XAUUSD (Gold)</option>
+                    </select>
+                    <button class="btn-send" style="padding: 6px 14px; font-size: 12px;" onclick="runAIDebate()">Convene Committee ⚔️</button>
+                </div>
+            </div>
+            
+            <div id="debate-consensus-banner" style="display: none; padding: 14px; border-radius: 8px; margin-bottom: 16px; background: rgba(0, 242, 254, 0.08); border: 1px solid rgba(0, 242, 254, 0.3);">
+                <!-- Dynamic Consensus Vote Banner -->
+            </div>
+
+            <div class="grid-3" id="debate-models-grid" style="display: none; margin-bottom: 0;">
+                <!-- 3 Dynamic Committee Member Cards -->
             </div>
         </div>
     </div>
@@ -2325,6 +2443,228 @@
         }
     }
 
+    // ==============================================================================
+    // 🌊 Institutional High-Water Mark (HWM) Loader
+    // ==============================================================================
+    async function loadHWMMetrics() {
+        try {
+            const res = await fetch('/api/equity/hwm');
+            const data = await res.json();
+            document.getElementById('hwm-peak-val').innerText = '$' + data.high_water_mark.toFixed(2);
+            
+            const ddElem = document.getElementById('hwm-dd-val');
+            if (data.drawdown_from_hwm > 0) {
+                ddElem.innerText = `-$${data.drawdown_from_hwm.toFixed(2)} (-${data.drawdown_pct}%)`;
+                ddElem.style.color = 'var(--red)';
+            } else {
+                ddElem.innerText = '$0.00 (0.00%)';
+                ddElem.style.color = 'var(--green)';
+            }
+            
+            document.getElementById('hwm-recovery-val').innerText = data.recovery_factor.toFixed(2) + 'x';
+            document.getElementById('hwm-shield-val').innerText = '$' + data.daily_loss_shield_remaining.toFixed(2);
+            
+            const badge = document.getElementById('hwm-status-badge');
+            badge.innerText = data.watermark_status;
+            badge.className = data.drawdown_from_hwm > 0 ? 'badge-sell' : 'badge-buy';
+        } catch (e) {
+            console.error('HWM load failed:', e);
+        }
+    }
+
+    // ==============================================================================
+    // 🔲 Real-Time Multi-Asset Correlation Heatmap Loader
+    // ==============================================================================
+    async function loadCorrelationMatrix() {
+        try {
+            const res = await fetch('/api/market/correlation');
+            const data = await res.json();
+            const thead = document.getElementById('correlation-thead');
+            const tbody = document.getElementById('correlation-tbody');
+            const assets = data.assets;
+            const matrix = data.matrix;
+
+            // Header row
+            let headerHtml = '<tr><th style="padding: 8px; border: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.3);">ASSET</th>';
+            assets.forEach(a => {
+                headerHtml += `<th style="padding: 8px; border: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.3); color: var(--cyan);">${a}</th>`;
+            });
+            headerHtml += '</tr>';
+            thead.innerHTML = headerHtml;
+
+            // Body rows
+            let bodyHtml = '';
+            assets.forEach(a1 => {
+                bodyHtml += `<tr><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.08); font-weight: 700; color: #fff; background: rgba(0,0,0,0.2);">${a1}</td>`;
+                assets.forEach(a2 => {
+                    const r = matrix[a1][a2];
+                    let bgColor = 'rgba(255, 255, 255, 0.02)';
+                    let textColor = 'var(--text-muted)';
+                    
+                    if (a1 === a2) {
+                        bgColor = 'rgba(0, 242, 254, 0.15)';
+                        textColor = '#fff';
+                    } else if (r >= 0.70) {
+                        bgColor = 'rgba(0, 230, 118, 0.25)';
+                        textColor = '#00E676';
+                    } else if (r >= 0.30) {
+                        bgColor = 'rgba(0, 242, 254, 0.12)';
+                        textColor = '#00F2FE';
+                    } else if (r <= -0.50) {
+                        bgColor = 'rgba(255, 82, 82, 0.22)';
+                        textColor = '#FF5252';
+                    } else if (r <= -0.20) {
+                        bgColor = 'rgba(255, 158, 67, 0.15)';
+                        textColor = '#FF9E43';
+                    }
+                    bodyHtml += `<td style="padding: 8px; border: 1px solid rgba(255,255,255,0.08); background: ${bgColor}; color: ${textColor}; font-weight: 600;">${r >= 0 ? '+' : ''}${r.toFixed(2)}</td>`;
+                });
+                bodyHtml += '</tr>';
+            });
+            tbody.innerHTML = bodyHtml;
+
+            const badge = document.getElementById('corr-status-badge');
+            badge.innerText = data.diversification_status;
+            badge.className = data.diversification_status.includes('HIGH RISK') ? 'badge-sell' : 'badge-buy';
+
+            const clustersElem = document.getElementById('correlation-risk-clusters');
+            if (data.risk_clusters && data.risk_clusters.length > 0) {
+                clustersElem.innerHTML = data.risk_clusters.map(c => `
+                    <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; margin: 4px; border-radius: 6px; background: rgba(255, 82, 82, 0.12); border: 1px solid rgba(255, 82, 82, 0.3); font-size: 11px;">
+                        ⚠️ <strong>${c.pair} (r = ${c.correlation > 0 ? '+' : ''}${c.correlation.toFixed(2)})</strong>: ${c.type}
+                    </div>
+                `).join('');
+            } else {
+                clustersElem.innerHTML = '<span style="color: var(--green);">✓ No double-exposure correlation clusters detected. Portfolio exposures are properly diversified.</span>';
+            }
+        } catch (e) {
+            console.error('Correlation matrix load failed:', e);
+        }
+    }
+
+    // ==============================================================================
+    // 📓 Automated AI Trading Journal Loader
+    // ==============================================================================
+    async function loadTradeJournal() {
+        try {
+            const res = await fetch('/api/journal/entries?limit=12');
+            const entries = await res.json();
+            const container = document.getElementById('journal-cards-container');
+            if (!entries || entries.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; padding: 20px; text-align: center; grid-column: 1 / -1;">No closed trade journal entries yet.</div>';
+                return;
+            }
+
+            container.innerHTML = entries.map(e => {
+                let gradeClass = 'grade-a';
+                if (e.grade === 'A+') gradeClass = 'grade-a-plus';
+                else if (e.grade === 'B') gradeClass = 'grade-b';
+                else if (e.grade === 'C') gradeClass = 'grade-c';
+                else if (e.grade === 'F') gradeClass = 'grade-f';
+
+                return `
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; position: relative; transition: all 0.2s;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="${e.type === 'BUY' ? 'badge-buy' : 'badge-sell'}">${e.type}</span>
+                                <span style="font-family: 'JetBrains Mono'; font-weight: 700; color: #fff; font-size: 12px;">#${e.ticket}</span>
+                            </div>
+                            <span class="badge-grade ${gradeClass}">${e.grade}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                            <span style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono';">${e.time}</span>
+                            <span class="${e.profit >= 0 ? 'profit-pos' : 'profit-neg'}" style="font-family: 'JetBrains Mono'; font-weight: 700; font-size: 14px;">${e.profit >= 0 ? '+' : ''}$${e.profit.toFixed(2)}</span>
+                        </div>
+                        <div style="font-size: 11px; color: #CBD5E1; line-height: 1.4; margin-top: 6px; background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; border-left: 2px solid var(--cyan);">
+                            ${e.critique}
+                        </div>
+                        <div style="font-size: 10px; color: var(--text-muted); margin-top: 8px; display: flex; align-items: center; gap: 4px;">
+                            <span>🛡️</span>
+                            <span>${e.discipline}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } catch (e) {
+            console.error('Trade journal load failed:', e);
+        }
+    }
+
+    // ==============================================================================
+    // ⚔️ Multi-Model AI Consensus Debate Arena
+    // ==============================================================================
+    async function runAIDebate() {
+        const symbol = document.getElementById('debate-symbol').value;
+        const banner = document.getElementById('debate-consensus-banner');
+        const grid = document.getElementById('debate-models-grid');
+        
+        banner.style.display = 'block';
+        banner.innerHTML = `<div style="text-align: center; color: var(--cyan);"><div class="loading-spinner" style="display: inline-block; margin-right: 8px;"></div> Convening Multi-Model Investment Committee for ${symbol}...</div>`;
+        grid.style.display = 'none';
+        showToast(`Convening AI Committee for ${symbol} ⚔️`, 'info');
+
+        try {
+            const res = await fetch('/api/ai/debate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ symbol: symbol })
+            });
+            const data = await res.json();
+            
+            const cons = data.consensus;
+            const isBuy = cons.action === 'BUY';
+            const isSell = cons.action === 'SELL';
+            const badgeClass = isBuy ? 'badge-buy' : (isSell ? 'badge-sell' : 'badge-grade grade-c');
+            const borderColor = isBuy ? 'var(--green)' : (isSell ? 'var(--red)' : 'var(--orange)');
+
+            banner.style.borderColor = borderColor;
+            banner.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 24px;">🏛️</span>
+                        <div>
+                            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Institutional Committee Consensus Verdict</div>
+                            <div style="font-size: 18px; font-weight: 800; color: #fff; margin-top: 2px;">${cons.thesis}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="${badgeClass}" style="font-size: 16px; padding: 6px 14px;">${cons.action}</span>
+                        <div style="text-align: right;">
+                            <div style="font-size: 11px; color: var(--text-muted);">Consensus Weight</div>
+                            <div style="font-size: 16px; font-weight: 700; color: var(--cyan); font-family: 'JetBrains Mono';">${cons.confidence}%</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            grid.style.display = 'grid';
+            grid.innerHTML = data.members.map(m => {
+                const actClass = m.action === 'BUY' ? 'badge-buy' : (m.action === 'SELL' ? 'badge-sell' : 'badge-grade grade-c');
+                return `
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--card-border); border-radius: 10px; padding: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                            <div>
+                                <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.model}</div>
+                                <div style="font-size: 10px; color: var(--cyan); text-transform: uppercase; margin-top: 2px;">${m.role}</div>
+                            </div>
+                            <span class="${actClass}">${m.action} (${m.confidence}%)</span>
+                        </div>
+                        <div style="font-size: 12px; color: #CBD5E1; line-height: 1.5; background: rgba(0,0,0,0.25); padding: 10px; border-radius: 6px; border-left: 2px solid ${m.action === 'BUY' ? 'var(--green)' : 'var(--red)'};">
+                            ${m.thesis}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            playMsgSound();
+            speakAnnounce(`Committee consensus for ${symbol}: ${cons.action} at ${cons.confidence} percent confidence.`);
+            showToast(`Committee Consensus: ${cons.action} (${cons.confidence}%)`, 'success');
+        } catch (e) {
+            banner.innerHTML = `<span style="color: var(--red);">Debate failed: ${e}</span>`;
+            showToast('Debate error: ' + e, 'warning');
+        }
+    }
+
     window.onload = () => {
         initCharts();
         updateDashboard();
@@ -2333,9 +2673,14 @@
         loadRiskAnalytics();
         loadTradingViewChart(currentTVSymbol);
         updateMarketSessions();
+        loadHWMMetrics();
+        loadCorrelationMatrix();
+        loadTradeJournal();
         setInterval(updateDashboard, 3000);
         setInterval(updateMarketSessions, 1000);
         setInterval(loadRiskAnalytics, 10000);
+        setInterval(loadHWMMetrics, 5000);
+        setInterval(loadTradeJournal, 8000);
     };
 </script>
 

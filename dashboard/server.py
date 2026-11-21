@@ -21,6 +21,9 @@ from ai_engine.telegram_notifier import send_telegram_alert, send_trade_alert, s
 from ai_engine.backtest_engine import run_strategy_backtest
 from ai_engine.pdf_report import generate_pdf_tearsheet
 from ai_engine.system_sentinel import get_full_system_health
+from ai_engine.market_correlation import calculate_correlation_matrix
+from ai_engine.ai_debate import run_ai_committee_debate
+from ai_engine.trading_journal import calculate_hwm_metrics, generate_journal_entries
 
 app = Flask(__name__, template_folder='templates')
 
@@ -677,6 +680,49 @@ def api_report_pdf():
 def api_system_health():
     health = get_full_system_health(DB_PATH)
     return jsonify(health)
+
+# ==============================================================================
+# 🔲 Real-Time Multi-Asset Correlation Heatmap Matrix Route
+# ==============================================================================
+@app.route('/api/market/correlation', methods=['GET'])
+def api_market_correlation():
+    matrix_data = calculate_correlation_matrix()
+    return jsonify(matrix_data)
+
+# ==============================================================================
+# ⚔️ Multi-Model AI Consensus Debate Arena Route
+# ==============================================================================
+@app.route('/api/ai/debate', methods=['POST'])
+def api_ai_debate():
+    data = request.get_json() or {}
+    debate_result = run_ai_committee_debate(data)
+    log_audit("ai_debate", "web_user", {
+        "symbol": data.get("symbol", "US100"),
+        "consensus": debate_result.get("consensus", {}).get("action"),
+        "confidence": debate_result.get("consensus", {}).get("confidence")
+    })
+    return jsonify(debate_result)
+
+# ==============================================================================
+# 🌊 High-Water Mark (HWM) & Real-Time Drawdown Depth Gauge Route
+# ==============================================================================
+@app.route('/api/equity/hwm', methods=['GET'])
+def api_equity_hwm():
+    csv_path = os.path.join(FILES_DIR, "XMBot_ML_Data.csv")
+    trading_data = get_trading_data()
+    balance = float(trading_data.get("balance", 100.0))
+    hwm_data = calculate_hwm_metrics(csv_path, current_balance=balance)
+    return jsonify(hwm_data)
+
+# ==============================================================================
+# 📓 Automated AI Trading Journal & Graded Execution Cards Route
+# ==============================================================================
+@app.route('/api/journal/entries', methods=['GET'])
+def api_journal_entries():
+    csv_path = os.path.join(FILES_DIR, "XMBot_ML_Data.csv")
+    limit = int(request.args.get('limit', 15))
+    entries = generate_journal_entries(csv_path, limit=limit)
+    return jsonify(entries)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)

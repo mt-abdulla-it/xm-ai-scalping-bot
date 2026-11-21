@@ -116,5 +116,37 @@ class TestAIEngine(unittest.TestCase):
         self.assertIn("processes", health)
         self.assertIn("benchmarks_ms", health)
 
+    def test_market_correlation_matrix(self):
+        from ai_engine.market_correlation import calculate_correlation_matrix
+        corr_res = calculate_correlation_matrix()
+        self.assertIn("assets", corr_res)
+        self.assertIn("matrix", corr_res)
+        self.assertIn("risk_clusters", corr_res)
+        self.assertEqual(corr_res["matrix"]["US100"]["US100"], 1.0)
+        self.assertAlmostEqual(corr_res["matrix"]["EURUSD"]["GBPUSD"], 0.86)
+
+    def test_ai_committee_debate(self):
+        from ai_engine.ai_debate import run_ai_committee_debate
+        debate = run_ai_committee_debate({"symbol": "US100", "rsi": 62.0, "macd": 0.0010, "er": 0.48})
+        self.assertIn("symbol", debate)
+        self.assertIn("consensus", debate)
+        self.assertIn("members", debate)
+        self.assertEqual(len(debate["members"]), 3)
+        self.assertIn(debate["consensus"]["action"], ["BUY", "SELL", "WAIT", "WAIT / CONFLICT"])
+
+    def test_hwm_and_trading_journal(self):
+        from ai_engine.trading_journal import calculate_hwm_metrics, generate_journal_entries
+        csv_path = os.path.expanduser("~/.wine/drive_c/Program Files/XM Global MT5/MQL5/Files/XMBot_ML_Data.csv")
+        hwm = calculate_hwm_metrics(csv_path, current_balance=100.0)
+        self.assertIn("high_water_mark", hwm)
+        self.assertIn("drawdown_from_hwm", hwm)
+        self.assertIn("recovery_factor", hwm)
+        
+        entries = generate_journal_entries(csv_path, limit=5)
+        self.assertIsInstance(entries, list)
+        if len(entries) > 0:
+            self.assertIn("grade", entries[0])
+            self.assertIn("critique", entries[0])
+
 if __name__ == "__main__":
     unittest.main()
