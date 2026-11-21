@@ -322,6 +322,58 @@
             border-color: var(--cyan);
         }
 
+        /* 🎛️ Quad Matrix Styles */
+        .chart-layout-bar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .quad-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            height: 620px;
+            width: 100%;
+        }
+
+        .quad-cell {
+            background: #0b0f19;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+            height: 305px;
+        }
+
+        /* 🛡️ Risk Matrix Grid */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .risk-stat {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .risk-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .risk-val {
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 4px;
+        }
+
         /* Modal Styles */
         .modal-overlay {
             position: fixed;
@@ -519,7 +571,7 @@
         /* Printable Statement Styles */
         @media print {
             body { background: #fff !important; color: #000 !important; padding: 0 !important; }
-            header, .nav-tabs, .control-bar, .market-bar, .tv-symbol-bar, #tradingview_chart_container, .chat-container, .btn-ctrl, button { display: none !important; }
+            header, .nav-tabs, .control-bar, .market-bar, .tv-symbol-bar, #tradingview_chart_container, #quad_matrix_container, .chat-container, .btn-ctrl, button { display: none !important; }
             .container { max-width: 100% !important; margin: 0 !important; }
             .card { background: #fff !important; border: 1px solid #ccc !important; color: #000 !important; page-break-inside: avoid; }
             .metric-title { color: #555 !important; }
@@ -543,6 +595,7 @@
             </div>
         </div>
         <div style="display: flex; gap: 10px; align-items: center;">
+            <button id="btn-voice-toggle" class="tab-btn" onclick="toggleVoice()" style="padding: 6px 12px; font-size: 12px;">🎙️ Voice: ON</button>
             <button id="btn-audio-toggle" class="tab-btn" onclick="toggleAudio()" style="padding: 6px 12px; font-size: 12px;">🔊 Sound: ON</button>
             <div class="status-badge" id="system-badge">
                 <div class="pulse"></div>
@@ -640,14 +693,17 @@
             <button class="btn-send" style="padding: 6px 14px; font-size: 12px;" onclick="loadMarketRegime()">Refresh Regime 🔄</button>
         </div>
 
-        <!-- 📊 Interactive TradingView Pro Candlestick Widget -->
+        <!-- 📊 Interactive TradingView Pro Chart & Quad Matrix Switcher -->
         <div class="card" style="margin-bottom: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
-                <div class="metric-title" style="display: flex; align-items: center; gap: 8px;">
-                    <span>📊</span>
-                    <span>Live TradingView Institutional Chart (M5 Scalping)</span>
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <div class="metric-title" style="margin-bottom: 0;">📊 Institutional Candlestick Matrix (M5 Scalping)</div>
+                    <div class="chart-layout-bar">
+                        <button class="tv-sym-btn active" id="btn-layout-single" onclick="setChartLayout('single')">Single Chart</button>
+                        <button class="tv-sym-btn" id="btn-layout-quad" onclick="setChartLayout('quad')">🎛️ Quad Matrix (2×2)</button>
+                    </div>
                 </div>
-                <div class="tv-symbol-bar">
+                <div class="tv-symbol-bar" id="single-sym-bar">
                     <button class="tv-sym-btn active" id="btn-tv-us100" onclick="switchTVSymbol('CAPITALCOM:US100', 'btn-tv-us100')">US100 (Nasdaq)</button>
                     <button class="tv-sym-btn" id="btn-tv-eurusd" onclick="switchTVSymbol('FX:EURUSD', 'btn-tv-eurusd')">EURUSD</button>
                     <button class="tv-sym-btn" id="btn-tv-btcusd" onclick="switchTVSymbol('BINANCE:BTCUSDT', 'btn-tv-btcusd')">BTCUSDT</button>
@@ -655,8 +711,75 @@
                     <button class="tv-sym-btn" id="btn-tv-gold" onclick="switchTVSymbol('OANDA:XAUUSD', 'btn-tv-gold')">XAUUSD (Gold)</button>
                 </div>
             </div>
+
+            <!-- Single Focus Chart -->
             <div id="tradingview_chart_container" style="height: 420px; width: 100%; border-radius: 8px; overflow: hidden; background: #0b0f19;">
-                <!-- TradingView Widget mounts here -->
+            </div>
+
+            <!-- Quad Matrix 2x2 Grid -->
+            <div id="quad_matrix_container" class="quad-grid" style="display: none;">
+                <div id="tv_quad_1" class="quad-cell"></div>
+                <div id="tv_quad_2" class="quad-cell"></div>
+                <div id="tv_quad_3" class="quad-cell"></div>
+                <div id="tv_quad_4" class="quad-cell"></div>
+            </div>
+        </div>
+
+        <!-- 🛡️ Monte Carlo Risk Simulator & Live Value-at-Risk (VaR) Engine -->
+        <div class="card" style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <div class="metric-title">🛡️ Quantitative Risk Matrix & Monte Carlo VaR Simulation</div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+                        <span id="risk-status-badge" class="badge-buy" style="font-size: 12px;">OPTIMAL RISK</span>
+                        <span id="risk-score-text" style="font-family: 'JetBrains Mono'; font-size: 13px; font-weight: 700; color: #fff;">Health Score: 92/100</span>
+                    </div>
+                </div>
+                <button class="btn-send" style="padding: 6px 14px; font-size: 12px;" onclick="loadRiskAnalytics()">Simulate VaR 🎲</button>
+            </div>
+
+            <div class="risk-grid">
+                <div class="risk-stat">
+                    <div class="risk-label">Sharpe Ratio</div>
+                    <div class="risk-val" id="val-sharpe" style="color: var(--cyan);">--</div>
+                </div>
+                <div class="risk-stat">
+                    <div class="risk-label">Sortino Ratio</div>
+                    <div class="risk-val" id="val-sortino" style="color: var(--green);">--</div>
+                </div>
+                <div class="risk-stat">
+                    <div class="risk-label">95% Parametric VaR</div>
+                    <div class="risk-val profit-neg" id="val-var95">--</div>
+                </div>
+                <div class="risk-stat">
+                    <div class="risk-label">99% Parametric VaR</div>
+                    <div class="risk-val profit-neg" id="val-var99">--</div>
+                </div>
+                <div class="risk-stat">
+                    <div class="risk-label">Max Historic DD</div>
+                    <div class="risk-val" id="val-maxdd" style="color: var(--orange);">--</div>
+                </div>
+                <div class="risk-stat">
+                    <div class="risk-label">Monte Carlo 95% DD</div>
+                    <div class="risk-val" id="val-mcdd" style="color: var(--purple);">--</div>
+                </div>
+            </div>
+            <div class="progress-bar-container" style="margin-top: 14px;">
+                <div id="risk-progress-bar" class="progress-bar-fill" style="width: 85%;"></div>
+            </div>
+        </div>
+
+        <!-- ⚡ Live High-Impact Economic Calendar & Macro News Shield -->
+        <div class="card" style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                <div class="metric-title" style="display: flex; align-items: center; gap: 8px;">
+                    <span>⚡</span>
+                    <span>Live High-Impact Economic Calendar & Macro News Shield</span>
+                </div>
+                <span class="badge-buy" style="font-size: 11px;">🛡️ Real-Time Macro Feed Armed</span>
+            </div>
+            <div style="height: 340px; width: 100%; border-radius: 8px; overflow: hidden; background: #0b0f19;">
+                <iframe src="https://s.tradingview.com/embed-widget/events/?locale=en#%7B%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Atrue%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22340%22%2C%22importanceFilter%22%3A%220%2C1%22%7D" style="width: 100%; height: 100%; border: none;"></iframe>
             </div>
         </div>
 
@@ -833,6 +956,42 @@
     let equityChart = null;
     let currentEquityMode = 'recent';
     let prevTradesCount = 0;
+    let lastAnnouncedRegime = '';
+
+    // ==============================================================================
+    // 🎙️ Institutional AI Voice Announcer (Web Speech Synthesis)
+    // ==============================================================================
+    let voiceEnabled = true;
+
+    function toggleVoice() {
+        voiceEnabled = !voiceEnabled;
+        const btn = document.getElementById('btn-voice-toggle');
+        if (voiceEnabled) {
+            btn.innerText = '🎙️ Voice: ON';
+            btn.style.color = 'var(--text-main)';
+            speakAnnounce('AegisQuant Voice Announcer enabled.');
+        } else {
+            btn.innerText = '🎙️ Voice: MUTED';
+            btn.style.color = 'var(--text-muted)';
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+        }
+    }
+
+    function speakAnnounce(text) {
+        if (!voiceEnabled || !('speechSynthesis' in window)) return;
+        try {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.05;
+            utterance.pitch = 1.0;
+            const voices = window.speechSynthesis.getVoices();
+            const enVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+            if (enVoice) utterance.voice = enVoice;
+            window.speechSynthesis.speak(utterance);
+        } catch (e) {
+            console.warn('Voice speak error:', e);
+        }
+    }
 
     // ==============================================================================
     // 🔊 Web Audio API Synthesizer (Zero External Dependencies)
@@ -1017,9 +1176,11 @@
     }
 
     // ==============================================================================
-    // 📊 Interactive TradingView Pro Embed
+    // 📊 Interactive TradingView Pro Embed & Quad Matrix (Bloomberg Style)
     // ==============================================================================
     let currentTVSymbol = 'CAPITALCOM:US100';
+    let currentChartLayout = 'single';
+    let quadLoaded = false;
 
     function loadTradingViewChart(symbol) {
         currentTVSymbol = symbol || 'CAPITALCOM:US100';
@@ -1046,22 +1207,102 @@
                     "STD;Average_True_Range"
                 ]
             });
-        } else {
-            container.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); font-size: 13px;">Loading TradingView Pro Engine...</div>`;
         }
     }
 
+    function setChartLayout(mode) {
+        currentChartLayout = mode;
+        const btnSingle = document.getElementById('btn-layout-single');
+        const btnQuad = document.getElementById('btn-layout-quad');
+        const singleContainer = document.getElementById('tradingview_chart_container');
+        const quadContainer = document.getElementById('quad_matrix_container');
+        const singleSymBar = document.getElementById('single-sym-bar');
+
+        if (mode === 'single') {
+            btnSingle.className = 'tv-sym-btn active';
+            btnQuad.className = 'tv-sym-btn';
+            singleContainer.style.display = 'block';
+            quadContainer.style.display = 'none';
+            singleSymBar.style.display = 'flex';
+            loadTradingViewChart(currentTVSymbol);
+        } else {
+            btnSingle.className = 'tv-sym-btn';
+            btnQuad.className = 'tv-sym-btn active';
+            singleContainer.style.display = 'none';
+            quadContainer.style.display = 'grid';
+            singleSymBar.style.display = 'none';
+            loadQuadMatrixCharts();
+            speakAnnounce('Institutional Quad Matrix activated.');
+        }
+    }
+
+    function loadQuadMatrixCharts() {
+        if (typeof TradingView === 'undefined') return;
+        const quadConfigs = [
+            { id: 'tv_quad_1', sym: 'CAPITALCOM:US100' },
+            { id: 'tv_quad_2', sym: 'FX:EURUSD' },
+            { id: 'tv_quad_3', sym: 'BINANCE:BTCUSDT' },
+            { id: 'tv_quad_4', sym: 'OANDA:XAUUSD' }
+        ];
+        quadConfigs.forEach(cfg => {
+            const el = document.getElementById(cfg.id);
+            el.innerHTML = '';
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": cfg.sym,
+                "interval": "5",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#090D16",
+                "enable_publishing": false,
+                "hide_side_toolbar": true,
+                "container_id": cfg.id
+            });
+        });
+    }
+
     function switchTVSymbol(sym, btnId) {
-        document.querySelectorAll('.tv-sym-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tv-sym-btn').forEach(b => {
+            if (b.id.startsWith('btn-tv-')) b.classList.remove('active');
+        });
         const btn = document.getElementById(btnId);
         if (btn) btn.classList.add('active');
         loadTradingViewChart(sym);
     }
 
     // ==============================================================================
+    // 🛡️ Quantitative Risk Matrix & Monte Carlo VaR Engine
+    // ==============================================================================
+    async function loadRiskAnalytics() {
+        try {
+            const res = await fetch('/api/risk-analytics');
+            const data = await res.json();
+
+            document.getElementById('val-sharpe').innerText = data.sharpe_ratio;
+            document.getElementById('val-sortino').innerText = data.sortino_ratio;
+            document.getElementById('val-var95').innerText = '-$' + data.var_95.toFixed(2);
+            document.getElementById('val-var99').innerText = '-$' + data.var_99.toFixed(2);
+            document.getElementById('val-maxdd').innerText = '$' + data.max_drawdown.toFixed(2);
+            document.getElementById('val-mcdd').innerText = '$' + data.mc_worst_drawdown.toFixed(2);
+
+            const badge = document.getElementById('risk-status-badge');
+            badge.innerText = data.risk_status;
+            badge.className = data.risk_health_score >= 80 ? 'badge-buy' : 'badge-sell';
+
+            document.getElementById('risk-score-text').innerText = `Health Score: ${data.risk_health_score}/100`;
+            document.getElementById('risk-progress-bar').style.width = data.risk_health_score + '%';
+        } catch (e) {
+            console.error('Risk analytics error:', e);
+        }
+    }
+
+    // ==============================================================================
     // 📥 Export Audit Reports (CSV & Print PDF Statement)
     // ==============================================================================
     function exportTradesCSV() {
+        speakAnnounce('Exporting institutional trade audit CSV.');
         window.location.href = '/api/trades/export.csv';
     }
 
@@ -1079,8 +1320,10 @@
         if (tabId === 'tab-memory') { loadMemories(); loadAuditLogs(); }
         if (tabId === 'tab-trading') {
             setTimeout(() => {
-                if (!document.querySelector('#tradingview_chart_container iframe')) {
+                if (currentChartLayout === 'single' && !document.querySelector('#tradingview_chart_container iframe')) {
                     loadTradingViewChart(currentTVSymbol);
+                } else if (currentChartLayout === 'quad') {
+                    loadQuadMatrixCharts();
                 }
             }, 100);
         }
@@ -1191,6 +1434,10 @@
             
             document.getElementById('regime-er').innerText = `ER: ${data.efficiency_ratio.toFixed(3)} | ATR: ${data.atr.toFixed(4)}`;
             document.getElementById('regime-desc').innerText = `${data.noise_level} Noise Level | Dynamic Stop: ${data.kaufman_stop_points} pts (${data.volatility_regime} Volatility)`;
+
+            if (data.regime !== lastAnnouncedRegime) {
+                lastAnnouncedRegime = data.regime;
+            }
         } catch (e) {
             console.error('Regime check failed:', e);
         }
@@ -1199,6 +1446,7 @@
     async function sendControlCommand(cmd) {
         if (cmd === 'CLOSE_ALL') {
             playAlertSound();
+            speakAnnounce('Warning! Emergency kill switch initiated.');
             if (!confirm('⚠️ CRITICAL EMERGENCY OVERRIDE:\nAre you sure you want to CLOSE ALL OPEN POSITIONS on MT5 immediately?')) {
                 return;
             }
@@ -1212,6 +1460,9 @@
             const data = await res.json();
             if (data.success) {
                 document.getElementById('ctrl-status-text').innerText = `Last Command: ${cmd} dispatched successfully!`;
+                if (cmd === 'CLOSE_ALL') speakAnnounce('Emergency override executed. All positions closed.');
+                if (cmd === 'PAUSE') speakAnnounce('AegisQuant scalping engine paused.');
+                if (cmd === 'RESUME') speakAnnounce('AegisQuant scalping engine resumed.');
                 alert(`✅ Command "${cmd}" dispatched to MT5 Scalper!`);
             } else {
                 alert('Error: ' + data.error);
@@ -1272,11 +1523,14 @@
 
             const tbody = document.getElementById('trades-body');
             if (data.recent_trades && data.recent_trades.length > 0) {
-                // Check if new winning trade landed to play cash chime
                 if (data.recent_trades.length > prevTradesCount && prevTradesCount > 0) {
                     const latest = data.recent_trades[0];
-                    if (parseFloat(latest.profit) > 0) {
+                    const p = parseFloat(latest.profit);
+                    if (p > 0) {
                         playCashSound();
+                        speakAnnounce(`Trade closed in profit: plus ${p.toFixed(2)} dollars.`);
+                    } else if (p < 0) {
+                        speakAnnounce(`Trade closed: minus ${Math.abs(p).toFixed(2)} dollars.`);
                     }
                 }
                 prevTradesCount = data.recent_trades.length;
@@ -1465,10 +1719,12 @@
         updateDashboard();
         loadEquityCurve('recent');
         loadMarketRegime();
+        loadRiskAnalytics();
         loadTradingViewChart(currentTVSymbol);
         updateMarketSessions();
         setInterval(updateDashboard, 3000);
         setInterval(updateMarketSessions, 1000);
+        setInterval(loadRiskAnalytics, 10000);
     };
 </script>
 
