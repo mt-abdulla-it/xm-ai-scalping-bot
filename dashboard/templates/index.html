@@ -15,6 +15,7 @@
             --blue: #4FACFE;
             --green: #00E676;
             --red: #FF5252;
+            --yellow: #FFD600;
             --purple: #B388FF;
             --text-main: #FFFFFF;
             --text-muted: #8F9CAE;
@@ -168,6 +169,91 @@
 
         .profit-pos { color: var(--green); }
         .profit-neg { color: var(--red); }
+
+        /* Remote Control Bar */
+        .control-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(22, 28, 45, 0.95);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-ctrl {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-closeall {
+            background: linear-gradient(135deg, #FF1744, #D50000);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(255, 23, 68, 0.4);
+        }
+        .btn-closeall:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .btn-pause {
+            background: rgba(255, 214, 0, 0.15);
+            color: var(--yellow);
+            border: 1px solid rgba(255, 214, 0, 0.3);
+        }
+        .btn-pause:hover { background: rgba(255, 214, 0, 0.25); }
+
+        .btn-resume {
+            background: rgba(0, 230, 118, 0.15);
+            color: var(--green);
+            border: 1px solid rgba(0, 230, 118, 0.3);
+        }
+        .btn-resume:hover { background: rgba(0, 230, 118, 0.25); }
+
+        .btn-explain {
+            background: rgba(0, 242, 254, 0.15);
+            color: var(--cyan);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-explain:hover { background: rgba(0, 242, 254, 0.3); }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-card {
+            background: #111726;
+            border: 1px solid var(--cyan);
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 650px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.2);
+        }
 
         /* Chat Styles */
         .chat-container {
@@ -370,6 +456,23 @@
 
     <!-- TAB 1: TRADING & ONNX BRAIN -->
     <div id="tab-trading" class="tab-content active">
+
+        <!-- 🎮 Remote Control & Emergency Kill-Switch Bar -->
+        <div class="control-bar">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 16px;">🎮</span>
+                <div>
+                    <strong style="font-size: 14px;">Web Remote Control</strong>
+                    <div id="ctrl-status-text" style="font-size: 11px; color: var(--text-muted);">Engine: Running (Realtime Tick Guard Active)</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="btn-ctrl btn-closeall" onclick="sendControlCommand('CLOSE_ALL')">🛑 CLOSE ALL POSITIONS</button>
+                <button class="btn-ctrl btn-pause" onclick="sendControlCommand('PAUSE')">⏸️ PAUSE BOT</button>
+                <button class="btn-ctrl btn-resume" onclick="sendControlCommand('RESUME')">▶️ RESUME BOT</button>
+            </div>
+        </div>
+
         <div class="grid-4">
             <div class="card">
                 <div class="metric-title">Account Balance</div>
@@ -379,7 +482,7 @@
             <div class="card">
                 <div class="metric-title">Today's Net P&L</div>
                 <div class="metric-value profit-pos" id="val-pnl">+$0.00</div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Auto-Breakeven Active</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Adaptive Breakeven Shield</div>
             </div>
             <div class="card">
                 <div class="metric-title">Win Rate (Today)</div>
@@ -395,9 +498,36 @@
             </div>
         </div>
 
+        <!-- ⚡ Kaufman Volatility & Market Regime Meter -->
+        <div class="card" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <div class="metric-title">⚡ Perry Kaufman Market Regime & Volatility Meter</div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+                    <span id="regime-badge" class="badge-buy" style="font-size: 13px;">CALCULATING...</span>
+                    <span id="regime-er" style="font-family: 'JetBrains Mono'; font-weight: 700; color: #fff;">ER: --</span>
+                </div>
+                <div id="regime-desc" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Evaluating market noise vs trend efficiency...</div>
+            </div>
+            <button class="btn-send" style="padding: 6px 14px; font-size: 12px;" onclick="loadMarketRegime()">Refresh Regime 🔄</button>
+        </div>
+
+        <!-- 📈 Interactive Cumulative Equity Growth Curve -->
+        <div class="card" style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="metric-title">📈 Cumulative Equity Growth Curve & Trajectory</div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="tab-btn active" id="btn-eq-recent" style="padding: 4px 10px; font-size: 11px;" onclick="switchEquityMode('recent')">Recent 100 Trades</button>
+                    <button class="tab-btn" id="btn-eq-all" style="padding: 4px 10px; font-size: 11px;" onclick="switchEquityMode('all')">All History</button>
+                </div>
+            </div>
+            <div style="height: 220px; width: 100%;">
+                <canvas id="equityChart"></canvas>
+            </div>
+        </div>
+
         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 20px;">
             <div class="card">
-                <div class="metric-title">Recent Session Trades (Live MQL5 Feed)</div>
+                <div class="metric-title">Recent Session Trades (Click "Explain 🧠" for AI Post-Mortem)</div>
                 <div style="overflow-x: auto; max-height: 280px;">
                     <table>
                         <thead>
@@ -407,10 +537,11 @@
                                 <th>Price</th>
                                 <th>Profit</th>
                                 <th>Execution Time</th>
+                                <th>AI Audit</th>
                             </tr>
                         </thead>
                         <tbody id="trades-body">
-                            <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Loading live trade records...</td></tr>
+                            <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading live trade records...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -536,8 +667,22 @@
 
 </div>
 
+<!-- 🧠 AI Trade Explainer Modal -->
+<div id="explainModal" class="modal-overlay" onclick="if(event.target === this) closeExplainModal()">
+    <div class="modal-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; margin-bottom: 15px;">
+            <h3 id="modal-title" style="color: var(--cyan); font-size: 16px;">🧠 Institutional Post-Trade Audit</h3>
+            <button onclick="closeExplainModal()" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">✖</button>
+        </div>
+        <div id="modal-trade-summary" style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px; font-family: 'JetBrains Mono';"></div>
+        <div id="modal-explanation-body" style="font-size: 14px; line-height: 1.6; color: #E2E8F0;">Analyzing trade setup with AI...</div>
+    </div>
+</div>
+
 <script>
     let ratioChart = null;
+    let equityChart = null;
+    let currentEquityMode = 'recent';
 
     function switchTab(tabId) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -546,13 +691,15 @@
         event.currentTarget.classList.add('active');
         document.getElementById(tabId).classList.add('active');
 
+        if (tabId === 'tab-trading') { loadEquityCurve(currentEquityMode); loadMarketRegime(); }
         if (tabId === 'tab-rag') loadRagDocs();
         if (tabId === 'tab-memory') { loadMemories(); loadAuditLogs(); }
     }
 
-    function initChart() {
-        const ctx = document.getElementById('ratioChart').getContext('2d');
-        ratioChart = new Chart(ctx, {
+    function initCharts() {
+        // 1. Win/Loss Doughnut
+        const ctxRatio = document.getElementById('ratioChart').getContext('2d');
+        ratioChart = new Chart(ctxRatio, {
             type: 'doughnut',
             data: {
                 labels: ['Wins', 'Losses'],
@@ -569,6 +716,124 @@
                 cutout: '75%'
             }
         });
+
+        // 2. Cumulative Equity Line Chart
+        const ctxEq = document.getElementById('equityChart').getContext('2d');
+        equityChart = new Chart(ctxEq, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Cumulative P&L ($)',
+                    data: [],
+                    borderColor: '#00F2FE',
+                    backgroundColor: 'rgba(0, 242, 254, 0.08)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.25,
+                    pointRadius: 2,
+                    pointHoverRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8F9CAE', font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8F9CAE', font: { size: 10 } } }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `Cumulative PnL: $${ctx.parsed.y.toFixed(2)}`
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    async function loadEquityCurve(mode = 'recent') {
+        try {
+            currentEquityMode = mode;
+            const res = await fetch('/api/equity-curve?mode=' + mode);
+            const data = await res.json();
+            if (equityChart && data.data) {
+                equityChart.data.labels = data.labels;
+                equityChart.data.datasets[0].data = data.data;
+                equityChart.data.datasets[0].borderColor = data.total_pnl >= 0 ? '#00E676' : '#FF5252';
+                equityChart.data.datasets[0].backgroundColor = data.total_pnl >= 0 ? 'rgba(0, 230, 118, 0.08)' : 'rgba(255, 82, 82, 0.08)';
+                equityChart.update();
+            }
+        } catch (e) {
+            console.error('Equity curve error:', e);
+        }
+    }
+
+    function switchEquityMode(mode) {
+        document.getElementById('btn-eq-recent').classList.toggle('active', mode === 'recent');
+        document.getElementById('btn-eq-all').classList.toggle('active', mode === 'all');
+        loadEquityCurve(mode);
+    }
+
+    async function loadMarketRegime() {
+        try {
+            const res = await fetch('/api/market-regime');
+            const data = await res.json();
+            document.getElementById('regime-badge').innerText = data.badge;
+            document.getElementById('regime-badge').style.color = data.color;
+            document.getElementById('regime-er').innerText = 'ER: ' + data.efficiency_ratio.toFixed(3);
+            document.getElementById('regime-desc').innerText = data.description;
+        } catch (e) {
+            console.error('Market regime error:', e);
+        }
+    }
+
+    async function sendControlCommand(cmd) {
+        if (cmd === 'CLOSE_ALL') {
+            if (!confirm('⚠️ ARE YOU SURE? This will immediately close ALL open trading positions in MT5!')) return;
+        }
+        try {
+            const res = await fetch('/api/control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command: cmd })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('ctrl-status-text').innerText = `Last Command: ${cmd} dispatched successfully!`;
+                alert(`✅ Command "${cmd}" dispatched to MT5 Scalper!`);
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (e) {
+            alert('Control error: ' + e);
+        }
+    }
+
+    async function explainTrade(ticket, type, profit) {
+        const modal = document.getElementById('explainModal');
+        modal.style.display = 'flex';
+        document.getElementById('modal-title').innerText = `🧠 Post-Trade Audit: Ticket #${ticket}`;
+        document.getElementById('modal-trade-summary').innerText = `Type: ${type} | Profit: ${profit >= 0 ? '+' : ''}$${parseFloat(profit).toFixed(2)}`;
+        document.getElementById('modal-explanation-body').innerHTML = 'Analyzing trade setup with AI Model Router... ⏳';
+
+        try {
+            const res = await fetch('/api/trade/explain', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ticket, type, profit })
+            });
+            const data = await res.json();
+            document.getElementById('modal-explanation-body').innerHTML = data.explanation.replace(/\n/g, '<br>');
+        } catch (e) {
+            document.getElementById('modal-explanation-body').innerText = 'Audit failed: ' + e;
+        }
+    }
+
+    function closeExplainModal() {
+        document.getElementById('explainModal').style.display = 'none';
     }
 
     async function updateDashboard() {
@@ -604,6 +869,7 @@
                         <td>${t.price}</td>
                         <td class="${t.profit >= 0 ? 'profit-pos' : 'profit-neg'}">${t.profit >= 0 ? '+' : ''}$${parseFloat(t.profit).toFixed(2)}</td>
                         <td style="color: var(--text-muted); font-size: 11px;">${t.time}</td>
+                        <td><button class="btn-explain" onclick="explainTrade('${t.ticket}', '${t.type}', ${t.profit})">Explain 🧠</button></td>
                     </tr>
                 `).join('');
             }
@@ -714,7 +980,12 @@
             });
             const data = await res.json();
             document.getElementById('osint-iocs').innerText = JSON.stringify(data.iocs, null, 2);
-            document.getElementById('osint-dns').innerText = JSON.stringify({ dns: data.dns, whois: data.whois }, null, 2);
+            document.getElementById('osint-dns').innerText = JSON.stringify({
+                dns: data.dns,
+                whois: data.whois,
+                darkweb_tor_nodes: data.darkweb_tor_nodes,
+                cisa_kev_weaponized_cves: data.cisa_kev_weaponized_cves
+            }, null, 2);
         } catch (e) {
             alert('Scan error: ' + e);
         }
@@ -770,8 +1041,10 @@
     }
 
     window.onload = () => {
-        initChart();
+        initCharts();
         updateDashboard();
+        loadEquityCurve('recent');
+        loadMarketRegime();
         setInterval(updateDashboard, 3000);
     };
 </script>

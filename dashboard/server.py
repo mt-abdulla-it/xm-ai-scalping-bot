@@ -140,6 +140,178 @@ def api_status():
     return jsonify(get_trading_data())
 
 # ==============================================================================
+# 🎮 Live Trading Web Remote Control & Kill-Switch
+# ==============================================================================
+@app.route('/api/control', methods=['POST'])
+def api_control():
+    data = request.get_json() or {}
+    cmd = data.get("command", "").strip().upper()
+    if cmd not in ["PAUSE", "RESUME", "CLOSE_ALL"]:
+        return jsonify({"error": "Invalid command. Allowed: PAUSE, RESUME, CLOSE_ALL"}), 400
+        
+    cmd_file = os.path.join(FILES_DIR, "bot_command.txt")
+    try:
+        with open(cmd_file, "w") as f:
+            f.write(cmd + "\n")
+        log_audit("remote_control", "web_user", {"command": cmd})
+        return jsonify({
+            "success": True,
+            "command": cmd,
+            "message": f"Command '{cmd}' dispatched to MT5 Scalper engine successfully."
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# ==============================================================================
+# 📈 Interactive Equity Growth Curve & PnL History
+# ==============================================================================
+@app.route('/api/equity-curve', methods=['GET'])
+def api_equity_curve():
+    csv_path = os.path.join(FILES_DIR, "XMBot_ML_Data.csv")
+    if not os.path.exists(csv_path):
+        return jsonify({"labels": [], "data": [], "total_pnl": 0.0})
+        
+    try:
+        import pandas as pd
+        import numpy as np
+        df = pd.read_csv(csv_path)
+        df['Profit'] = pd.to_numeric(df['Profit'], errors='coerce')
+        df = df.dropna(subset=['Profit'])
+        
+        mode = request.args.get('mode', 'recent') # 'recent' (last 100) or 'all'
+        if mode == 'recent' and len(df) > 100:
+            df = df.tail(100)
+            
+        cumulative = np.cumsum(df['Profit'].values)
+        times = df['OpenTime'].astype(str).tolist() if 'OpenTime' in df.columns else [f"#{i}" for i in range(len(df))]
+        
+        step = max(1, len(cumulative) // 40)
+        sampled_data = cumulative[::step].round(2).tolist()
+        sampled_labels = times[::step]
+        
+        # Ensure latest point is included
+        if len(sampled_data) == 0 or sampled_data[-1] != round(cumulative[-1], 2):
+            sampled_data.append(round(cumulative[-1], 2))
+            sampled_labels.append(times[-1])
+            
+        return jsonify({
+            "labels": [l.split(" ")[-1] if " " in l else l for l in sampled_labels],
+            "data": sampled_data,
+            "total_pnl": round(float(cumulative[-1]), 2),
+            "trade_count": len(df)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# ==============================================================================
+# 🧠 AI Trade Explainer & Institutional Post-Mortem
+# ==============================================================================
+@app.route('/api/trade/explain', methods=['POST'])
+def api_trade_explain():
+    data = request.get_json() or {}
+    ticket = str(data.get("ticket", "")).strip()
+    
+    csv_path = os.path.join(FILES_DIR, "XMBot_ML_Data.csv")
+    trade_row = None
+    if os.path.exists(csv_path):
+        try:
+            import pandas as pd
+            df = pd.read_csv(csv_path)
+            df['Ticket'] = df['Ticket'].astype(str)
+            match = df[df['Ticket'] == ticket]
+            if len(match) > 0:
+                trade_row = match.iloc[-1].to_dict()
+        except Exception:
+            pass
+            
+    if not trade_row:
+        trade_row = {
+            "Ticket": ticket or "Live Session Trade",
+            "Type": data.get("type", "BUY"),
+            "Profit": float(data.get("profit", 0.0)),
+            "Spread": 12.0,
+            "RSI": 58.4,
+            "MACD": 0.0003,
+            "ATR": 0.0015
+        }
+
+    t_type = trade_row.get("Type", "BUY")
+    profit = float(trade_row.get("Profit", 0.0))
+    rsi = float(trade_row.get("RSI", 50.0))
+    macd = float(trade_row.get("MACD", 0.0))
+    atr = float(trade_row.get("ATR", 0.001))
+    spread = float(trade_row.get("Spread", 10.0))
+    
+    outcome_str = f"PROFITABLE (+${profit:.2f})" if profit >= 0 else f"LOSS (-${abs(profit):.2f})"
+    
+    prompt = f"""Conduct an institutional post-trade audit on this closed scalping trade:
+- Ticket: #{trade_row.get('Ticket')}
+- Direction: {t_type}
+- Outcome: {outcome_str}
+- RSI Momentum: {rsi:.1f} (Neutral=50.0)
+- MACD Velocity: {macd:.6f}
+- ATR Volatility: {atr:.6f}
+- Broker Spread: {spread:.1f} points
+
+Provide a concise, 4-point institutional audit:
+1. Signal & Trend Alignment: Was entry direction supported by RSI momentum and MACD?
+2. Transaction Friction: How did spread-to-ATR ratio impact the outcome?
+3. Perry Kaufman TSaM Check: Was this trade taken in low-noise trend or choppy noise?
+4. Takeaway & Risk Verdict."""
+
+    result = router.generate(prompt, model_key="gemini-2.0-flash")
+    return jsonify({
+        "ticket": trade_row.get("Ticket"),
+        "trade": trade_row,
+        "explanation": result.get("text", ""),
+        "model": result.get("model", "")
+    })
+
+# ==============================================================================
+# ⚡ Kaufman Volatility & Market Regime Meter
+# ==============================================================================
+@app.route('/api/market-regime', methods=['GET'])
+def api_market_regime():
+    csv_path = os.path.join(FILES_DIR, "XMBot_ML_Data.csv")
+    er = 0.35
+    if os.path.exists(csv_path):
+        try:
+            import pandas as pd
+            import numpy as np
+            df = pd.read_csv(csv_path)
+            prices = pd.to_numeric(df['OpenPrice'].tail(20), errors='coerce').dropna().values
+            if len(prices) > 3:
+                direction = abs(prices[-1] - prices[0])
+                volatility = np.sum(np.abs(np.diff(prices)))
+                er = float(direction / (volatility + 1e-6))
+        except Exception:
+            pass
+            
+    if er > 0.40:
+        regime = "TRENDING_LOW_NOISE"
+        desc = "Strong directional trend (ER > 0.40). Optimal for Trend Surfing & Breakouts."
+        badge = "TRENDING 🚀"
+        color = "var(--green)"
+    elif er < 0.25:
+        regime = "CHOPPY_HIGH_NOISE"
+        desc = "High market noise & sideways consolidation (ER < 0.25). Mean-reversion scalping active."
+        badge = "CHOP / RANGE 🟡"
+        color = "var(--cyan)"
+    else:
+        regime = "BALANCED"
+        desc = "Moderate market efficiency. Dual momentum & KAMA adaptive smoothing active."
+        badge = "BALANCED ⚖️"
+        color = "var(--blue)"
+        
+    return jsonify({
+        "efficiency_ratio": round(er, 3),
+        "regime": regime,
+        "badge": badge,
+        "color": color,
+        "description": desc
+    })
+
+# ==============================================================================
 # 🤖 Next-Gen AI Assistant & Multi-Model Routes
 # ==============================================================================
 @app.route('/api/models', methods=['GET'])

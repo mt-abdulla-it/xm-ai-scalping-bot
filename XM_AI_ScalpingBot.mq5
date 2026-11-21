@@ -182,6 +182,7 @@ double         g_dailyProfitLock;    // Dynamic profit lock
 double         g_maxSpreadPoints;    // Adjusted max spread
 double         g_initialDeposit;     // 🛡️ Initial deposit tracked for Total Drawdown Circuit Breaker
 bool           g_accountHalted;      // 🛡️ TRUE = Account equity dropped below 50% of deposit → HALT
+bool           g_webRemotePaused;    // 🛑 Remote Web Console Pause/Emergency Kill-Switch State
 
 //--- Dashboard Status
 string         g_signalStatus = "Scanning...";
@@ -449,13 +450,65 @@ void OnDeinit(const int reason)
 }
 
 //+------------------------------------------------------------------+
+//| CHECK REMOTE WEB CONSOLE COMMANDS (Emergency Kill-Switch & Pause)|
+//+------------------------------------------------------------------+
+void CheckRemoteWebCommands()
+{
+   if(FileIsExist("bot_command.txt"))
+   {
+      int handle = FileOpen("bot_command.txt", FILE_READ|FILE_TXT|FILE_ANSI);
+      if(handle != INVALID_HANDLE)
+      {
+         string cmd = FileReadString(handle);
+         FileClose(handle);
+         FileDelete("bot_command.txt");
+         
+         StringTrimLeft(cmd);
+         StringTrimRight(cmd);
+         StringToUpper(cmd);
+         
+         if(cmd == "PAUSE")
+         {
+            g_webRemotePaused = true;
+            Print("⏸️ Web Remote Control: Trading PAUSED by user from Web Console!");
+         }
+         else if(cmd == "RESUME")
+         {
+            g_webRemotePaused = false;
+            Print("▶️ Web Remote Control: Trading RESUMED by user from Web Console!");
+         }
+         else if(cmd == "CLOSE_ALL")
+         {
+            Print("🛑 Web Remote Control: EMERGENCY CLOSE ALL triggered from Web Console!");
+            for(int i = PositionsTotal() - 1; i >= 0; i--)
+            {
+               if(m_position.SelectByIndex(i) && m_position.Magic() == InpMagicNumber)
+                  m_trade.PositionClose(m_position.Ticket());
+            }
+         }
+      }
+   }
+}
+
+//+------------------------------------------------------------------+
 //| Expert tick function — MAIN TRADING LOGIC                        |
 //+------------------------------------------------------------------+
 void OnTick()
 {
+   //--- Check for Web Remote Commands (Kill-switch & Pause)
+   CheckRemoteWebCommands();
+
    //--- Update symbol info
    if(!m_symbol.RefreshRates())
       return;
+      
+   //--- Web Remote Standby Guard
+   if(g_webRemotePaused)
+   {
+      ManageOpenPositions(); // Still protect and manage open positions
+      if(InpShowDashboard) UpdateDashboard("⏸️ Standby: Paused via Web Remote Control");
+      return;
+   }
       
    //--- LAYER -1: Auto-Duplicate Chart Tab Blocker (Only 1 Master Chart trades per symbol)
    if(!IsMasterChart())
