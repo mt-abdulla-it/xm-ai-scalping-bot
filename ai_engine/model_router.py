@@ -31,7 +31,7 @@ try:
 except ImportError:
     HAS_GROQ_SDK = False
 
-SYSTEM_PROMPT = """You are Antigravity AI — an elite AI Architect, Quantitative Algorithmic Trading Specialist, and Cybersecurity Intelligence Expert.
+SYSTEM_PROMPT = """You are AegisQuant AI — an elite AI Architect, Quantitative Algorithmic Trading Specialist, and Cybersecurity Intelligence Expert.
 You assist the user with:
 1. Live Trading & Market Analysis (MT5 Scalping Bot, ONNX ML Engine, Forex/Crypto/Indices risk management).
 2. Defensive Cybersecurity, OSINT Research, and Cyber Threat Intelligence (MITRE ATT&CK, CVE analysis, IOC extraction).
@@ -249,7 +249,7 @@ class ModelRouter:
                     "- **Dashboard:** Live on `http://localhost:5000`\n\n"
                     "💡 *Tip: Configure your `GOOGLE_API_KEY` or `GROQ_API_KEY` in `.env` to unlock live conversational reasoning!*")
         elif any(w in p for w in ["hello", "hi", "hey", "who are you", "help"]):
-            return ("👋 **Welcome! I am your Antigravity AI Assistant.**\n\n"
+            return ("👋 **Welcome! I am your AegisQuant AI Platform.**\n\n"
                     "I am connected to your live MT5 Scalping Bot, the 74.95% ONNX Quant Brain, RAG Knowledge Base, and Defensive Cyber Threat Intelligence engine.\n\n"
                     "How can I help you today? You can ask about:\n"
                     "1. Trading telemetry, open positions, and win rate\n"
