@@ -46,3 +46,4 @@ Optimal scalping execution relies on liquidity density, tight bid-ask spreads, a
 3. **News Event Windows:**
    - Never scalp through high-impact red-folder news (US Non-Farm Payrolls, FOMC Interest Rates, CPI).
    - Ensure `InpAvoidHighImpactNews=true` with a 15-minute buffer before and after releases.
+

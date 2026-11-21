@@ -116,7 +116,7 @@ def generate_dashboard():
   </div>
 
   <div class="footer">
-    Generated automatically by XM AI Scalping Bot Telemetry Exporter • MIT License
+    Generated automatically by XM AI Scalping Bot Telemetry Exporter • Commercial & Evaluation License
   </div>
 </body>
 </html>

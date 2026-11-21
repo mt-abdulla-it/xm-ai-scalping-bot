@@ -38,3 +38,4 @@ Before deploying **XM AI Scalping Bot** on real capital or a live funded account
 
 - [ ] **10. Telemetry & Log Monitoring:**
   Check the **Journal** and **Experts** tabs in the MT5 Terminal to ensure zero `trade error 4756` (Trade disabled) or `4014` (System busy) codes.
+

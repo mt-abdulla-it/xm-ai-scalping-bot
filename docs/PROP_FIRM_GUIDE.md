@@ -51,3 +51,4 @@ Prop trading firms enforce strict loss boundaries. The table below illustrates h
 1. **Never increase risk percent above 1.0%** during an active challenge.
 2. **Never override the hard daily loss limit** — if the bot hits the daily pause, let it rest until the next trading day.
 3. **Always use a low-latency VPS (< 20ms)** to ensure stop losses are acknowledged at the broker level instantly.
+
