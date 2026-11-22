@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [16.3.0] - 2026-11-22
+
+### Added
+- **Sunday AI Self-Learning Retraining**: Automated continuous weekly retraining pipeline with Kaufman Efficiency Ratio feature extraction and ONNX model deployment.
+- **Institutional Prop Firm Shield**: Strict 3% maximum drawdown limiter with automated session-based equity preservation for FTMO and FundedNext challenges.
+- **Cost-Sensitive Quant Loss Weighting**: Asymmetric loss penalties in neural network training achieving 84.13% ultra-precision.
+
+---
+
 ## [16.2.0] - 2026-11-12
 
 ### Added
