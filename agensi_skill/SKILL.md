@@ -64,3 +64,4 @@ For automated algorithmic execution inside MetaTrader 5:
 - `XM_AI_ScalpingBot.mq5` — Full MQL5 Expert Advisor source code for MetaTrader 5.
 - `presets/` — Institutional `.set` configuration profiles.
 - `requirements.txt` — Minimal Python dependencies.
+
