@@ -69,7 +69,8 @@ def evaluate_signal(symbol: str, rsi: float, spread: float, atr: float, session:
     
     if os.path.exists(onnx_path):
         try:
-            import onnxruntime as ort
+            import importlib
+            ort = importlib.import_module("onnxruntime")
             session_ort = ort.InferenceSession(onnx_path)
             hour = 14.0 if "ny" in session.lower() else (9.0 if "london" in session.lower() else 3.0)
             type_code = 1.0 if direction.upper() == "BUY" else -1.0
@@ -132,3 +133,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
