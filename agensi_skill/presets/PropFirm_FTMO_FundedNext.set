@@ -1,0 +1,20 @@
+; XM AI Scalping Bot - Prop Firm Challenge Guard Profile
+; Strictly tuned for FTMO, FundedNext, The5ers & Funding Pips challenge rules
+InpRiskPercent=0.5
+InpMaxAllowedLot=0.10
+InpUseCompounding=false
+InpUseKellyCriterion=false
+InpDailyProfitTargetPercent=5.0
+InpDailyProfitTrailingTriggerPercent=2.5
+InpDailyProfitTrailingLockPercent=1.5
+InpDailyLossLimitPercent=3.0
+InpMaxDrawdownPercent=4.0
+InpMaxDollarLossPerTrade=25.00
+InpMaxOpenTrades=5
+InpMaxTradesPerSymbol=1
+InpMaxSpreadPoints=20.0
+InpLossCooldownMinutes=10
+InpGlobalOrderBufferSeconds=5
+InpAvoidHighImpactNews=true
+InpNewsPauseBefore=15
+InpNewsPauseAfter=15

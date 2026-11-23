@@ -1,0 +1,20 @@
+; XM AI Scalping Bot - High-Yield Scalper Profile
+; Optimized for rapid compounding on micro accounts
+InpRiskPercent=2.0
+InpMaxAllowedLot=0.25
+InpUseCompounding=true
+InpUseKellyCriterion=false
+InpDailyProfitTargetPercent=15.0
+InpDailyProfitTrailingTriggerPercent=4.0
+InpDailyProfitTrailingLockPercent=2.0
+InpDailyLossLimitPercent=4.5
+InpMaxDrawdownPercent=5.0
+InpMaxDollarLossPerTrade=12.00
+InpMaxOpenTrades=25
+InpMaxTradesPerSymbol=2
+InpMaxSpreadPoints=30.0
+InpLossCooldownMinutes=2
+InpGlobalOrderBufferSeconds=2
+InpAvoidHighImpactNews=true
+InpNewsPauseBefore=5
+InpNewsPauseAfter=5
