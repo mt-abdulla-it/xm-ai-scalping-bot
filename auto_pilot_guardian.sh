@@ -9,9 +9,11 @@ XM_DIR="$HOME/.wine/drive_c/Program Files/XM Global MT5"
 TERMINAL_EXE="$XM_DIR/terminal64.exe"
 LOG_FILE="$WORKSPACE_DIR/auto_pilot.log"
 
-echo "==========================================================" >> "$LOG_FILE"
-echo "🤖 Auto-Pilot Guardian Started at $(date)" >> "$LOG_FILE"
-echo "==========================================================" >> "$LOG_FILE"
+{
+    echo "=========================================================="
+    echo "🤖 Auto-Pilot Guardian Started at $(date)"
+    echo "=========================================================="
+} >> "$LOG_FILE"
 
 while true; do
     # 1. Watchdog: Ensure MT5 Terminal is ALWAYS alive
