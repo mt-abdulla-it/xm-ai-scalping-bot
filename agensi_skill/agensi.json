@@ -1,0 +1,80 @@
+{
+  "$schema": "https://agensi.io/schemas/skill-manifest-v1.json",
+  "name": "XM AI Scalping Bot",
+  "slug": "xm-ai-scalping-bot",
+  "version": "16.3.0",
+  "author": {
+    "name": "Abdulla Thaslim",
+    "handle": "mt-abdulla-it",
+    "email": "mt.abdulla.it@gmail.com",
+    "github": "https://github.com/mt-abdulla-it"
+  },
+  "category": "Trading & Financial AI",
+  "description": "Enterprise-grade AI-powered scalping engine combining ONNX neural network inference with quantitative Kaufman Efficiency Ratio filters on MetaTrader 5.",
+  "tags": [
+    "algorithmic-trading",
+    "metatrader5",
+    "mql5",
+    "machine-learning",
+    "onnx",
+    "forex-scalping",
+    "expert-advisor"
+  ],
+  "runtime": {
+    "engine": "MetaTrader 5 MQL5 + ONNX Runtime",
+    "compatibility": ["Windows 10/11", "Ubuntu Linux (Wine / Docker Headless)"],
+    "minimum_memory": "2GB RAM",
+    "latency_recommendation": "<20ms"
+  },
+  "licensing": {
+    "type": "Commercial & Evaluation License (CSL-1.0)",
+    "tiers": [
+      {
+        "id": "agensi-agent-skill",
+        "name": "Agensi AI Agent Skill Edition",
+        "price_usd": 14.99,
+        "accounts": "Standalone Agent Signal Inference & MT5 Suite",
+        "description": "Embedded ONNX neural signal inference engine with quantitative Kaufman ER volatility filters and MT5 execution presets."
+      },
+      {
+        "id": "community",
+        "name": "Community Evaluation",
+        "price_usd": 0,
+        "accounts": "Demo & Simulated Accounts",
+        "description": "Full access to inspect open-source code and test forward telemetry on paper demo accounts."
+      },
+      {
+        "id": "trader-pro",
+        "name": "Trader Pro Edition",
+        "price_usd": 99,
+        "accounts": "1 Live Personal Trading Account",
+        "description": "Compiled .ex5 binary, low-latency neural model checkpoints, and conservative + aggressive presets."
+      },
+      {
+        "id": "prop-firm-vip",
+        "name": "Prop Firm VIP Edition",
+        "price_usd": 299,
+        "accounts": "Unlimited Live & Prop Firm Accounts",
+        "description": "Includes FTMO / FundedNext 4% hard drawdown guard, Gold (XAUUSD) support, and priority 1-on-1 deployment."
+      }
+    ]
+  },
+  "capabilities": {
+    "risk_management": {
+      "hard_stop_loss": true,
+      "daily_loss_shield": true,
+      "trailing_profit_lock": true,
+      "anti_whipsaw_cooldown": true,
+      "spread_filter": true
+    },
+    "supported_instruments": [
+      "EURUSD",
+      "GBPUSD",
+      "USDJPY",
+      "XAUUSD",
+      "US30",
+      "BTCUSD"
+    ]
+  }
+}
+
