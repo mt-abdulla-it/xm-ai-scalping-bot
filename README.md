@@ -4,21 +4,27 @@
 
 # 🤖 XM AI Scalping Bot — Multi-Asset Algorithmic Trading Engine
 
+[![Agensi Marketplace](https://img.shields.io/badge/Agensi%20Marketplace-$14.99%20Live-6366F1?style=for-the-badge&logo=sparkles&logoColor=white)](https://agensi.io/skills/xm-ai-scalping-bot)
+[![Release](https://img.shields.io/badge/Release-v16.30%20QUANT--AI-00C853?style=for-the-badge&logo=speedtest&logoColor=white)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/releases)
+
 [![MetaTrader 5](https://img.shields.io/badge/Platform-MetaTrader%205-0078D7?logo=metatrader&logoColor=white)](https://www.metatrader5.com)
 [![MQL5](https://img.shields.io/badge/Language-MQL5-brightgreen)](https://www.mql5.com)
 [![Python 3.10+](https://img.shields.io/badge/ML%20Brain-Python%203.10+-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![ONNX Runtime](https://img.shields.io/badge/Inference-ONNX%20Runtime-005CED?logo=onnx&logoColor=white)](https://onnxruntime.ai)
 [![Architecture](https://img.shields.io/badge/Architecture-Ubuntu%20Linux%20%7C%20Wine-E95420?logo=ubuntu&logoColor=white)](https://www.winehq.org)
-[![Version](https://img.shields.io/badge/Version-v16.20%20QUALITY--AI-00C853?logo=speedtest&logoColor=white)](#)
 [![Model Accuracy](https://img.shields.io/badge/ONNX%20Accuracy-67.5%25%20(5--Fold%20CV)-blueviolet?logo=scikitlearn&logoColor=white)](#-machine-learning--onnx-pipeline)
 [![CI Verification](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/actions/workflows/verify.yml/badge.svg)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/actions/workflows/verify.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: CSL-1.0](https://img.shields.io/badge/License-CSL--1.0-orange.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/Cite%20Repository-CITATION.cff-blue.svg)](CITATION.cff)
 [![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](#-cloud-vps-deployment)
 [![GitHub last commit](https://img.shields.io/github/last-commit/mt-abdulla-it/xm-ai-scalping-bot)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot/commits/main)
-[![GitHub repo size](https://img.shields.io/github/repo-size/mt-abdulla-it/xm-ai-scalping-bot)](https://github.com/mt-abdulla-it/xm-ai-scalping-bot)
 
 > An enterprise-grade, high-frequency scalping Expert Advisor (EA) combining quantitative technical analysis with machine learning inference. Built for **MetaTrader 5** with automated deployment on **Ubuntu Linux (Wine)** and **Windows**.
+
+> [!TIP]
+> 🚀 **Official AI Agent Skill Live on Agensi Marketplace ($14.99)**  
+> Deploy this quant scalping engine directly inside your AI agents (Claude Code, Cursor, Codex, Windsurf) with standalone ONNX inference, institutional presets, and prop firm risk management:  
+> **👉 [Get xm-ai-scalping-bot on Agensi.io ($14.99)](https://agensi.io/skills/xm-ai-scalping-bot)**
 
 ---
 
