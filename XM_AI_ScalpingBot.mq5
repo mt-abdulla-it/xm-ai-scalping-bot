@@ -35,9 +35,9 @@ input double   InpDailyProfitTrailingTriggerPercent = 0.0; // 🛡️ Profit tra
 input double   InpDailyProfitTrailingLockPercent    = 0.0;  // 🛡️ Lock percentage (0 = disabled)
 input double   InpDailyLossLimitPercent = 10.0; // ⛔ Daily Loss Limit 10.0% ($12.00 floor on $100 balance, allows 3 trades)
 input double   InpMaxDrawdownPercent   = 15.0;  // Maximum Equity Drawdown Shield (15.0% cushion for multi-trade floating noise)
-input double   InpMaxDollarLossPerTrade = 4.00;  // 🛡️ Hard Dollar Loss Shield: Strict $4.00 Max Loss Cap (Zero Large Losses!)
+input double   InpMaxDollarLossPerTrade = 1.50;  // 🛡️ Hard Dollar Loss Shield: Strict $1.50 Max Loss Cap (Small Account Protection)
 input int      InpMaxOpenTrades    = 30;        // Max 30 total open trades across all pairs (Quality Portfolio)
-input int      InpMaxTradesPerSymbol = 2;       // Max 2 open trades per symbol (Reduced exposure)
+input int      InpMaxTradesPerSymbol = 1;       // Max 1 open trade per symbol (Prevents duplicate same-candle losses)
 input double   InpMaxSpreadPoints  = 30.0;    // Max spread 30 pts (Quality execution only)
 
 //--- Anti-Whipsaw & Multi-Chart Guard
@@ -135,7 +135,7 @@ input string   InpPortfolioSymbols = "EURUSD,GBPUSD,USDJPY"; // Portfolio symbol
 input int      InpMagicNumber      = 202609;  // Magic Number (unique bot ID)
 input ENUM_TIMEFRAMES InpTimeframe = PERIOD_CURRENT; // Trading Timeframe (Adapts to chart)
 input bool     InpShowDashboard    = true;    // Show dashboard on chart?
-input int      InpMinBarsBetween   = 0;       // ⚡ 0 bar cooldown between trades (Instant re-entry on new signal)
+input int      InpMinBarsBetween   = 2;       // 🛡️ 2 bar cooldown (10m on M5) to prevent duplicate same-candle entries
 
 //+------------------------------------------------------------------+
 //| GLOBAL VARIABLES                                                 |
@@ -592,6 +592,19 @@ void OnTick()
    }
    
    //--- LAYER 2: Market filter checks
+   //--- Small Account Heavy-Symbol Guard (< $100: block high-margin/spread Indices & Crypto)
+   if(m_account.Balance() < 100.0)
+   {
+      string symUpper = _Symbol;
+      StringToUpper(symUpper);
+      if(StringFind(symUpper, "US100") >= 0 || StringFind(symUpper, "US500") >= 0 || StringFind(symUpper, "US30") >= 0 ||
+         StringFind(symUpper, "BTC") >= 0   || StringFind(symUpper, "ETH") >= 0)
+      {
+         if(InpShowDashboard) UpdateDashboard("🛡️ Small Acct (<$100): " + _Symbol + " paused");
+         return;
+      }
+   }
+
    if(!IsSpreadAcceptable())
    {
       if(InpShowDashboard) UpdateDashboard("⏳ Waiting — Spread too wide: " + DoubleToString(GetCurrentSpreadPoints(), 1) + " pts");
