@@ -13,5 +13,5 @@ requests>=2.28.0
 
 # Web Dashboard & Testing
 flask>=3.0.0
-pytest>=8.0.0
+pytest>=9.2.0
 reportlab>=5.0.0
